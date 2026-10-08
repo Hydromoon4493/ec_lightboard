@@ -54,13 +54,14 @@
 | US-28 | As a user, I want to see the lightboard's current status (online, displaying, idle) so that I know it is working. | Should Have |
 | US-29 | As a user, I want to control the lightboard from a web interface on my phone or computer so that I don't need physical access to the Pi. | Must Have |
 | US-30 | As a user, I want the board to show a default image or turn off when nothing is scheduled so that it is never in an unknown state. | Should Have |
+| US-31 | As a user, I want the board that is easy to maintain and fits well in it's room. | Must Have |
 
 ## Epic 6: RESTful API
 
 | ID | User Story | Priority |
 |----|------------|----------|
-| US-31 | As a client application, I want to retrieve a list of preset images through the REST API so that image data can be used programmatically. | Must Have |
-| US-32 | As an authenticated client, I want to upload an image through the REST API so that functionality is not limited to the web interface. | Should Have |
-| US-33 | As an authenticated client, I want to start, stop, and set the duration of a display through the REST API so that the board can be controlled by other applications. | Must Have |
-| US-34 | As an API consumer, I want responses returned in JSON so that the data can easily be consumed by web and mobile applications. | Must Have |
-| US-35 | As an API consumer, I want appropriate HTTP status codes (200, 201, 400, 401, 404, 500) so that my application can handle success and failure correctly. | Must Have |
+| US-32 | As a client application, I want to retrieve a list of preset images through the REST API so that image data can be used programmatically. | Must Have |
+| US-33 | As an authenticated client, I want to upload an image through the REST API so that functionality is not limited to the web interface. | Should Have |
+| US-34 | As an authenticated client, I want to start, stop, and set the duration of a display through the REST API so that the board can be controlled by other applications. | Must Have |
+| US-35 | As an API consumer, I want responses returned in JSON so that the data can easily be consumed by web and mobile applications. | Must Have |
+| US-36 | As an API consumer, I want appropriate HTTP status codes (200, 201, 400, 401, 404, 500) so that my application can handle success and failure correctly. | Must Have |
