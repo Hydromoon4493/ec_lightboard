@@ -122,8 +122,9 @@ void orientPixel(
       break;
 
     case ROT180:
-      ox=47-x; oy=47-y;
-      break;
+  ox = x;
+  oy = 47 - y;
+  break;
 
     case ROT90CW:
       ox=47-y; oy=x;
