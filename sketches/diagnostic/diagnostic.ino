@@ -1,102 +1,96 @@
 #include <FastLED.h>
 
 // ============================================================
-// 48x48 / 9 x 16x16 PANEL DIAGNOSTIC
-// ============================================================
-//
-// Tests:
-//   6 possible panel orders
-//   x
-//   8 possible panel orientations
-//
-// TOTAL = 48 TESTS
-//
-// The physical test-ID dots are always placed in the same
-// physical location so you can identify the test even if
-// the 1-9 image is completely scrambled.
-//
-// ============================================================
-
-
-// ============================================================
-// DISPLAY CONSTANTS
+// 48x48 LED MATRIX
+// 9 panels = 3 x 3
+// Each panel = 16 x 16 = 256 LEDs
+// Each data line = 3 panels = 768 LEDs
 // ============================================================
 
 #define WIDTH 48
 #define HEIGHT 48
 
 #define PANEL_SIZE 16
-
-#define PANELS_X 3
-#define PANELS_Y 3
-
+#define NUM_PANELS 9
 #define LEDS_PER_PANEL 256
 #define LEDS_PER_STRIP 768
 
-#define BRIGHTNESS 40
-
-// How long each test stays on
-#define TEST_TIME 4000
-
-
-// ============================================================
+// ------------------------------------------------------------
 // DATA PINS
-// ============================================================
+// ------------------------------------------------------------
 
-#define PIN_ROW1 5
+#define PIN_ROW1 19
 #define PIN_ROW2 18
-#define PIN_ROW3 19
+#define PIN_ROW3 5
 
-
-// ============================================================
+// ------------------------------------------------------------
 // LED ARRAYS
-// ============================================================
+// ------------------------------------------------------------
 
-CRGB leds1[LEDS_PER_STRIP];
-CRGB leds2[LEDS_PER_STRIP];
-CRGB leds3[LEDS_PER_STRIP];
+CRGB row1[LEDS_PER_STRIP];
+CRGB row2[LEDS_PER_STRIP];
+CRGB row3[LEDS_PER_STRIP];
 
-CRGB* strips[3] = {
-  leds1,
-  leds2,
-  leds3
+CRGB* leds[3] = {
+  row1,
+  row2,
+  row3
 };
 
+// ------------------------------------------------------------
+// TEST SETTINGS
+// ------------------------------------------------------------
 
-// ============================================================
-// LOGICAL IMAGE
-// ============================================================
+#define TEST_TIME 5000   // 5 seconds per test
 
-CRGB image[HEIGHT][WIDTH];
-
-
-// ============================================================
-// TEST DEFINITIONS
-// ============================================================
-
-// Panel orders.
+// ------------------------------------------------------------
+// PANEL ORDERS
 //
-// The numbers mean which logical panel goes into physical
-// position 0, 1, 2 along a data line.
+// These describe the order of the THREE physical panels
+// along each data line.
 //
-// 123 = 1,2,3
-// 321 = 3,2,1
+// Example:
 //
-// etc.
+// 123 = logical 1 -> physical 1
+//       logical 2 -> physical 2
+//       logical 3 -> physical 3
+//
+// ------------------------------------------------------------
 
 const uint8_t panelOrders[6][3] = {
 
-  {0, 1, 2},   // 123
-  {0, 2, 1},   // 132
-  {1, 0, 2},   // 213
-  {1, 2, 0},   // 231
-  {2, 0, 1},   // 312
-  {2, 1, 0}    // 321
+  {0, 1, 2},   // 1 2 3
+  {0, 2, 1},   // 1 3 2
+  {1, 0, 2},   // 2 1 3
+  {1, 2, 0},   // 2 3 1
+  {2, 0, 1},   // 3 1 2
+  {2, 1, 0}    // 3 2 1
 
 };
 
+// ------------------------------------------------------------
+// ORIENTATIONS
+// ------------------------------------------------------------
 
-// Orientation names
+enum Orientation {
+
+  NORMAL,
+
+  FLIP_X,
+
+  FLIP_Y,
+
+  ROTATE_180,
+
+  ROTATE_90_CW,
+
+  ROTATE_90_CCW,
+
+  TRANSPOSE,
+
+  ANTI_TRANSPOSE
+
+};
 
 const char* orientationNames[8] = {
 
@@ -111,128 +105,124 @@ const char* orientationNames[8] = {
 
 };
 
+// ------------------------------------------------------------
+// TEST IMAGE
+// ------------------------------------------------------------
 
-// ============================================================
-// 5x7 FONT
-// ============================================================
+CRGB image[HEIGHT][WIDTH];
 
-const uint8_t digits[10][7] = {
+// ------------------------------------------------------------
+// NUMBER FONT
+//
+// 5 x 7 font
+// ------------------------------------------------------------
 
-  // 0
+const byte font5x7[10][7] = {
+
   {
-    0b01110,
-    0b10001,
-    0b10011,
-    0b10101,
-    0b11001,
-    0b10001,
-    0b01110
+    B01110,
+    B10001,
+    B10011,
+    B10101,
+    B11001,
+    B10001,
+    B01110
   },
 
-  // 1
   {
-    0b00100,
-    0b01100,
-    0b00100,
-    0b00100,
-    0b00100,
-    0b00100,
-    0b01110
+    B00100,
+    B01100,
+    B00100,
+    B00100,
+    B00100,
+    B00100,
+    B01110
   },
 
-  // 2
   {
-    0b01110,
-    0b10001,
-    0b00001,
-    0b00010,
-    0b00100,
-    0b01000,
-    0b11111
+    B01110,
+    B10001,
+    B00001,
+    B00010,
+    B00100,
+    B01000,
+    B11111
   },
 
-  // 3
   {
-    0b11110,
-    0b00001,
-    0b00001,
-    0b01110,
-    0b00001,
-    0b00001,
-    0b11110
+    B11110,
+    B00001,
+    B00001,
+    B01110,
+    B00001,
+    B00001,
+    B11110
   },
 
-  // 4
   {
-    0b00010,
-    0b00110,
-    0b01010,
-    0b10010,
-    0b11111,
-    0b00010,
-    0b00010
+    B00010,
+    B00110,
+    B01010,
+    B10010,
+    B11111,
+    B00010,
+    B00010
   },
 
-  // 5
   {
-    0b11111,
-    0b10000,
-    0b10000,
-    0b11110,
-    0b00001,
-    0b00001,
-    0b11110
+    B11111,
+    B10000,
+    B10000,
+    B11110,
+    B00001,
+    B00001,
+    B11110
   },
 
-  // 6
   {
-    0b01110,
-    0b10000,
-    0b10000,
-    0b11110,
-    0b10001,
-    0b10001,
-    0b01110
+    B01110,
+    B10000,
+    B10000,
+    B11110,
+    B10001,
+    B10001,
+    B01110
   },
 
-  // 7
   {
-    0b11111,
-    0b00001,
-    0b00010,
-    0b00100,
-    0b01000,
-    0b01000,
-    0b01000
+    B11111,
+    B00001,
+    B00010,
+    B00100,
+    B01000,
+    B01000,
+    B01000
   },
 
-  // 8
   {
-    0b01110,
-    0b10001,
-    0b10001,
-    0b01110,
-    0b10001,
-    0b10001,
-    0b01110
+    B01110,
+    B10001,
+    B10001,
+    B01110,
+    B10001,
+    B10001,
+    B01110
   },
 
-  // 9
   {
-    0b01110,
-    0b10001,
-    0b10001,
-    0b01111,
-    0b00001,
-    0b00001,
-    0b01110
+    B01110,
+    B10001,
+    B10001,
+    B01111,
+    B00001,
+    B00001,
+    B01110
   }
 
 };
 
-
 // ============================================================
-// CLEAR LOGICAL IMAGE
+// CLEAR IMAGE
 // ============================================================
 
 void clearImage() {
@@ -249,75 +239,44 @@ void clearImage() {
 
 }
 
-
 // ============================================================
-// DRAW NUMBER
+// DRAW A LARGE NUMBER
 // ============================================================
 
 void drawNumber(
-  int panelX,
-  int panelY,
-  int number
+  int number,
+  int startX,
+  int startY,
+  CRGB color
 ) {
 
-  int startX = panelX * PANEL_SIZE;
-  int startY = panelY * PANEL_SIZE;
+  if (number < 0 || number > 9)
+    return;
 
-  // ----------------------------------------------------------
-  // PANEL BORDER
-  // ----------------------------------------------------------
-
-  for (int i = 0; i < PANEL_SIZE; i++) {
-
-    image[startY][startX + i] = CRGB::Red;
-    image[startY + 15][startX + i] = CRGB::Red;
-
-    image[startY + i][startX] = CRGB::Red;
-    image[startY + i][startX + 15] = CRGB::Red;
-
-  }
-
-
-  // ----------------------------------------------------------
-  // BIG NUMBER
-  // ----------------------------------------------------------
-
+  // 5x7 font, enlarged 2x
   const int scale = 2;
 
-  int digitWidth = 5 * scale;
-  int digitHeight = 7 * scale;
+  for (int row = 0; row < 7; row++) {
 
-  int offsetX = (16 - digitWidth) / 2;
-  int offsetY = (16 - digitHeight) / 2;
+    for (int col = 0; col < 5; col++) {
 
-  for (int dy = 0; dy < 7; dy++) {
+      if (font5x7[number][row] & (1 << (4 - col))) {
 
-    for (int dx = 0; dx < 5; dx++) {
+        for (int dy = 0; dy < scale; dy++) {
 
-      if (digits[number][dy] & (1 << (4 - dx))) {
+          for (int dx = 0; dx < scale; dx++) {
 
-        for (int sy = 0; sy < scale; sy++) {
+            int x = startX + col * scale + dx;
+            int y = startY + row * scale + dy;
 
-          for (int sx = 0; sx < scale; sx++) {
+            if (
+              x >= 0 &&
+              x < WIDTH &&
+              y >= 0 &&
+              y < HEIGHT
+            ) {
 
-            int x =
-              startX +
-              offsetX +
-              dx * scale +
-              sx;
-
-            int y =
-              startY +
-              offsetY +
-              dy * scale +
-              sy;
-
-            if (x >= 0 &&
-                x < WIDTH &&
-                y >= 0 &&
-                y < HEIGHT) {
-
-              image[y][x] = CRGB::White;
+              image[y][x] = color;
 
             }
 
@@ -333,146 +292,177 @@ void drawNumber(
 
 }
 
-
 // ============================================================
-// BUILD:
+// DRAW ONE PANEL
 //
-// 1 2 3
-// 4 5 6
-// 7 8 9
+// Each panel gets:
+//
+//   ----------------
+//        NUMBER
+//
+// The TOP LINE is deliberately very obvious.
+//
+// This lets us determine whether a panel is:
+//
+//   NORMAL
+//   FLIPPED
+//   ROTATED
+//   etc.
 // ============================================================
 
-void build123() {
+void drawPanel(
+  int panelX,
+  int panelY,
+  int number
+) {
 
-  clearImage();
+  int x0 = panelX * PANEL_SIZE;
+  int y0 = panelY * PANEL_SIZE;
 
-  int number = 1;
+  // ----------------------------------------------------------
+  // TOP ORIENTATION MARKER
+  // ----------------------------------------------------------
 
-  for (int panelY = 0; panelY < 3; panelY++) {
+  for (int x = 0; x < PANEL_SIZE; x++) {
 
-    for (int panelX = 0; panelX < 3; panelX++) {
-
-      drawNumber(
-        panelX,
-        panelY,
-        number
-      );
-
-      number++;
-
-    }
+    image[y0][x0 + x] = CRGB::White;
 
   }
 
+  // ----------------------------------------------------------
+  // LEFT EDGE
+  // Small marker to make rotation easier to recognize.
+  // ----------------------------------------------------------
+
+  for (int y = 1; y < PANEL_SIZE; y++) {
+
+    image[y0 + y][x0] = CRGB::Blue;
+
+  }
+
+  // ----------------------------------------------------------
+  // NUMBER
+  // ----------------------------------------------------------
+
+  // Center approximately in 16x16 panel
+
+  int numberWidth = 10;
+  int numberHeight = 14;
+
+  int startX =
+    x0 + (PANEL_SIZE - numberWidth) / 2;
+
+  int startY =
+    y0 + 2;
+
+  drawNumber(
+    number,
+    startX,
+    startY,
+    CRGB::Red
+  );
+
 }
 
+// ============================================================
+// BUILD 1-9 IMAGE
+// ============================================================
+
+void build123456789() {
+
+  clearImage();
+
+  // Top row
+  drawPanel(0, 0, 1);
+  drawPanel(1, 0, 2);
+  drawPanel(2, 0, 3);
+
+  // Middle row
+  drawPanel(0, 1, 4);
+  drawPanel(1, 1, 5);
+  drawPanel(2, 1, 6);
+
+  // Bottom row
+  drawPanel(0, 2, 7);
+  drawPanel(1, 2, 8);
+  drawPanel(2, 2, 9);
+
+}
 
 // ============================================================
-// TRANSFORM A PIXEL INSIDE A 16x16 PANEL
+// TRANSFORM PIXEL
 // ============================================================
 
 void transformPixel(
-  int inX,
-  int inY,
-  int orientation,
-  int &outX,
-  int &outY
+  int x,
+  int y,
+  Orientation orientation,
+  int &newX,
+  int &newY
 ) {
 
   switch (orientation) {
 
-    // --------------------------------------------------------
-    // NORMAL
-    // --------------------------------------------------------
+    case NORMAL:
 
-    case 0:
-
-      outX = inX;
-      outY = inY;
+      newX = x;
+      newY = y;
 
       break;
 
 
-    // --------------------------------------------------------
-    // FLIP X
-    // --------------------------------------------------------
+    case FLIP_X:
 
-    case 1:
-
-      outX = 15 - inX;
-      outY = inY;
+      newX = PANEL_SIZE - 1 - x;
+      newY = y;
 
       break;
 
 
-    // --------------------------------------------------------
-    // FLIP Y
-    // --------------------------------------------------------
+    case FLIP_Y:
 
-    case 2:
-
-      outX = inX;
-      outY = 15 - inY;
+      newX = x;
+      newY = PANEL_SIZE - 1 - y;
 
       break;
 
 
-    // --------------------------------------------------------
-    // ROTATE 180
-    // --------------------------------------------------------
+    case ROTATE_180:
 
-    case 3:
-
-      outX = 15 - inX;
-      outY = 15 - inY;
+      newX = PANEL_SIZE - 1 - x;
+      newY = PANEL_SIZE - 1 - y;
 
       break;
 
 
-    // --------------------------------------------------------
-    // ROTATE 90 CW
-    // --------------------------------------------------------
+    case ROTATE_90_CW:
 
-    case 4:
-
-      outX = 15 - inY;
-      outY = inX;
+      newX = PANEL_SIZE - 1 - y;
+      newY = x;
 
       break;
 
 
-    // --------------------------------------------------------
-    // ROTATE 90 CCW
-    // --------------------------------------------------------
+    case ROTATE_90_CCW:
 
-    case 5:
-
-      outX = inY;
-      outY = 15 - inX;
+      newX = y;
+      newY = PANEL_SIZE - 1 - x;
 
       break;
 
 
-    // --------------------------------------------------------
-    // TRANSPOSE
-    // --------------------------------------------------------
+    case TRANSPOSE:
 
-    case 6:
-
-      outX = inY;
-      outY = inX;
+      newX = y;
+      newY = x;
 
       break;
 
 
-    // --------------------------------------------------------
-    // ANTI-TRANSPOSE
-    // --------------------------------------------------------
+    case ANTI_TRANSPOSE:
 
-    case 7:
-
-      outX = 15 - inY;
-      outY = 15 - inX;
+      newX = PANEL_SIZE - 1 - y;
+      newY = PANEL_SIZE - 1 - x;
 
       break;
 
@@ -480,88 +470,34 @@ void transformPixel(
 
 }
 
-
 // ============================================================
-// SEND ONE LOGICAL PIXEL
+// SEND PIXEL
 // ============================================================
 
 void sendPixel(
-  int x,
-  int y,
-  CRGB color,
-  int orderNumber,
-  int orientation
+  int logicalX,
+  int logicalY,
+  Orientation orientation,
+  const uint8_t order[3]
 ) {
 
-  // ----------------------------------------------------------
-  // WHICH LOGICAL PANEL?
-  // ----------------------------------------------------------
+  // Determine logical panel
 
-  int logicalPanelX = x / PANEL_SIZE;
-  int logicalPanelY = y / PANEL_SIZE;
+  int logicalPanelX =
+    logicalX / PANEL_SIZE;
 
+  int logicalPanelY =
+    logicalY / PANEL_SIZE;
 
-  // ----------------------------------------------------------
-  // WHICH PANEL NUMBER?
-  //
-  // logical panel:
-  //
-  // 0 1 2
-  // 3 4 5
-  // 6 7 8
-  // ----------------------------------------------------------
+  // Pixel inside panel
 
-  int logicalPanel =
-    logicalPanelY * 3 +
-    logicalPanelX;
+  int localX =
+    logicalX % PANEL_SIZE;
 
+  int localY =
+    logicalY % PANEL_SIZE;
 
-  // ----------------------------------------------------------
-  // PHYSICAL PANEL POSITION
-  //
-  // Each data line has its own three-panel order.
-  // ----------------------------------------------------------
-
-  int physicalPanelX = -1;
-
-  for (int p = 0; p < 3; p++) {
-
-    if (panelOrders[orderNumber][p] ==
-        (logicalPanel % 3)) {
-
-      physicalPanelX = p;
-
-      break;
-
-    }
-
-  }
-
-
-  // ----------------------------------------------------------
-  // DATA LINE
-  //
-  // Logical rows:
-  //
-  // 1 2 3 -> strip 0
-  // 4 5 6 -> strip 1
-  // 7 8 9 -> strip 2
-  // ----------------------------------------------------------
-
-  int strip = logicalPanelY;
-
-
-  // ----------------------------------------------------------
-  // LOCAL POSITION INSIDE 16x16 PANEL
-  // ----------------------------------------------------------
-
-  int localX = x % PANEL_SIZE;
-  int localY = y % PANEL_SIZE;
-
-
-  // ----------------------------------------------------------
-  // APPLY PANEL ORIENTATION
-  // ----------------------------------------------------------
+  // Transform panel orientation
 
   int physicalX;
   int physicalY;
@@ -574,161 +510,63 @@ void sendPixel(
     physicalY
   );
 
+  // Determine physical panel along the strip
 
-  // ----------------------------------------------------------
-  // FINAL PHYSICAL LED INDEX
-  // ----------------------------------------------------------
+  int physicalPanelX =
+    order[logicalPanelX];
 
-  int index =
-    physicalPanelX * LEDS_PER_PANEL +
-    physicalY * PANEL_SIZE +
-    physicalX;
+  // Physical LED position
 
+  int stripIndex =
+    physicalPanelX * LEDS_PER_PANEL
+    + physicalY * PANEL_SIZE
+    + physicalX;
 
-  strips[strip][index] = color;
+  // Determine which data line
 
-}
+  int strip = logicalPanelY;
 
+  if (strip < 0 || strip > 2)
+    return;
 
-// ============================================================
-// PUT TEST NUMBER INTO PHYSICAL LEDs
-//
-// 6 DOTS = BINARY TEST NUMBER
-//
-// Example:
-//
-// Test 5 = 000101
-//
-// ● ● ● ● ● ●
-// 0 0 0 1 0 1
-//
-// These are written DIRECTLY to physical LEDs after all
-// mapping has happened, so they remain in the same physical
-// location for every test.
-//
-// ============================================================
+  if (stripIndex < 0 || stripIndex >= LEDS_PER_STRIP)
+    return;
 
-void drawTestDots(int testNumber) {
-
-  // Physical location:
-  //
-  // top-left corner
-  //
-  // 6 dots horizontally
-  // each dot is 2x2 pixels
-  //
-  // This is deliberately very obvious.
-
-  const int startX = 2;
-  const int startY = 2;
-
-  for (int bit = 0; bit < 6; bit++) {
-
-    bool on =
-      (testNumber >> bit) & 1;
-
-    CRGB dotColor;
-
-    if (on) {
-
-      dotColor = CRGB::Yellow;
-
-    } else {
-
-      dotColor = CRGB(20, 20, 20);
-
-    }
-
-
-    int x0 =
-      startX +
-      bit * 3;
-
-    int y0 = startY;
-
-
-    // 2x2 dot
-
-    for (int dy = 0; dy < 2; dy++) {
-
-      for (int dx = 0; dx < 2; dx++) {
-
-        int x = x0 + dx;
-        int y = y0 + dy;
-
-
-        // ----------------------------------------------------
-        // DIRECT PHYSICAL ADDRESS
-        //
-        // These LEDs bypass the image mapping.
-        // ----------------------------------------------------
-
-        int physicalStrip =
-          y / PANEL_SIZE;
-
-        int localY =
-          y % PANEL_SIZE;
-
-        int physicalPanel =
-          x / PANEL_SIZE;
-
-        int localX =
-          x % PANEL_SIZE;
-
-        int index =
-          physicalPanel * LEDS_PER_PANEL +
-          localY * PANEL_SIZE +
-          localX;
-
-
-        strips[physicalStrip][index] =
-          dotColor;
-
-      }
-
-    }
-
-  }
+  leds[strip][stripIndex] =
+    image[logicalY][logicalX];
 
 }
-
 
 // ============================================================
 // DISPLAY CURRENT TEST
 // ============================================================
 
 void displayTest(
-  int testNumber,
-  int orderNumber,
-  int orientation
+  int orderIndex,
+  Orientation orientation
 ) {
 
-  // ----------------------------------------------------------
-  // CLEAR PHYSICAL LEDs
-  // ----------------------------------------------------------
+  // Clear physical LED buffers
 
   fill_solid(
-    leds1,
+    row1,
     LEDS_PER_STRIP,
     CRGB::Black
   );
 
   fill_solid(
-    leds2,
+    row2,
     LEDS_PER_STRIP,
     CRGB::Black
   );
 
   fill_solid(
-    leds3,
+    row3,
     LEDS_PER_STRIP,
     CRGB::Black
   );
 
-
-  // ----------------------------------------------------------
-  // SEND IMAGE
-  // ----------------------------------------------------------
+  // Map entire 48x48 image
 
   for (int y = 0; y < HEIGHT; y++) {
 
@@ -737,112 +575,17 @@ void displayTest(
       sendPixel(
         x,
         y,
-        image[y][x],
-        orderNumber,
-        orientation
+        orientation,
+        panelOrders[orderIndex]
       );
 
     }
 
   }
 
-
-  // ----------------------------------------------------------
-  // ADD PHYSICAL TEST-ID DOTS
-  // ----------------------------------------------------------
-
-  drawTestDots(testNumber);
-
-
-  // ----------------------------------------------------------
-  // DISPLAY
-  // ----------------------------------------------------------
-
   FastLED.show();
 
 }
-
-
-// ============================================================
-// PRINT TEST INFORMATION
-// ============================================================
-
-void printTestInfo(
-  int testNumber,
-  int orderNumber,
-  int orientation
-) {
-
-  Serial.println();
-  Serial.println("========================================");
-
-  Serial.print("TEST ");
-  Serial.print(testNumber + 1);
-  Serial.println(" / 48");
-
-  Serial.print("PANEL ORDER: ");
-
-  for (int i = 0; i < 3; i++) {
-
-    Serial.print(
-      panelOrders[orderNumber][i] + 1
-    );
-
-  }
-
-  Serial.println();
-
-  Serial.print("ORIENTATION: ");
-  Serial.println(
-    orientationNames[orientation]
-  );
-
-  Serial.println("----------------------------------------");
-
-  Serial.println("Expected logical image:");
-
-  Serial.println();
-  Serial.println("       1   2   3");
-  Serial.println("       4   5   6");
-  Serial.println("       7   8   9");
-
-  Serial.println();
-  Serial.println("TEST ID = yellow dots in physical");
-  Serial.println("top-left corner.");
-
-  Serial.println("========================================");
-
-}
-
-
-// ============================================================
-// RUN TEST
-// ============================================================
-
-void runTest(int testNumber) {
-
-  int orderNumber =
-    testNumber / 8;
-
-  int orientation =
-    testNumber % 8;
-
-
-  printTestInfo(
-    testNumber,
-    orderNumber,
-    orientation
-  );
-
-
-  displayTest(
-    testNumber,
-    orderNumber,
-    orientation
-  );
-
-}
-
 
 // ============================================================
 // SETUP
@@ -854,56 +597,54 @@ void setup() {
 
   delay(1000);
 
-  Serial.println();
-  Serial.println("########################################");
-  Serial.println("# 48x48 LED PANEL MAPPING DIAGNOSTIC #");
-  Serial.println("########################################");
-
-  Serial.println();
-
-  Serial.println("Testing 6 panel orders x 8 orientations");
-
-  Serial.println("Total tests: 48");
-
-  Serial.println();
-
   // ----------------------------------------------------------
-  // FASTLED
+  // FastLED
   // ----------------------------------------------------------
 
   FastLED.addLeds<WS2812B, PIN_ROW1, GRB>(
-    leds1,
+    row1,
     LEDS_PER_STRIP
   );
 
   FastLED.addLeds<WS2812B, PIN_ROW2, GRB>(
-    leds2,
+    row2,
     LEDS_PER_STRIP
   );
 
   FastLED.addLeds<WS2812B, PIN_ROW3, GRB>(
-    leds3,
+    row3,
     LEDS_PER_STRIP
   );
 
-  FastLED.setBrightness(BRIGHTNESS);
-
-
-  // ----------------------------------------------------------
-  // BUILD 1-9 IMAGE
-  // ----------------------------------------------------------
-
-  build123();
-
+  FastLED.setBrightness(80);
 
   // ----------------------------------------------------------
-  // START TEST 0
+  // Build diagnostic image
   // ----------------------------------------------------------
 
-  runTest(0);
+  build123456789();
+
+  Serial.println();
+  Serial.println("======================================");
+  Serial.println("48-PANEL-MAPPING DIAGNOSTIC");
+  Serial.println("======================================");
+  Serial.println();
+  Serial.println("Each panel has:");
+  Serial.println("  WHITE = TOP");
+  Serial.println("  BLUE  = LEFT");
+  Serial.println("  RED   = NUMBER");
+  Serial.println();
+  Serial.println("Correct result should be:");
+  Serial.println();
+  Serial.println("       1  2  3");
+  Serial.println("       4  5  6");
+  Serial.println("       7  8  9");
+  Serial.println();
+  Serial.println("with WHITE above every number");
+  Serial.println("and BLUE along the left side.");
+  Serial.println();
 
 }
-
 
 // ============================================================
 // LOOP
@@ -911,30 +652,84 @@ void setup() {
 
 void loop() {
 
-  static unsigned long lastChange = 0;
-
   static int testNumber = 0;
 
+  // ----------------------------------------------------------
+  // There are 6 panel orders x 8 orientations = 48 tests
+  // ----------------------------------------------------------
 
-  if (millis() - lastChange >= TEST_TIME) {
+  int orderIndex =
+    testNumber / 8;
 
-    testNumber++;
+  int orientationIndex =
+    testNumber % 8;
 
-    if (testNumber >= 48) {
+  Orientation orientation =
+    (Orientation)orientationIndex;
 
-      testNumber = 0;
+  // ----------------------------------------------------------
+  // Serial information
+  // ----------------------------------------------------------
 
-      Serial.println();
-      Serial.println("########################################");
-      Serial.println("# RESTARTING 48-TEST CYCLE");
-      Serial.println("########################################");
+  Serial.println();
+  Serial.println("--------------------------------------");
 
-    }
+  Serial.print("TEST ");
+  Serial.print(testNumber + 1);
+  Serial.println(" / 48");
 
+  Serial.print("PANEL ORDER: ");
 
-    runTest(testNumber);
+  Serial.print(
+    panelOrders[orderIndex][0] + 1
+  );
 
-    lastChange = millis();
+  Serial.print(
+    panelOrders[orderIndex][1] + 1
+  );
+
+  Serial.print(
+    panelOrders[orderIndex][2] + 1
+  );
+
+  Serial.println();
+
+  Serial.print("ORIENTATION: ");
+  Serial.println(
+    orientationNames[orientationIndex]
+  );
+
+  Serial.println("--------------------------------------");
+
+  // ----------------------------------------------------------
+  // Display test
+  // ----------------------------------------------------------
+
+  displayTest(
+    orderIndex,
+    orientation
+  );
+
+  // ----------------------------------------------------------
+  // Wait
+  // ----------------------------------------------------------
+
+  delay(TEST_TIME);
+
+  // ----------------------------------------------------------
+  // Next test
+  // ----------------------------------------------------------
+
+  testNumber++;
+
+  if (testNumber >= 48) {
+
+    testNumber = 0;
+
+    Serial.println();
+    Serial.println("======================================");
+    Serial.println("48 TESTS COMPLETE - RESTARTING");
+    Serial.println("======================================");
 
   }
 
