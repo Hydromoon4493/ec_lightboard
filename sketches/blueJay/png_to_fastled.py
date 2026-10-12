@@ -1,6 +1,6 @@
 from PIL import Image
 
-img = Image.open("lightboard.png").convert("RGB")
+img = Image.open("bluejay.jpg").convert("RGB")
 
 w, h = img.size
 
