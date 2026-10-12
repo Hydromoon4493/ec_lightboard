@@ -190,12 +190,14 @@ void showImage(
     {
       int sx, sy;
 
-      orientPixel(
-        x,
-        y,
-        orient,
-        sx,
-        sy);
+orientPixel(
+    x,
+    y,
+    orient,
+    sx,
+    sy);
+
+sx = 47 - sx;
 
       int stripRow = y / 16;
       int localY   = y % 16;
