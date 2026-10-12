@@ -13,16 +13,13 @@ CRGB leds1[768];
 CRGB leds2[768];
 CRGB leds3[768];
 
-// Test 3 = panel order 1,2,3 + FLIP_Y
+// Panel order 1,2,3 + FLIP_Y
 enum Orientation {
   FLIP_Y
 };
 
-// ----------------------------------------------------
-// YOUR EXISTING 48x48 IMAGE DATA
-// Keep the exact image array from the original script.
-// ----------------------------------------------------
-
+// Pixel map of image
+// Create via `png_to_fastled.py`
 // 48x48
 CRGB image[48][48] = {
  {CRGB(0,0,0),CRGB(0,0,0),CRGB(0,0,0),CRGB(0,0,0),CRGB(0,0,0),CRGB(0,0,0),CRGB(0,0,0),CRGB(0,0,0),CRGB(0,0,0),CRGB(0,0,0),CRGB(0,0,0),CRGB(0,0,0),CRGB(0,0,0),CRGB(0,0,0),CRGB(0,0,0),CRGB(0,0,0),CRGB(0,0,0),CRGB(0,0,0),CRGB(0,0,0),CRGB(0,0,0),CRGB(0,0,0),CRGB(0,0,0),CRGB(0,0,0),CRGB(0,0,0),CRGB(0,0,0),CRGB(0,0,0),CRGB(0,0,0),CRGB(0,0,0),CRGB(0,0,0),CRGB(0,0,0),CRGB(0,0,0),CRGB(0,0,0),CRGB(0,0,0),CRGB(0,0,0),CRGB(0,0,0),CRGB(0,0,0),CRGB(0,0,0),CRGB(0,0,0),CRGB(0,0,0),CRGB(0,0,0),CRGB(0,0,0),CRGB(0,0,0),CRGB(0,0,0),CRGB(0,0,0),CRGB(0,0,0),CRGB(0,0,0),CRGB(0,0,0),CRGB(0,0,0) },
@@ -76,22 +73,20 @@ CRGB image[48][48] = {
 };
 
 // ----------------------------------------------------
-// Test 3 pixel transformation
+// Pixel transformation
 //
-// FLIP_Y:
-//   ox = x
-//   oy = 47 - y
+// Reverse the X and Y coordinates before reading
+// the pixel from the image array.
 //
-// The original code then additionally does:
-//   sx = 47 - sx
+// x:  0 -> 47, 1 -> 46, ..., 47 -> 0
+// y:  0 -> 47, 1 -> 46, ..., 47 -> 0
 //
-// Therefore:
+// The image pixel used is therefore:
 //
-//   sx = 47 - x
-//   sy = 47 - y
+//   image[47 - y][47 - x]
 // ----------------------------------------------------
 
-void showTest3()
+void displayImage()
 {
   // Clear all three LED strips
   fill_solid(leds1, 768, CRGB::Black);
@@ -104,8 +99,7 @@ void showTest3()
   {
     for (int x = 0; x < 48; x++)
     {
-      // Test 3 transformation:
-      // FLIP_Y followed by the original X reversal
+      // FLIP_Y followed by X reversal
       int sx = 47 - x;
       int sy = 47 - y;
 
@@ -117,7 +111,7 @@ void showTest3()
       int localX = x % 16;
       int localY = y % 16;
 
-      // Test 3 panel order is {1,2,3}
+      // Panel order is {1,2,3}
       // so logical panel 0 -> physical panel 1
       //    logical panel 1 -> physical panel 2
       //    logical panel 2 -> physical panel 3
@@ -168,7 +162,6 @@ void setup()
 {
   Serial.begin(115200);
 
-  // Same LED configuration as the original
   FastLED.addLeds<WS2812B, DATA1, GRB>(leds1, 768);
   FastLED.addLeds<WS2812B, DATA2, GRB>(leds2, 768);
   FastLED.addLeds<WS2812B, DATA3, GRB>(leds3, 768);
@@ -178,18 +171,14 @@ void setup()
   FastLED.clear();
   FastLED.show();
 
-  Serial.println("TEST 3 ONLY");
   Serial.println("PANEL ORDER: 123");
   Serial.println("ORIENTATION: FLIP_Y");
 
-  // Run Test 3 once
-  showTest3();
+  displayImage();
 }
 
 
 void loop()
 {
-  // Keep displaying Test 3.
-  // No other tests are run.
   delay(5000);
 }
