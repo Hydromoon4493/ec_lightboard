@@ -173,7 +173,7 @@ void setup()
   FastLED.addLeds<WS2812B, DATA2, GRB>(leds2, 768);
   FastLED.addLeds<WS2812B, DATA3, GRB>(leds3, 768);
 
-  FastLED.setBrightness(50);
+  FastLED.setBrightness(35);
 
   FastLED.clear();
   FastLED.show();
