@@ -211,18 +211,14 @@ sx = 47 - sx;
       int index =
         (physicalPanel - 1) * 256;
 
-      if(localY & 1)
-      {
-        index +=
-          localY * 16 +
-          (15 - localX);
-      }
-      else
-      {
-        index +=
-          localY * 16 +
-          localX;
-      }
+if(localY & 1)
+{
+  index += localY * 16 + localX;
+}
+else
+{
+  index += localY * 16 + (15 - localX);
+}
 
       CRGB color = image[sy][sx];
 
