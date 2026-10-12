@@ -1,6 +1,6 @@
 from PIL import Image
 
-img = Image.open("bluejay.jpg").convert("RGB")
+img = Image.open("IMAGE_NAME_HERE").convert("RGB")
 
 w, h = img.size
 
@@ -24,3 +24,6 @@ for y in range(h):
     print(" }" + ("," if y != h - 1 else ""))
 
 print("};")
+
+# Usage:
+# python png_to_fastled.py > pixel_map.txt
