@@ -158,7 +158,7 @@ int boardIndex(
   int localY = y % 16;
 
   int panelCol = x / 16;
-  int localX = x % 16;
+  int localX = 15 - (x % 16);
 
   int physicalPanel;
 
