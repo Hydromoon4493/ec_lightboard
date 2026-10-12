@@ -158,7 +158,7 @@ int boardIndex(
   int localY = y % 16;
 
   int panelCol = x / 16;
-  int localX = 15 - (x % 16);
+  int localX = x % 16;
 
   int physicalPanel;
 
@@ -211,14 +211,18 @@ sx = 47 - sx;
       int index =
         (physicalPanel - 1) * 256;
 
-if(localY & 1)
-{
-  index += localY * 16 + localX;
-}
-else
-{
-  index += localY * 16 + (15 - localX);
-}
+      if(localY & 1)
+      {
+        index +=
+          localY * 16 +
+          (15 - localX);
+      }
+      else
+      {
+        index +=
+          localY * 16 +
+          localX;
+      }
 
       CRGB color = image[sy][sx];
 
