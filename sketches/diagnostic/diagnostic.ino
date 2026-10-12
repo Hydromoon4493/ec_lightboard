@@ -8,9 +8,10 @@
 #define DATA3 5
 
 #define LEDS_PER_ROW 768
-#define NUM_LEDS (LEDS_PER_ROW * 3)
 
-CRGB leds[NUM_LEDS];
+CRGB leds1[768];
+CRGB leds2[768];
+CRGB leds3[768];
 
 enum Orientation {
   NORMAL,
@@ -179,25 +180,63 @@ void showImage(
   const int order[3],
   Orientation orient)
 {
-  fill_solid(leds, NUM_LEDS, CRGB::Black);
+  fill_solid(leds1, 768, CRGB::Black);
+  fill_solid(leds2, 768, CRGB::Black);
+  fill_solid(leds3, 768, CRGB::Black);
 
-  for(int y=0; y<48; y++)
+  for(int y = 0; y < 48; y++)
   {
-    for(int x=0; x<48; x++)
+    for(int x = 0; x < 48; x++)
     {
       int sx, sy;
 
       orientPixel(
-        x, y,
-        orient,
-        sx, sy);
-
-      int idx = boardIndex(
         x,
         y,
-        order);
+        orient,
+        sx,
+        sy);
 
-      leds[idx] = image[sy][sx];
+      int stripRow = y / 16;
+      int localY   = y % 16;
+
+      int panelCol = x / 16;
+      int localX   = x % 16;
+
+      int physicalPanel = order[panelCol];
+
+      int index =
+        (physicalPanel - 1) * 256;
+
+      if(localY & 1)
+      {
+        index +=
+          localY * 16 +
+          (15 - localX);
+      }
+      else
+      {
+        index +=
+          localY * 16 +
+          localX;
+      }
+
+      CRGB color = image[sy][sx];
+
+      switch(stripRow)
+      {
+        case 0:
+          leds1[index] = color;
+          break;
+
+        case 1:
+          leds2[index] = color;
+          break;
+
+        case 2:
+          leds3[index] = color;
+          break;
+      }
     }
   }
 
@@ -208,9 +247,11 @@ void setup()
 {
   Serial.begin(115200);
 
-  FastLED.addLeds<WS2812B, DATA1, GRB>(&leds[0], 768);
-  FastLED.addLeds<WS2812B, DATA2, GRB>(&leds[768], 768);
-  FastLED.addLeds<WS2812B, DATA3, GRB>(&leds[1536], 768);
+  FastLED.addLeds<WS2812B, DATA1, GRB>(leds1, 768);
+  FastLED.addLeds<WS2812B, DATA2, GRB>(leds2, 768);
+  FastLED.addLeds<WS2812B, DATA3, GRB>(leds3, 768);
+
+  FastLED.setBrightness(10);
 
   FastLED.clear();
   FastLED.show();
