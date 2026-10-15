@@ -1,0 +1,30 @@
+<?php
+// web/login.php  (Stage 1: visual only, form does not process anything yet)
+
+?>
+<!-- Shared includes: match however your other pages (e.g. index.php) pull these in -->
+<link rel="stylesheet" href="includes/style.css">
+<main class="auth-page">
+    <section class="auth-card" aria-labelledby="auth-title">
+        <h1 id="auth-title" class="auth-card__title">Log in</h1>
+        <p class="auth-card__subtitle">Welcome back to ECLightboard.</p>
+ 
+        <form class="auth-form" method="post" action="login.php">
+            <div class="auth-field">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" autocomplete="email" required>
+            </div>
+ 
+            <div class="auth-field">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" autocomplete="current-password" required>
+            </div>
+ 
+            <button type="submit" class="auth-button">Log in</button>
+        </form>
+ 
+        <p class="auth-card__switch">
+            New here? <a href="signup.php">Create an account</a>
+        </p>
+    </section>
+</main>
