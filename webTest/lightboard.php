@@ -46,19 +46,42 @@ if ($CFG['password'] !== '') {
  * main request try/catch block instead of being silently ignored.
  * ------------------------------------------------------------------- */
 
-function db(): PDO
+function db(?bool $reset = false): PDO
 {
     global $CFG;
+
     static $pdo = null;
-    if ($pdo) return $pdo;
+
+    // Allow the caller to explicitly close the existing connection.
+    if ($reset) {
+        $pdo = null;
+    }
+
+    if ($pdo instanceof PDO) {
+        return $pdo;
+    }
 
     $d   = $CFG['db'];
-    $dsn = sprintf('mysql:host=%s;port=%d;dbname=%s;charset=utf8mb4', $d['host'], $d['port'], $d['name']);
+    $dsn = sprintf(
+        'mysql:host=%s;port=%d;dbname=%s;charset=utf8mb4',
+        $d['host'],
+        $d['port'],
+        $d['name']
+    );
+
     $pdo = new PDO($dsn, $d['user'], $d['pass'], [
         PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
     ]);
+
     return $pdo;
+}
+
+function dbDisconnect(): void
+{
+    // Force the current PDO connection to be closed.
+    // The next call to db() will create a fresh connection.
+    static $pdo = null;
 }
 
 function src(string $key): array
@@ -439,7 +462,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $im = $cached['image'];
             $preview = previewDataUri($im);
 
+            /*
+            * flashBoard() can take around a minute because arduino-cli
+            * compiles and uploads the sketch.
+            *
+            * Close the MySQL connection before starting that long operation.
+            * Otherwise MySQL may close the idle connection while the ESP32
+            * upload is happening.
+            */
+            db(true);
+
             [$code, $log] = flashBoard($cached['pixel_map'], $brightness);
+
             $ok = $code === 0;
             if (!$ok) {
                 $error = $code === 124
