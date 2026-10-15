@@ -1,0 +1,28 @@
+    .bodyDefult {
+        min-height:75vh;
+        padding: calc(var(--navbar-height) + 3rem) 2rem 3rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+    }
+
+    .bodyDefult h1 {
+        margin: 0 0 0.5rem;
+        font-size: 2.5rem;
+        color: var(--color-primary);
+    }
+
+    .bodyDefult p {
+        max-width: 500px;
+        margin: 0;
+        font-size: 1.1rem;
+    }
+
+    .round-image {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        object-fit: cover; 
+    }
