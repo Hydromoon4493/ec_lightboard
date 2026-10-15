@@ -474,3 +474,35 @@ a {
     color: var(--color-primary);
     text-decoration: underline;
 }
+
+.gallery-item button {
+    display: inline-block;
+    padding: 10px 20px;
+    margin-top: 10px;
+
+    border: none;
+    border-radius: 6px;
+
+    background-color: #333;
+    color: #fff;
+
+    font-size: 16px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.gallery-item button:hover {
+    background-color: #555;
+}
+
+.gallery-item button:active {
+    transform: scale(0.97);
+}
+
+.gallery-item button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
