@@ -9,6 +9,7 @@
             </button>
             <nav id="navbarMenu" class="navbar__menu" role="navigation" aria-labelledby="navbarToggle">
                 <ul class="navbar__list">
+                    <li class="navbar__item"><a href="display.php" target="_blank" class="navbar__link">Display Photo</a></li>
                     <li class="navbar__item"><a href="#" class="navbar__link">Upload</a></li>
                     <li class="navbar__item"><a href="#" class="navbar__link">Schedule</a></li>
                     <li class="navbar__item"><a href="#" class="navbar__link">Create</a></li>
