@@ -506,3 +506,18 @@ a {
     opacity: 0.5;
     cursor: not-allowed;
 }
+
+.status-card { display: none; }
+.status-card.show { display: block; }
+
+.status-line { padding: 4px 0; }
+.status-line.active::before  { content: "… "; }
+.status-line.done::before    { content: "✓ "; color: #2a8a2a; }
+.status-line.success         { color: #2a8a2a; font-weight: 600; }
+.status-line.error           { color: #b00020; font-weight: 600; }
+
+.msg { white-space: pre-wrap; padding: 10px; border-radius: 6px; margin-top: 10px; }
+.msg.ok  { background: #e6f4e6; }
+.msg.bad { background: #fde7e9; }
+
+.preview-card img { image-rendering: pixelated; max-width: 100%; }

@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 /*
  * Author: Sam Vossen 2026.10.15
+ * Filename: includes/lightboard/board.php
  *
  * This file contains the functions responsible for preparing
  * an Arduino sketch and uploading it to the Lightboard ESP32.
@@ -63,6 +64,17 @@ function flashBoard(
         }
     };
 
+    /*
+     * Only one upload at a time: two tabs or a double click
+     * must never run two arduino-cli processes on one port.
+     */
+    $lock = fopen(sys_get_temp_dir() . '/lightboard-upload.lock', 'c');
+
+    if ($lock === false || !flock($lock, LOCK_EX | LOCK_NB)) {
+        throw new RuntimeException(
+            'The Lightboard is already being updated. Wait for that upload to finish and try again.'
+        );
+    }
 
     /* ========================================================
      * CREATE SKETCH DIRECTORY
@@ -160,83 +172,157 @@ function flashBoard(
 
 
     /* ========================================================
-     * COMPILE AND UPLOAD
+     * COMPILE AND UPLOAD (streamed)
      * ======================================================== */
 
-    $say('Compiling image and sending it to the ESP32...');
+    try {
+        $say('Compiling sketch (the first build can take a few minutes)...');
 
-    /*
-     * Arduino CLI performs the compilation and USB upload
-     * through the same command.
-     *
-     * timeout prevents a failed/unresponsive board from
-     * leaving the PHP request running indefinitely.
-     */
-    $cmd = sprintf(
-        'cd %s && timeout %d %s compile --upload -p %s --fqbn %s . 2>&1',
-        escapeshellarg($dir),
-        $CFG['timeout'],
-        escapeshellarg($CFG['arduino_cli']),
-        escapeshellarg($CFG['port']),
-        escapeshellarg($CFG['fqbn'])
-    );
+        $command = [
+            'timeout', '-k', '5', (string)$CFG['timeout'],
+            $CFG['arduino_cli'], 'compile', '--upload',
+            '-p', $CFG['port'],
+            '--fqbn', $CFG['fqbn'],
+            '.',
+        ];
 
-    $lines = [];
-    $code = 0;
-
-    exec($cmd, $lines, $code);
-
-
-    /* ========================================================
-     * HANDLE TIMEOUT
-     * ======================================================== */
-
-    if ($code === 124) {
-        throw new RuntimeException(
-            'Arduino upload timed out. The ESP32 did not finish responding before the configured timeout.'
+        $process = proc_open(
+            $command,
+            [
+                0 => ['pipe', 'r'],
+                1 => ['pipe', 'w'],
+                2 => ['redirect', 1],   // stderr merged into stdout
+            ],
+            $pipes,
+            $dir,
+            array_merge(getenv(), ['PYTHONUNBUFFERED' => '1'])
         );
+
+        if (!is_resource($process)) {
+            throw new RuntimeException('Could not start arduino-cli.');
+        }
+
+        fclose($pipes[0]);
+        stream_set_blocking($pipes[1], false);
+
+        $log       = [];
+        $lastPct   = -10;
+        $compiled  = false;
+        $connected = false;
+        $started   = time();
+        $lastNote  = time();
+
+        /*
+         * Turns arduino-cli / esptool output into friendly status
+         * messages. Upload percentages are reported every 10%.
+         */
+        $handleLine = function (string $line) use (
+            &$log, &$lastPct, &$compiled, &$connected, &$lastNote, $say
+        ): void {
+            $line = trim($line);
+
+            if ($line === '') {
+                return;
+            }
+
+            if (preg_match('/Writing at .*\((\d+)\s*%\)/', $line, $m)) {
+                $pct = (int)$m[1];
+
+                if ($pct >= $lastPct + 10 || $pct === 100) {
+                    $lastPct = $pct;
+                    $lastNote = time();
+                    $say("Uploading to the ESP32... {$pct}%");
+                }
+
+                return;
+            }
+
+            $log[] = $line;
+
+            if (!$compiled && stripos($line, 'Sketch uses') !== false) {
+                $compiled = true;
+                $lastNote = time();
+                $say('Compile finished.');
+            } elseif (!$connected && stripos($line, 'Connecting') !== false) {
+                $connected = true;
+                $lastNote = time();
+                $say('Connecting to the ESP32...');
+            } elseif (stripos($line, 'Hash of data verified') !== false) {
+                $say('Upload verified.');
+            } elseif (stripos($line, 'Hard resetting') !== false) {
+                $say('Restarting the board...');
+            }
+        };
+
+        $buffer   = '';
+        $exitCode = null;
+
+        while (true) {
+            $read = [$pipes[1]];
+            $write = null;
+            $except = null;
+
+            if (stream_select($read, $write, $except, 1) > 0) {
+                $chunk = fread($pipes[1], 8192);
+
+                if ($chunk !== false && $chunk !== '') {
+                    $buffer .= $chunk;
+
+                    // esptool uses \r for progress lines, so split on both.
+                    $parts  = preg_split('/[\r\n]+/', $buffer);
+                    $buffer = (string)array_pop($parts);
+
+                    foreach ($parts as $part) {
+                        $handleLine($part);
+                    }
+                }
+            }
+
+            $info = proc_get_status($process);
+
+            if (!$info['running']) {
+                $exitCode = $info['exitcode'];
+                $buffer  .= (string)stream_get_contents($pipes[1]);
+
+                foreach (preg_split('/[\r\n]+/', $buffer) as $part) {
+                    $handleLine($part);
+                }
+
+                break;
+            }
+
+            // Heartbeat while compiling: arduino-cli prints nothing then.
+            if (!$compiled && !$connected && time() - $lastNote >= 15) {
+                $lastNote = time();
+                $say('Still compiling... ' . (time() - $started) . 's elapsed');
+            }
+        }
+
+        fclose($pipes[1]);
+        proc_close($process);
+
+        if ($exitCode === 124 || $exitCode === 137) {
+            throw new RuntimeException(
+                'Arduino upload timed out. The compile/upload did not finish before the configured timeout.'
+            );
+        }
+
+        if ($exitCode !== 0) {
+            $tail = trim(implode("\n", array_slice($log, -30)));
+
+            throw new RuntimeException(
+                "Arduino compile/upload failed (exit code $exitCode):\n\n"
+                . ($tail !== '' ? $tail : 'arduino-cli exited without providing an error message.')
+            );
+        }
+
+    } finally {
+        flock($lock, LOCK_UN);
+        fclose($lock);
     }
-
-
-    /* ========================================================
-     * HANDLE ARDUINO CLI FAILURE
-     * ======================================================== */
-
-    if ($code !== 0) {
-        $output = trim(implode("\n", $lines));
-
-        $useful = $output !== ''
-            ? $output
-            : 'arduino-cli exited without providing an error message.';
-
-        throw new RuntimeException(
-            "Arduino compile/upload failed (exit code $code):\n\n$useful"
-        );
-    }
-
-
-    /* ========================================================
-     * COMPLETE
-     * ======================================================== */
-
-    $say('Sending image to board...');
-
-    /*
-     * arduino-cli --upload performs compilation and USB
-     * transfer as part of the same command.
-     *
-     * Therefore the exact point where compilation ends and
-     * uploading begins is not available to this PHP process.
-     */
-    $say('Success. Image displayed on the board.');
-
-
-    /* ========================================================
-     * RETURN RESULT
-     * ======================================================== */
 
     return [
         'code' => 0,
-        'log' => implode("\n", $lines),
+        'log'  => implode("\n", $log),
     ];
 }

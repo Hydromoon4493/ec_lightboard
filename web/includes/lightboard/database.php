@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 /*
  * Author: Sam Vossen 2026.10.15
+ * Filename: includes/lightboard/database.php
  *
  * This file contains the Lightboard database connection and
  * database-related helper functions.
@@ -18,7 +19,7 @@ declare(strict_types=1);
  * HTML rendering, or API requests.
  */
 
-$CFG = require_once __DIR__ . '/../config.php';
+$CFG = require __DIR__ . '/../config.php';
 
 
 /* ============================================================

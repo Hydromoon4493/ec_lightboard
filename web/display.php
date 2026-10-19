@@ -1,6 +1,7 @@
 <?php
 /*
  * Author: Sam Vossen 2026.10.15
+ * Filename: display.php
  *
  * This page is the user-facing Lightboard display gallery.
  *

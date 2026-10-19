@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 /*
  * Author: Sam Vossen 2026.10.15
+ * Filename: api/display_service.php
  *
  * This file contains the Lightboard display API logic.
  *
@@ -28,10 +29,9 @@ declare(strict_types=1);
  * ESP32 upload functionality is provided by board.php.
  */
 
-require_once __DIR__ . '/database.php';
-require_once __DIR__ . '/images.php';
-require_once __DIR__ . '/board.php';
-
+require_once __DIR__ . '/../includes/lightboard/database.php';
+require_once __DIR__ . '/../includes/lightboard/images.php';
+require_once __DIR__ . '/../includes/lightboard/board.php';
 
 /* ============================================================
  * DISPLAY IMAGE
@@ -50,70 +50,41 @@ require_once __DIR__ . '/board.php';
  * The optional status callback allows the caller to stream
  * progress messages back to the browser.
  */
+
 function displayImage(
     string $key,
     int $id,
     int $brightness,
-    ?callable $status = null
+    ?callable $status = null,
+    ?callable $preview = null
 ): array {
-    /*
-     * Send a status message to the caller when a callback
-     * has been provided.
-     */
     $say = static function (string $message) use ($status): void {
         if ($status) {
             $status($message);
         }
     };
 
-
-    /* ========================================================
-     * LOAD IMAGE
-     * ======================================================== */
-
     $say('Loading image...');
 
     $row = getImageForDisplay($key, $id);
 
     if (!$row) {
-        throw new RuntimeException(
-            'The requested image could not be found.'
-        );
+        throw new RuntimeException('The requested image could not be found.');
     }
 
+    $pixelData = getOrCreatePixelMap($key, $id, $row, $say);
 
-    /* ========================================================
-     * GET OR CREATE PIXEL MAP
-     * ======================================================== */
-
-    $pixelData = getOrCreatePixelMap(
-        $key,
-        $id,
-        $row,
-        $say
-    );
-
-
-    /* ========================================================
-     * SEND IMAGE TO BOARD
-     * ======================================================== */
+    if ($preview) {
+        $preview(previewDataUri($pixelData['image']));
+    }
 
     $say('Preparing Lightboard upload...');
 
-    $result = flashBoard(
-        $pixelData['pixel_map'],
-        $brightness,
-        $say
-    );
-
-
-    /* ========================================================
-     * RETURN RESULT
-     * ======================================================== */
+    $result = flashBoard($pixelData['pixel_map'], $brightness, $say);
 
     return [
-        'code' => $result['code'],
-        'log' => $result['log'],
+        'code'   => $result['code'],
+        'log'    => $result['log'],
         'cached' => $pixelData['cached'],
     ];
 }

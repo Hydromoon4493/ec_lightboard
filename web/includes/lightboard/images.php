@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 /*
  * Author: Sam Vossen 2026.10.15
+ * Filename: includes/lightboard/images.php 
  *
  * This file contains the Lightboard image-processing and
  * image-retrieval functions.
@@ -52,10 +53,9 @@ function listImages(string $key): array
             "SELECT
                 %s AS id,
                 name,
-                mimeType,
-                pixel_map
-             FROM %s
-             ORDER BY name ASC",
+                mimeType
+            FROM %s
+            ORDER BY name ASC",
             $s['id'],
             $s['table']
         );
@@ -399,15 +399,16 @@ function getOrCreatePixelMap(
      * Use the cached pixel map when one exists.
      */
     if (!empty($row['pixel_map'])) {
-        $say('Pixel map found in database.');
+        try {
+            $pixelMap = (string)$row['pixel_map'];
+            $im = imageFromPixelMap($pixelMap);
+            $say('Pixel map found in database.');
 
-        $pixelMap = (string)$row['pixel_map'];
+            return ['pixel_map' => $pixelMap, 'image' => $im, 'cached' => true];
 
-        return [
-            'pixel_map' => $pixelMap,
-            'image' => imageFromPixelMap($pixelMap),
-            'cached' => true,
-        ];
+        } catch (RuntimeException $e) {
+            $say('Saved pixel map is invalid. Rebuilding from the original image...');
+        }
     }
 
     /*
