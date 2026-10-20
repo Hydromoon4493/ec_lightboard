@@ -521,3 +521,14 @@ a {
 .msg.bad { background: #fde7e9; }
 
 .preview-card img { image-rendering: pixelated; max-width: 100%; }
+
+.gallery-thumb {
+    display: block;
+    width: 100%;
+    max-width: 192px;
+    aspect-ratio: 1 / 1;
+    image-rendering: pixelated;
+    background: #000;
+    border-radius: 6px;
+    margin: 0 auto 8px;
+}

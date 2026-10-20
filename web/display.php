@@ -63,6 +63,13 @@ include __DIR__ . '/includes/navbar.php';
 
                     <div class="gallery-item">
 
+                        <img
+                            class="gallery-thumb"
+                            src="api/thumbnail.php?src=p&id=<?= (int) $image['id'] ?>"
+                            alt="<?= htmlspecialchars($image['name'], ENT_QUOTES, 'UTF-8') ?>"
+                            loading="lazy"
+                        >
+
                         <h3>
                             <?= htmlspecialchars($image['name'], ENT_QUOTES, 'UTF-8') ?>
                         </h3>
@@ -199,7 +206,7 @@ include __DIR__ . '/includes/navbar.php';
 </main>
 
 
-<script src="js/lightboard.js"></script>
+<script src="includes/lightboard/lightboard.js"></script>
 
 <?php
 include __DIR__ . '/includes/footer.php';
