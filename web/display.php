@@ -9,8 +9,9 @@
  * - Load the shared site navigation and styling.
  * - Load available preset Lightboard images.
  * - Load available custom Lightboard images.
- * - Display the images in separate gallery sections.
+ * - Display the images in separate gallery columns.
  * - Provide buttons for selecting an image to display.
+ * - Show brightness, status, preview and result in a sidebar.
  * - Load the Lightboard JavaScript interface.
  *
  * This file does NOT:
@@ -30,6 +31,23 @@ require_once __DIR__ . '/includes/lightboard/images.php';
 
 $presetImages = listImages('p');
 $customImages = listImages('c');
+
+/*
+ * Gallery definitions. Each entry becomes one column.
+ * The key is the image source ('p' = presets, 'c' = custom).
+ */
+$galleries = [
+    'p' => [
+        'title'  => 'Preset Displays',
+        'images' => $presetImages,
+        'empty'  => 'No preset displays are currently available.',
+    ],
+    'c' => [
+        'title'  => 'Custom Displays',
+        'images' => $customImages,
+        'empty'  => 'No custom displays are currently available.',
+    ],
+];
 ?>
 
 <?php
@@ -38,7 +56,7 @@ include __DIR__ . '/includes/navbar.php';
 
 <link rel="stylesheet" href="includes/style.css">
 
-<main class="bodyDefult">
+<main class="bodyDefult lightboard-page">
 
     <h1>EC Lightboard</h1>
 
@@ -46,162 +64,124 @@ include __DIR__ . '/includes/navbar.php';
         Select an image below to display it on the Lightboard.
     </p>
 
-    <!-- Preset Images -->
-    <section class="lightboard-gallery">
+    <div class="lightboard-layout">
 
-        <h2>Preset Displays</h2>
+        <!-- Columns 1 and 2: Preset and Custom galleries -->
+        <?php foreach ($galleries as $key => $g): ?>
 
-        <?php if (empty($presetImages)): ?>
+            <section class="lightboard-gallery">
 
-            <p>No preset displays are currently available.</p>
+                <h2><?= htmlspecialchars($g['title'], ENT_QUOTES, 'UTF-8') ?></h2>
 
-        <?php else: ?>
+                <?php if (empty($g['images'])): ?>
 
-            <div class="gallery-grid">
+                    <p><?= htmlspecialchars($g['empty'], ENT_QUOTES, 'UTF-8') ?></p>
 
-                <?php foreach ($presetImages as $image): ?>
+                <?php else: ?>
 
-                    <div class="gallery-item">
+                    <div class="gallery-grid">
 
-                        <img
-                            class="gallery-thumb"
-                            src="api/thumbnail.php?src=p&id=<?= (int) $image['id'] ?>"
-                            alt="<?= htmlspecialchars($image['name'], ENT_QUOTES, 'UTF-8') ?>"
-                            loading="lazy"
-                        >
+                        <?php foreach ($g['images'] as $image): ?>
 
-                        <h3>
-                            <?= htmlspecialchars($image['name'], ENT_QUOTES, 'UTF-8') ?>
-                        </h3>
+                            <div class="gallery-item">
 
-                        <button
-                            type="button"
-                            onclick="displayImage(
-                                'p',
-                                <?= (int) $image['id'] ?>,
-                                this
-                            )"
-                        >
-                            Display
-                        </button>
+                                <img
+                                    class="gallery-thumb"
+                                    src="api/thumbnail.php?src=<?= $key ?>&id=<?= (int) $image['id'] ?>"
+                                    alt="<?= htmlspecialchars($image['name'], ENT_QUOTES, 'UTF-8') ?>"
+                                    loading="lazy"
+                                >
 
-                    </div>
+                                <h3>
+                                    <?= htmlspecialchars($image['name'], ENT_QUOTES, 'UTF-8') ?>
+                                </h3>
 
-                <?php endforeach; ?>
+                                <button
+                                    type="button"
+                                    onclick="displayImage('<?= $key ?>', <?= (int) $image['id'] ?>, this)"
+                                >
+                                    Display
+                                </button>
 
-            </div>
+                            </div>
 
-        <?php endif; ?>
-
-    </section>
-
-
-    <!-- Custom Images -->
-    <section class="lightboard-gallery">
-
-        <h2>Custom Displays</h2>
-
-        <?php if (empty($customImages)): ?>
-
-            <p>No custom displays are currently available.</p>
-
-        <?php else: ?>
-
-            <div class="gallery-grid">
-
-                <?php foreach ($customImages as $image): ?>
-
-                    <div class="gallery-item">
-
-                        <h3>
-                            <?= htmlspecialchars($image['name'], ENT_QUOTES, 'UTF-8') ?>
-                        </h3>
-
-                        <button
-                            type="button"
-                            onclick="displayImage(
-                                'c',
-                                <?= (int) $image['id'] ?>,
-                                this
-                            )"
-                        >
-                            Display
-                        </button>
+                        <?php endforeach; ?>
 
                     </div>
 
-                <?php endforeach; ?>
+                <?php endif; ?>
 
-            </div>
+            </section>
 
-        <?php endif; ?>
-
-    </section>
+        <?php endforeach; ?>
 
 
-    <!-- Lightboard Controls -->
-    <section class="lightboard-controls">
+        <!-- Column 3: Controls, status, preview, result -->
+        <aside class="lightboard-sidebar">
 
-        <h2>Display Settings</h2>
+            <!-- Lightboard Controls -->
+            <section class="lightboard-controls">
 
-        <label for="b">
-            Brightness:
-            <span id="brightnessValue">35</span>
-        </label>
+                <h2>Display Settings</h2>
 
-        <input
-            type="range"
-            id="b"
-            name="brightness"
-            min="1"
-            max="100"
-            value="35"
-            oninput="document.getElementById('brightnessValue').textContent = this.value"
-        >
+                <label for="b">
+                    Brightness:
+                    <span id="brightnessValue">35</span>
+                </label>
 
-        <script>
-            document.getElementById('b').value = 35;
-        </script>
+                <input
+                    type="range"
+                    id="b"
+                    name="brightness"
+                    min="1"
+                    max="100"
+                    value="35"
+                    oninput="document.getElementById('brightnessValue').textContent = this.value"
+                >
 
-    </section>
-
-
-    <!-- Display Status -->
-    <section
-        id="statusCard"
-        class="status-card"
-    >
-
-        <h2>Display Status</h2>
-
-        <div id="statusList"></div>
-
-    </section>
+            </section>
 
 
-    <!-- Preview -->
-    <section
-        id="previewCard"
-        class="preview-card"
-        style="display: none;"
-    >
+            <!-- Display Status -->
+            <section
+                id="statusCard"
+                class="status-card"
+            >
 
-        <h2>Preview</h2>
+                <h2>Display Status</h2>
 
-        <img
-            id="previewImage"
-            src=""
-            alt="Lightboard preview"
-        >
+                <div id="statusList"></div>
 
-    </section>
+            </section>
 
 
-    <!-- Result -->
-    <section
-        id="resultBox"
-        class="result-box"
-    ></section>
+            <!-- Preview -->
+            <section
+                id="previewCard"
+                class="preview-card"
+                style="display: none;"
+            >
+
+                <h2>Preview</h2>
+
+                <img
+                    id="previewImage"
+                    src=""
+                    alt="Lightboard preview"
+                >
+
+            </section>
+
+
+            <!-- Result -->
+            <section
+                id="resultBox"
+                class="result-box"
+            ></section>
+
+        </aside>
+
+    </div>
 
 </main>
 

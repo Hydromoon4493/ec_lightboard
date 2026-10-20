@@ -533,3 +533,67 @@ a {
     border-radius: 6px;
     margin: 0 auto 8px;
 }
+
+.lightboard-page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* 3 columns: presets | custom | sidebar */
+.lightboard-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr 340px;
+    gap: 24px;
+    align-items: start;
+}
+
+/* Thumbnails flow into as many columns as fit inside each gallery */
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 16px;
+}
+
+.gallery-item {
+    text-align: center;
+}
+
+.gallery-item h3 {
+    font-size: 1rem;
+    margin: 4px 0;
+}
+
+/* Sidebar stays in view while you scroll the galleries */
+.lightboard-sidebar {
+    position: sticky;
+    top: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.lightboard-controls input[type="range"] {
+    width: 100%;
+}
+
+/* 2 columns: sidebar moves below, spanning the full width */
+@media (max-width: 1100px) {
+    .lightboard-layout {
+        grid-template-columns: 1fr 1fr;
+    }
+    .lightboard-sidebar {
+        grid-column: 1 / -1;
+        position: static;
+    }
+}
+
+/* 1 column on phones, with the controls first so the status is near the top */
+@media (max-width: 700px) {
+    .lightboard-layout {
+        grid-template-columns: 1fr;
+    }
+    .lightboard-sidebar {
+        order: -1;
+    }
+}
