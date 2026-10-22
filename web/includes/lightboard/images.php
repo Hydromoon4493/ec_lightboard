@@ -183,7 +183,9 @@ function getImageForThumbnail(string $key, int $id): ?array
  * If automatic resizing is enabled, the image is center-cropped
  * into a square and resized to the configured board dimensions.
  */
-function buildImage(string $data): GdImage
+// function buildImage(string $data): GdImage -> USE AFTER PHP UPDATE
+/** @return resource|GdImage */
+function buildImage(string $data)
 {
     global $CFG;
 
@@ -272,7 +274,8 @@ function buildImage(string $data): GdImage
  * Converts a GD image into the C++ CRGB array format used by
  * the Lightboard Arduino sketch.
  */
-function pixelMapC(GdImage $im): string
+// function pixelMapC(GdImage $im): string -> USER AFTER PHP VERSION UPDATE
+function pixelMapC($im): string
 {
     global $CFG;
 
@@ -309,7 +312,8 @@ function pixelMapC(GdImage $im): string
  *
  * Converts a stored CRGB pixel map back into a GD image.
  */
-function imageFromPixelMap(string $pixelMap): GdImage
+// function imageFromPixelMap(string $pixelMap): GdImage -> USER AFTER PHP VERSION UPDATE
+function imageFromPixelMap(string $pixelMap)
 {
     global $CFG;
 
@@ -476,7 +480,8 @@ function getOrCreatePixelMap(
  *
  * Returns a base64 PNG data URI suitable for an HTML <img>.
  */
-function previewDataUri(GdImage $im): string
+// function previewDataUri(GdImage $im): string -> USER AFTER PHP VERSION UPDATE
+function previewDataUri($im): string
 {
     $big = imagescale(
         $im,

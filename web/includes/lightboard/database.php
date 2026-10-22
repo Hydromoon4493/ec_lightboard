@@ -125,10 +125,14 @@ function db(bool $reset = false): PDO
  * 2006 = MySQL server has gone away
  * 2013 = Lost connection to MySQL server during query
  */
-function dbRetry(callable $operation): mixed
+// before -> CHANGE AFTER PHP UPDATE
+// function dbRetry(callable $fn): mixed
+// after
+function dbRetry(callable $fn)
 {
     try {
-        return $operation(db());
+        // return $operation(db()); -> CHANGE AFTER PHP UPDATE
+        return $fn(db());
 
     } catch (PDOException $e) {
 
@@ -151,7 +155,8 @@ function dbRetry(callable $operation): mixed
         /*
          * Create a new connection and retry the operation once.
          */
-        return $operation(db());
+        // return $operation(db()); -> CHANGE AFTER PHP UPDATE
+        return $fn(db());
     }
 }
 

@@ -5,48 +5,57 @@ declare(strict_types=1);
  * Author: Sam Vossen 2026.10.15
  * Filename: includes/lightboard/board.php
  *
- * This file contains the functions responsible for preparing
- * an Arduino sketch and uploading it to the Lightboard ESP32.
+ * Functions for preparing an Arduino sketch and (optionally)
+ * uploading it to the Lightboard ESP32 from this machine.
  *
- * Responsibilities:
- * - Create the Lightboard sketch directory.
- * - Load the Arduino sketch template.
- * - Insert the generated pixel map and brightness settings.
- * - Write the generated .ino sketch to disk.
- * - Save the pixel map used for the upload.
- * - Compile the Arduino sketch.
- * - Upload the compiled sketch to the ESP32.
- * - Report progress and return the Arduino CLI output.
+ * - buildSketch():  template + pixel map + brightness -> .ino text.
+ *                   Used by the website when queueing a job for the Pi.
+ * - flashBoard():   builds, compiles and uploads locally with arduino-cli.
+ *                   Kept for local testing; the hosted site does not use it.
  *
- * This file does NOT:
- * - Retrieve images from the database.
- * - Process images.
- * - Generate pixel maps.
- * - Handle HTML rendering.
- * - Handle API requests.
- *
- * Configuration is provided by config.php.
+ * This file does NOT retrieve images, generate pixel maps, render HTML
+ * or handle API requests.
  */
 
 require_once __DIR__ . '/../config.php';
 
 
 /* ============================================================
- * FLASH IMAGE TO LIGHTBOARD
+ * BUILD SKETCH
  * ============================================================
  *
- * Takes a generated FastLED CRGB image definition and uploads
- * it to the ESP32.
+ * Returns the complete Arduino sketch text.
  *
- * $imageC:
- *     Generated CRGB pixel-map string.
+ * $imageC:     generated CRGB pixel-map string.
+ * $brightness: brightness value inserted into the sketch.
+ */
+function buildSketch(string $imageC, int $brightness): string
+{
+    /*
+     * board.php lives in web/includes/lightboard/, the template in
+     * web/templates/webImage.ino.tpl.
+     */
+    $templatePath = __DIR__ . '/../../templates/webImage.ino.tpl';
+
+    $tpl = file_get_contents($templatePath);
+
+    if ($tpl === false) {
+        throw new RuntimeException('Missing templates/webImage.ino.tpl.');
+    }
+
+    return str_replace(
+        ['__GENERATED__', '__BRIGHTNESS__', '__IMAGE__'],
+        [date('c'), (string)$brightness, $imageC],
+        $tpl
+    );
+}
+
+
+/* ============================================================
+ * FLASH IMAGE TO LIGHTBOARD (local)
+ * ============================================================
  *
- * $brightness:
- *     Brightness value inserted into the Arduino sketch.
- *
- * $status:
- *     Optional callback used to send progress messages back
- *     to the caller.
+ * $status: optional callback used to report progress messages.
  */
 function flashBoard(
     string $imageC,
@@ -55,9 +64,6 @@ function flashBoard(
 ): array {
     global $CFG;
 
-    /*
-     * Helper used to report progress.
-     */
     $say = static function (string $message) use ($status): void {
         if ($status) {
             $status($message);
@@ -76,104 +82,35 @@ function flashBoard(
         );
     }
 
-    /* ========================================================
-     * CREATE SKETCH DIRECTORY
-     * ======================================================== */
+    /* CREATE SKETCH DIRECTORY */
 
     $say('Creating Arduino sketch...');
 
     $dir = $CFG['sketch_root'] . '/' . $CFG['sketch_name'];
 
     if (!is_dir($dir) && !mkdir($dir, 0775, true)) {
-        throw new RuntimeException(
-            "Cannot create sketch folder: $dir"
-        );
+        throw new RuntimeException("Cannot create sketch folder: $dir");
     }
 
+    /* GENERATE AND WRITE ARDUINO SKETCH */
 
-    /* ========================================================
-     * LOAD ARDUINO TEMPLATE
-     * ======================================================== */
-
-    /*
-     * board.php is located at:
-     *
-     *     web/includes/lightboard/board.php
-     *
-     * The Arduino template is located at:
-     *
-     *     web/templates/webImage.ino.tpl
-     *
-     * Therefore we move:
-     *
-     *     lightboard -> includes -> web
-     *
-     * and then enter templates/.
-     */
-    $templatePath = __DIR__ . '/../../templates/webImage.ino.tpl';
-
-    $tpl = file_get_contents($templatePath);
-
-    if ($tpl === false) {
-        throw new RuntimeException(
-            'Missing templates/webImage.ino.tpl.'
-        );
-    }
-
-
-    /* ========================================================
-     * GENERATE ARDUINO SKETCH
-     * ======================================================== */
-
-    $sketch = str_replace(
-        [
-            '__GENERATED__',
-            '__BRIGHTNESS__',
-            '__IMAGE__'
-        ],
-        [
-            date('c'),
-            (string)$brightness,
-            $imageC
-        ],
-        $tpl
-    );
-
-
-    /* ========================================================
-     * WRITE ARDUINO SKETCH
-     * ======================================================== */
+    $sketch = buildSketch($imageC, $brightness);
 
     $ino = $dir . '/' . $CFG['sketch_name'] . '.ino';
 
     if (file_put_contents($ino, $sketch) === false) {
-        throw new RuntimeException(
-            "Cannot write Arduino sketch: $ino"
-        );
+        throw new RuntimeException("Cannot write Arduino sketch: $ino");
     }
 
-
-    /* ========================================================
-     * SAVE PIXEL MAP
-     * ======================================================== */
+    /* SAVE PIXEL MAP */
 
     $pixelMapPath = $dir . '/pixel_map.txt';
 
-    if (
-        file_put_contents(
-            $pixelMapPath,
-            $imageC . "\n"
-        ) === false
-    ) {
-        throw new RuntimeException(
-            "Cannot write pixel_map.txt in $dir."
-        );
+    if (file_put_contents($pixelMapPath, $imageC . "\n") === false) {
+        throw new RuntimeException("Cannot write pixel_map.txt in $dir.");
     }
 
-
-    /* ========================================================
-     * COMPILE AND UPLOAD (streamed)
-     * ======================================================== */
+    /* COMPILE AND UPLOAD (streamed) */
 
     try {
         $say('Compiling sketch (the first build can take a few minutes)...');

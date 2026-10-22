@@ -38,4 +38,7 @@ try {
 } catch (Throwable $e) {
     error_log('thumbnail.php: ' . $e->getMessage());
     http_response_code(500);
+    header('Content-Type: text/plain');
+    echo get_class($e) . ': ' . $e->getMessage() . "\n"
+       . $e->getFile() . ':' . $e->getLine();
 }
