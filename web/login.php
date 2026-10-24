@@ -6,13 +6,16 @@
 <link rel="stylesheet" href="/ec_lightboard/web/includes/style.css">
 <title><?= isset($pageTitle) ? htmlspecialchars($pageTitle) . ' | ' : '' ?>EC Lightboard</title>
 <link rel="icon" type="image/png" href="/ec_lightboard/web/includes/images/BSN_Logo.png">
+<script src="includes/auth.js" defer></script>
 
 <main class="auth-page">
     <section class="auth-card" aria-labelledby="auth-title">
         <h1 id="auth-title" class="auth-card__title">Log in</h1>
         <p class="auth-card__subtitle">Welcome back to ECLightboard.</p>
- 
-        <form class="auth-form" method="post" action="/ec_lightboard/web/login.php">
+        <p class="auth-error" id="form-error" role="alert" hidden></p>
+
+        <form class="auth-form" id="login-form" method="post" >
+            
             <div class="auth-field">
                 <label for="email">Email</label>
                 <input type="email" id="email" name="email" autocomplete="email" required>
