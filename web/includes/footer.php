@@ -16,7 +16,7 @@
             <!-- Navigation -->
             <nav class="footer-centered__nav" aria-label="Main Footer Navigation">
                 <ul>
-                    <li><a href="">Creators:</a></li>
+                    <li><a href="web/about.php">Creators:</a></li>
                     <li><a href="/ec_lightboard/web/creatorPages/scottD.php">Scott D.</a></li>
                     <li><a href="/ec_lightboard/web/creatorPages/samV.php">Sam V.</a></li>
                     <li><a href="/ec_lightboard/web/creatorPages/isaacW.php">Isaac W.</a></li>

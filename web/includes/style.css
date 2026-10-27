@@ -2,8 +2,9 @@
 
 
 /* ========================================
-   Variables (navbar + footer)
+   Variables
    ======================================== */
+
 :root {
     --color-background: #fff;
     --color-text: #2c3e50;
@@ -18,7 +19,6 @@
     --container-width: 1140px;
     --transition-speed: 0.3s;
     --transition-bounce: cubic-bezier(0.68, -0.55, 0.27, 1.55);
-
     --footer-bg: #ffffff;
     --footer-text-color: #555555;
     --footer-link-color: #111111;
@@ -26,9 +26,11 @@
     --footer-border-color: #e7e7e7;
 }
 
+
 /* ========================================
    Base
    ======================================== */
+
 *,
 *::before,
 *::after {
@@ -46,7 +48,6 @@ body {
     background-color: #f4f4f4;
     display: grid;
     grid-template-rows: auto 1fr auto;
-    /* nav | main | footer */
 }
 
 .main-content {
@@ -65,9 +66,11 @@ a {
     color: inherit;
 }
 
+
 /* ========================================
-   Page helpers
+   Page Helpers
    ======================================== */
+
 .bodyDefult {
     padding: 3rem 2rem;
     display: flex;
@@ -96,10 +99,11 @@ a {
     object-fit: cover;
 }
 
+
 /* ========================================
-   Navbar (base + mobile)
-   Template: quackit.com playful & animated navbar
+   Navbar
    ======================================== */
+
 .navbar {
     height: var(--navbar-height);
     display: flex;
@@ -146,7 +150,6 @@ a {
     transition: all var(--transition-speed) var(--transition-bounce);
 }
 
-/* Hamburger to X animation */
 .navbar__toggle.is-active .bar:nth-child(1) {
     transform: translateY(8px) rotate(45deg);
 }
@@ -197,9 +200,11 @@ a {
     outline-offset: 2px;
 }
 
+
 /* ========================================
-   Navbar (desktop + animations)
+   Navbar Desktop
    ======================================== */
+
 @media (min-width: 768px) {
     .navbar__toggle {
         display: none;
@@ -232,7 +237,6 @@ a {
         background-color: transparent;
     }
 
-    /* Underline animation */
     .navbar__link:not(.navbar__link--cta)::after {
         content: '';
         position: absolute;
@@ -250,7 +254,6 @@ a {
         width: 100%;
     }
 
-    /* CTA button */
     .navbar__item--cta {
         margin-left: 1rem;
     }
@@ -260,8 +263,7 @@ a {
         color: #fff;
         padding: 0.75rem 1.5rem;
         border-radius: 50px;
-        transition: transform var(--transition-speed) var(--transition-bounce),
-            background-color var(--transition-speed) ease;
+        transition: transform var(--transition-speed) var(--transition-bounce), background-color var(--transition-speed) ease;
     }
 
     .navbar__link--cta:hover,
@@ -271,9 +273,12 @@ a {
     }
 }
 
-/* Reduced motion */
-@media (prefers-reduced-motion: reduce) {
 
+/* ========================================
+   Reduced Motion
+   ======================================== */
+
+@media (prefers-reduced-motion: reduce) {
     .navbar__toggle .bar,
     .navbar__link:not(.navbar__link--cta)::after,
     .navbar__link--cta {
@@ -292,10 +297,11 @@ a {
     }
 }
 
+
 /* ========================================
    Footer
-   Template: quackit.com centered logo & links footer
    ======================================== */
+
 .footer-centered {
     background-color: var(--footer-bg);
     color: var(--footer-text-color);
@@ -365,321 +371,34 @@ a {
     margin: 0;
 }
 
+
 /* ========================================
-   Login / Sign up: paste the auth rules here
+   Create Page: Button Grid
    ======================================== */
-.auth-page {
-    position: relative;
-    min-height: 100vh;
-    padding: 3rem 1.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: var(--color-highlight-bg);
-}
 
-.auth-page::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: url("/ec_lightboard/web/includes/images/BSN_Logo.png") center / min(110vmin, 1400px) no-repeat;
-    opacity: 0.12;
-    pointer-events: none;
-}
-
-.auth-card {
-    position: relative;
+.button-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
     width: 100%;
-    max-width: 420px;
-    padding: 2.5rem 2rem;
-    background-color: var(--color-background);
-    border: 2px solid #e7e7e7;
-    border-radius: 16px;
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.06);
+    background-color: rgb(72, 72, 72);
 }
 
-.auth-card__title {
-    margin: 0 0 0.25rem;
-    font-size: 1.9rem;
-    color: var(--color-primary);
-}
-
-.auth-card__subtitle {
-    margin: 0 0 1.75rem;
-    color: var(--color-text);
-}
-
-.auth-form {
-    display: flex;
-    flex-direction: column;
-    gap: 1.1rem;
-}
-
-.auth-field {
-    display: flex;
-    flex-direction: column;
-    gap: 0.35rem;
-}
-
-.auth-field label {
-    font-weight: var(--font-weight-bold);
-    font-size: 0.95rem;
-}
-
-.auth-field input {
-    padding: 0.7rem 0.9rem;
+.button-grid button {
+    padding: 0;
     font: inherit;
-    color: var(--color-text);
-    background-color: var(--color-background);
-    border: 2px solid #d9dee2;
-    border-radius: 10px;
-    transition: border-color var(--transition-speed) ease;
-}
-
-.auth-field input:focus {
-    outline: none;
-    border-color: var(--color-secondary);
-    box-shadow: 0 0 0 3px rgba(65, 139, 88, 0.25);
-}
-
-.auth-button {
-    margin-top: 0.5rem;
-    padding: 0.8rem 1.5rem;
-    font: inherit;
-    font-weight: var(--font-weight-bold);
-    color: #fff;
-    background-color: var(--color-primary);
     border: none;
-    border-radius: 50px;
+    background-color: black;
     cursor: pointer;
-    transition: background-color var(--transition-speed) ease;
-}
-
-.auth-button:hover,
-.auth-button:focus-visible {
-    background-color: var(--color-primary-darker);
-}
-
-.auth-button:focus-visible {
-    outline: 3px solid var(--color-secondary);
-    outline-offset: 2px;
-}
-
-.auth-card__switch {
-    margin: 1.5rem 0 0;
-    text-align: center;
-    font-size: 0.95rem;
-}
-
-.auth-card__switch a {
-    font-weight: var(--font-weight-bold);
-    color: var(--color-primary);
-    text-decoration: underline;
-}
-
-.gallery-item button {
-    display: inline-block;
-    padding: 10px 20px;
-    margin-top: 10px;
-
-    border: none;
-    border-radius: 6px;
-
-    background-color: #333;
-    color: #fff;
-
-    font-size: 16px;
-    font-weight: 600;
-
-    cursor: pointer;
-
     transition: background-color 0.2s ease, transform 0.1s ease;
+    height: 1.5vh;
+    width: 1.5vh;
 }
 
-.gallery-item button:hover {
-    background-color: #555;
+.button-grid button:hover {
+    background-color: black;
 }
 
-.gallery-item button:active {
-    transform: scale(0.97);
-}
-
-.gallery-item button:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-
-.status-card {
-    display: none;
-}
-
-.status-card.show {
-    display: block;
-}
-
-.status-line {
-    padding: 4px 0;
-}
-
-.status-line.active::before {
-    content: "… ";
-}
-
-.status-line.done::before {
-    content: "✓ ";
-    color: #2a8a2a;
-}
-
-.status-line.success {
-    color: #2a8a2a;
-    font-weight: 600;
-}
-
-.status-line.error {
-    color: #b00020;
-    font-weight: 600;
-}
-
-.msg {
-    white-space: pre-wrap;
-    padding: 10px;
-    border-radius: 6px;
-    margin-top: 10px;
-}
-
-.msg.ok {
-    background: #e6f4e6;
-}
-
-.msg.bad {
-    background: #fde7e9;
-}
-
-.preview-card img {
-    image-rendering: pixelated;
-    max-width: 100%;
-}
-
-.gallery-thumb {
-    display: block;
-    width: 100%;
-    max-width: 192px;
-    aspect-ratio: 1 / 1;
-    image-rendering: pixelated;
-    background: #000;
-    border-radius: 6px;
-    margin: 0 auto 8px;
-}
-
-.lightboard-page {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 0 20px;
-}
-
-/* 3 columns: presets | custom | sidebar */
-.lightboard-layout {
-    display: grid;
-    grid-template-columns: 1fr 1fr 340px;
-    gap: 24px;
-    align-items: start;
-}
-
-/* Thumbnails flow into as many columns as fit inside each gallery */
-.gallery-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: 16px;
-}
-
-.gallery-item {
-    text-align: center;
-}
-
-.gallery-item h3 {
-    font-size: 1rem;
-    margin: 4px 0;
-}
-
-/* Sidebar stays in view while you scroll the galleries */
-.lightboard-sidebar {
-    position: sticky;
-    top: 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-}
-
-.lightboard-controls input[type="range"] {
-    width: 100%;
-}
-
-/* 2 columns: sidebar moves below, spanning the full width */
-@media (max-width: 1100px) {
-    .lightboard-layout {
-        grid-template-columns: 1fr 1fr;
-    }
-
-    .lightboard-sidebar {
-        grid-column: 1 / -1;
-        position: static;
-    }
-}
-
-/* 1 column on phones, with the controls first so the status is near the top */
-@media (max-width: 700px) {
-    .lightboard-layout {
-        grid-template-columns: 1fr;
-    }
-
-    .lightboard-sidebar {
-        order: -1;
-    }
-}
-
-/* Authentication styles */
-.auth-error {
-    margin: 0;
-    padding: 0.7rem 0.9rem;
-    font-size: 0.95rem;
-    color: #8a1f1f;
-    background-color: #fbeaea;
-    border: 1px solid #e8b4b4;
-    border-radius: 10px;
-}
-
-.auth-error[hidden] {
-    display: none;
-}
-
-.auth-button:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-}
-
-/* Profile card when the navbar is present */
-.auth-page--with-nav {
-    min-height: calc(100vh - var(--navbar-height));
-}
-
-.profile-list {
-    margin: 0 0 1.5rem;
-}
-
-.profile-row {
-    display: flex;
-    justify-content: space-between;
-    gap: 1rem;
-    padding: 0.7rem 0;
-    border-bottom: 1px solid #e7e7e7;
-}
-
-.profile-row dt {
-    font-weight: var(--font-weight-bold);
-}
-
-.profile-row dd {
-    margin: 0;
-    text-align: right;
-    word-break: break-word;
+.button-grid button:active {
+    transform: scale(0.96);
 }

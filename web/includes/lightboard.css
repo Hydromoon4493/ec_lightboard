@@ -1,0 +1,365 @@
+/* ========================================
+   LIGHTBOARD PAGE
+   ======================================== */
+
+.lightboard-page {
+    display: block;
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem;
+    text-align: center;
+    align-items: initial;
+    justify-content: initial;
+}
+
+.lightboard-page > h1 {
+    margin: 0 0 0.5rem;
+    font-size: 2.5rem;
+    color: var(--color-primary);
+}
+
+.lightboard-page > p {
+    max-width: none;
+    margin: 0 0 2rem;
+    font-size: 1.1rem;
+}
+
+
+/* ========================================
+   MAIN 3-COLUMN LAYOUT
+   ======================================== */
+
+.lightboard-layout {
+    width: 100%;
+    display: grid;
+    grid-template-columns:
+        minmax(0, 1fr)
+        minmax(0, 1fr)
+        340px;
+    gap: 24px;
+    align-items: start;
+    text-align: left;
+}
+
+
+/* ========================================
+   Gallery Columns
+   ======================================== */
+
+.lightboard-gallery {
+    min-width: 0;
+    padding: 20px;
+    background-color: #fff;
+    border: 1px solid #e7e7e7;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+.lightboard-gallery h2 {
+    margin: 0 0 20px;
+    text-align: center;
+    color: var(--color-primary);
+    font-size: 1.5rem;
+}
+
+.lightboard-gallery > p {
+    margin: 0;
+    text-align: center;
+    color: #666;
+}
+
+
+/* ========================================
+   Image Grid
+   ======================================== */
+
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 20px;
+}
+
+.gallery-item {
+    min-width: 0;
+    text-align: center;
+}
+
+.gallery-item h3 {
+    margin: 8px 0;
+    font-size: 1rem;
+    line-height: 1.3;
+    word-break: break-word;
+}
+
+
+/* ========================================
+   Thumbnails
+   ======================================== */
+
+.gallery-thumb {
+    display: block;
+    width: 100%;
+    max-width: 192px;
+    aspect-ratio: 1 / 1;
+    margin: 0 auto 8px;
+    image-rendering: pixelated;
+    background-color: #000;
+    border-radius: 6px;
+}
+
+
+/* ========================================
+   Display Button
+   ======================================== */
+
+.gallery-item button {
+    display: inline-block;
+    padding: 10px 20px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 6px;
+    background-color: #333;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.gallery-item button:hover {
+    background-color: #555;
+}
+
+.gallery-item button:active {
+    transform: scale(0.97);
+}
+
+.gallery-item button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+
+/* ========================================
+   SIDEBAR
+   ======================================== */
+
+.lightboard-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+
+/* ========================================
+   Sidebar Cards
+   ======================================== */
+
+.lightboard-controls,
+.status-card,
+.preview-card,
+.result-box {
+    width: 100%;
+    padding: 20px;
+    background-color: #fff;
+    border: 1px solid #e7e7e7;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+.lightboard-sidebar h2 {
+    margin: 0 0 12px;
+    font-size: 1.35rem;
+    color: var(--color-primary);
+}
+
+
+/* ========================================
+   Brightness
+   ======================================== */
+
+.lightboard-controls label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: var(--font-weight-bold);
+}
+
+#brightnessValue {
+    font-weight: var(--font-weight-bold);
+    color: var(--color-primary);
+}
+
+.lightboard-controls input[type="range"] {
+    display: block;
+    width: 100%;
+    margin: 8px 0 0;
+    cursor: pointer;
+}
+
+
+/* ========================================
+   Status
+   ======================================== */
+
+.status-card {
+    display: none;
+}
+
+.status-card.show {
+    display: block;
+}
+
+.status-line {
+    padding: 4px 0;
+}
+
+.status-line.active::before {
+    content: "… ";
+    color: #666;
+}
+
+.status-line.done::before {
+    content: "✓ ";
+    color: #2a8a2a;
+}
+
+.status-line.success {
+    color: #2a8a2a;
+    font-weight: 600;
+}
+
+.status-line.error {
+    color: #b00020;
+    font-weight: 600;
+}
+
+
+/* ========================================
+   Preview
+   ======================================== */
+
+.preview-card {
+    overflow: hidden;
+}
+
+.preview-card img {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    image-rendering: pixelated;
+    border-radius: 6px;
+    background-color: #000;
+}
+
+
+/* ========================================
+   Result
+   ======================================== */
+
+.result-box {
+    min-height: 0;
+}
+
+.msg {
+    white-space: pre-wrap;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 6px;
+}
+
+.msg.ok {
+    background-color: #e6f4e6;
+}
+
+.msg.bad {
+    background-color: #fde7e9;
+}
+
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+
+@media (max-width: 1100px) {
+    .lightboard-layout {
+        grid-template-columns:
+            minmax(0, 1fr)
+            minmax(0, 1fr);
+    }
+
+    .lightboard-sidebar {
+        grid-column: 1 / -1;
+        position: static;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .lightboard-controls {
+        grid-column: 1 / -1;
+    }
+}
+
+@media (max-width: 800px) {
+    .lightboard-page {
+        padding: 1.5rem;
+    }
+
+    .lightboard-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .lightboard-sidebar {
+        grid-column: auto;
+        display: flex;
+        position: static;
+        order: -1;
+    }
+}
+
+@media (max-width: 700px) {
+    .lightboard-page {
+        padding: 1rem;
+    }
+
+    .lightboard-page > h1 {
+        font-size: 2rem;
+    }
+
+    .lightboard-page > p {
+        font-size: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .lightboard-layout {
+        gap: 16px;
+    }
+
+    .lightboard-gallery {
+        padding: 15px;
+    }
+
+    .gallery-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px;
+    }
+
+    .gallery-thumb {
+        max-width: 160px;
+    }
+
+    .lightboard-sidebar {
+        gap: 16px;
+    }
+}
+
+@media (max-width: 400px) {
+    .gallery-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .gallery-thumb {
+        max-width: 192px;
+    }
+}

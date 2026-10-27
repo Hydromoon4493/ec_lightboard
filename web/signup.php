@@ -9,6 +9,7 @@ $pageTitle = 'Sign up';
     <title><?= isset($pageTitle) ? htmlspecialchars($pageTitle) . ' | ' : '' ?>EC Lightboard</title>
     <link rel="icon" type="image/png" href="/ec_lightboard/web/includes/images/BSN_Logo.png">
     <link rel="stylesheet" href="includes/style.css">
+    <link rel="stylesheet" href="includes/auth.css">
     <!-- defer = wait until the form exists before running -->
     <script src="includes/auth.js" defer></script>
 </head>

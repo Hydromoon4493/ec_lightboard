@@ -4,6 +4,7 @@
 
 <!-- Shared includes: match however your other pages (e.g. index.php) pull these in -->
 <link rel="stylesheet" href="/ec_lightboard/web/includes/style.css">
+<link rel="stylesheet" href="/ec_lightboard/web/includes/auth.css">
 <title><?= isset($pageTitle) ? htmlspecialchars($pageTitle) . ' | ' : '' ?>EC Lightboard</title>
 <link rel="icon" type="image/png" href="/ec_lightboard/web/includes/images/BSN_Logo.png">
 <script src="includes/auth.js" defer></script>

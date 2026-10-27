@@ -1,0 +1,167 @@
+/* ========================================
+   Authentication
+   ======================================== */
+
+.auth-page {
+    position: relative;
+    min-height: 100vh;
+    padding: 3rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--color-highlight-bg);
+}
+
+.auth-page::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: url("/ec_lightboard/web/includes/images/BSN_Logo.png") center / min(110vmin, 1400px) no-repeat;
+    opacity: 0.12;
+    pointer-events: none;
+}
+
+.auth-card {
+    position: relative;
+    width: 100%;
+    max-width: 420px;
+    padding: 2.5rem 2rem;
+    background-color: var(--color-background);
+    border: 2px solid #e7e7e7;
+    border-radius: 16px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.06);
+}
+
+.auth-card__title {
+    margin: 0 0 0.25rem;
+    font-size: 1.9rem;
+    color: var(--color-primary);
+}
+
+.auth-card__subtitle {
+    margin: 0 0 1.75rem;
+    color: var(--color-text);
+}
+
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+}
+
+.auth-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+.auth-field label {
+    font-weight: var(--font-weight-bold);
+    font-size: 0.95rem;
+}
+
+.auth-field input {
+    padding: 0.7rem 0.9rem;
+    font: inherit;
+    color: var(--color-text);
+    background-color: var(--color-background);
+    border: 2px solid #d9dee2;
+    border-radius: 10px;
+    transition: border-color var(--transition-speed) ease;
+}
+
+.auth-field input:focus {
+    outline: none;
+    border-color: var(--color-secondary);
+    box-shadow: 0 0 0 3px rgba(65, 139, 88, 0.25);
+}
+
+.auth-button {
+    margin-top: 0.5rem;
+    padding: 0.8rem 1.5rem;
+    font: inherit;
+    font-weight: var(--font-weight-bold);
+    color: #fff;
+    background-color: var(--color-primary);
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: background-color var(--transition-speed) ease;
+}
+
+.auth-button:hover,
+.auth-button:focus-visible {
+    background-color: var(--color-primary-darker);
+}
+
+.auth-button:focus-visible {
+    outline: 3px solid var(--color-secondary);
+    outline-offset: 2px;
+}
+
+.auth-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.auth-card__switch {
+    margin: 1.5rem 0 0;
+    text-align: center;
+    font-size: 0.95rem;
+}
+
+.auth-card__switch a {
+    font-weight: var(--font-weight-bold);
+    color: var(--color-primary);
+    text-decoration: underline;
+}
+
+
+/* ========================================
+   Authentication Error
+   ======================================== */
+
+.auth-error {
+    margin: 0;
+    padding: 0.7rem 0.9rem;
+    font-size: 0.95rem;
+    color: #8a1f1f;
+    background-color: #fbeaea;
+    border: 1px solid #e8b4b4;
+    border-radius: 10px;
+}
+
+.auth-error[hidden] {
+    display: none;
+}
+
+
+/* ========================================
+   Profile
+   ======================================== */
+
+.auth-page--with-nav {
+    min-height: calc(100vh - var(--navbar-height));
+}
+
+.profile-list {
+    margin: 0 0 1.5rem;
+}
+
+.profile-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.7rem 0;
+    border-bottom: 1px solid #e7e7e7;
+}
+
+.profile-row dt {
+    font-weight: var(--font-weight-bold);
+}
+
+.profile-row dd {
+    margin: 0;
+    text-align: right;
+    word-break: break-word;
+}

@@ -3,6 +3,7 @@
 ?>
 
 <link rel="stylesheet" href="includes/style.css">
+<link rel="stylesheet" href="includes/auth.css">
  
 <main class="auth-page auth-page--with-nav">
     <section class="auth-card" aria-labelledby="profile-title">
