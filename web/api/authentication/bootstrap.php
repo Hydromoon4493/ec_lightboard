@@ -42,9 +42,11 @@ function db()
 {
     static $pdo = null;
     if ($pdo === null) {
-        $c = require __DIR__ . '/../../includes/config.php';
+        $cfg  = require __DIR__ . '/../../includes/config.php';
+        $c    = $cfg['db'] ?? $cfg;      // supports nested or flat config
+        $port = $c['port'] ?? 3306;
         $pdo = new PDO(
-            "mysql:host={$c['host']};dbname={$c['name']};charset=utf8mb4",
+            "mysql:host={$c['host']};port={$port};dbname={$c['name']};charset=utf8mb4",
             $c['user'],
             $c['pass'],
             [
