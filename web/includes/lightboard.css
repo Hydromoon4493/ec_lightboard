@@ -158,8 +158,7 @@
 
 .lightboard-controls,
 .status-card,
-.preview-card,
-.result-box {
+.preview-card {
     width: 100%;
     padding: 20px;
     background-color: #fff;

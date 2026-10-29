@@ -176,13 +176,6 @@ include __DIR__ . '/includes/navbar.php';
 
             </section>
 
-
-            <!-- Result -->
-            <section
-                id="resultBox"
-                class="result-box"
-            ></section>
-
         </aside>
 
     </div>
