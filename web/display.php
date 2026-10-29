@@ -32,7 +32,7 @@ error_reporting(E_ALL);
 require_once __DIR__ . '/includes/lightboard/images.php';
 
 $presetImages = listImages('p');
-$customImages = listImages('c');
+$customImages = listImages('c', (int)$_SESSION['userID']);
 
 /*
  * Gallery definitions. Each entry becomes one column.

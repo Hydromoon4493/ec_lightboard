@@ -30,7 +30,8 @@ declare(strict_types=1);
  */
 
 require_once __DIR__ . '/database.php';
-
+// \/ Caused issues with the pi claiming job - the pi get kicked to index.php and fizzies out and can't do jobs
+// require_once __DIR__ . '/../require_login.php';
 
 /* ============================================================
  * LIST IMAGES
@@ -44,18 +45,39 @@ require_once __DIR__ . '/database.php';
  *     p = preset displays
  *     c = custom uploads
  */
-function listImages(string $key): array
+function listImages(string $key, ?int $userID = null): array
 {
     $s = src($key);
 
-    return dbRetry(function (PDO $pdo) use ($s): array {
+    return dbRetry(function (PDO $pdo) use ($s, $key, $userID): array {
+
+        if ($key === 'c') {
+            if ($userID === null) {
+                return [];
+            }
+
+            $st = $pdo->prepare(
+                "SELECT
+                    {$s['id']} AS id,
+                    name,
+                    mimeType
+                 FROM {$s['table']}
+                 WHERE userID = ?
+                 ORDER BY name ASC"
+            );
+
+            $st->execute([$userID]);
+
+            return $st->fetchAll();
+        }
+
         $sql = sprintf(
             "SELECT
                 %s AS id,
                 name,
                 mimeType
-            FROM %s
-            ORDER BY name ASC",
+             FROM %s
+             ORDER BY name ASC",
             $s['id'],
             $s['table']
         );
