@@ -129,7 +129,7 @@ async function pollJob(jobId) {
 /*
  * Called by the Display buttons in display.php.
  */
-async function displayImage(key, id, button) {
+async function displayImage(key, id) {
     const brightness =
         parseInt(document.getElementById('b').value, 10) || 35;
 

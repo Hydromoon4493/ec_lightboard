@@ -11,7 +11,6 @@
  * - Load available custom Lightboard images.
  * - Display the images in separate gallery columns.
  * - Provide buttons for selecting an image to display.
- * - Show brightness, status, preview and result in a sidebar.
  * - Load the Lightboard JavaScript interface.
  *
  * This file does NOT:
@@ -102,7 +101,7 @@ include __DIR__ . '/includes/navbar.php';
 
                                 <button
                                     type="button"
-                                    onclick="displayImage('<?= $key ?>', <?= (int) $image['id'] ?>, this)"
+                                    onclick="displayImage('<?= $key ?>', <?= (int) $image['id'] ?>)"
                                 >
                                     Display
                                 </button>
@@ -120,7 +119,7 @@ include __DIR__ . '/includes/navbar.php';
         <?php endforeach; ?>
 
 
-        <!-- Column 3: Controls, status, preview, result -->
+        <!-- Column 3: Controls, status, preview -->
         <aside class="lightboard-sidebar">
 
             <!-- Lightboard Controls -->
@@ -183,7 +182,7 @@ include __DIR__ . '/includes/navbar.php';
 </main>
 
 
-<script src="includes/lightboard/lightboard.js"></script>
+<script src="includes/lightboard/lightboard.js?v=20261029"></script>
 
 <?php
 include __DIR__ . '/includes/footer.php';

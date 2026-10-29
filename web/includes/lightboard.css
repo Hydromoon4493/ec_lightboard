@@ -252,31 +252,6 @@
     background-color: #000;
 }
 
-
-/* ========================================
-   Result
-   ======================================== */
-
-.result-box {
-    min-height: 0;
-}
-
-.msg {
-    white-space: pre-wrap;
-    padding: 10px;
-    margin-top: 10px;
-    border-radius: 6px;
-}
-
-.msg.ok {
-    background-color: #e6f4e6;
-}
-
-.msg.bad {
-    background-color: #fde7e9;
-}
-
-
 /* ========================================
    RESPONSIVE
    ======================================== */
