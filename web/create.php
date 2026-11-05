@@ -1,5 +1,5 @@
 <?php
-    //require __DIR__ . '/includes/require_login.php';
+    require __DIR__ . '/includes/require_login.php';
     include 'includes/navbar.php';
 ?>
 
@@ -202,7 +202,15 @@
             const status = new URL(res.url).searchParams.get('upload');
 
             if (status === 'success') {
-                showMessage(`"${name}" saved! You can find it under Custom Displays.`, 'success');
+                showMessage(`"${name}" saved successfully!`, 'success');
+
+                const link = document.createElement('a');
+                link.href = 'display.php';
+                link.textContent = 'View Custom Displays';
+                link.className = 'save-link';
+
+                saveMsg.appendChild(document.createElement('br'));
+                saveMsg.appendChild(link);
                 nameInput.value = '';
             } else {
                 showMessage(saveErrors[status] ?? 'Could not save. Are you logged in?', 'error');

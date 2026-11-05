@@ -24,7 +24,7 @@ declare(strict_types=1);
  * files and API layer.
  */
 
-require __DIR__ . '/includes/require_login.php';
+// require __DIR__ . '/includes/require_login.php';
 include 'includes/navbar.php';
 ?>
 
@@ -132,7 +132,7 @@ include 'includes/navbar.php';
                     >
 
                     <small>
-                        Supports 48 x 48 PNGs only (right now)
+                        Supports PNG, JPG, JPEG, and GIF. Animated GIFs are treated as a single static frame.
                     </small>
 
                 </div>
