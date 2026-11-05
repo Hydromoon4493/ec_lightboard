@@ -313,21 +313,21 @@ a {
 .footer-centered__container {
     max-width: 800px;
     margin: 0 auto;
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: auto auto;   /* logo | everything else */
     align-items: center;
-    gap: 1.5rem;
+    column-gap: 2rem;
+    row-gap: 0.75rem;
+    text-align: left;
 }
 
 .footer-centered__logo {
-    display: block;
-    width: 120px;
-    height: auto;
+    grid-row: span 2;                /* logo fills both rows on the left */
+    justify-self: right;
 }
 
 .footer-centered__logo img {
-    display: block;
-    width: 100%;
+    max-width: 100px;
     height: auto;
 }
 
@@ -369,36 +369,7 @@ a {
 .footer-centered__copyright {
     font-size: 0.875rem;
     margin: 0;
+    justify-self: center;
 }
 
-
-/* ========================================
-   Create Page: Button Grid
-   ======================================== */
-
-.button-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 0.75rem;
-    width: 100%;
-    background-color: rgb(72, 72, 72);
-}
-
-.button-grid button {
-    padding: 0;
-    font: inherit;
-    border: none;
-    background-color: black;
-    cursor: pointer;
-    transition: background-color 0.2s ease, transform 0.1s ease;
-    height: 1.5vh;
-    width: 1.5vh;
-}
-
-.button-grid button:hover {
-    background-color: black;
-}
-
-.button-grid button:active {
-    transform: scale(0.96);
-}
+/* Create page styles live in includes/create.css */
