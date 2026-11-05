@@ -14,6 +14,7 @@
                     <li class="navbar__item"><a href="/ec_lightboard/web/upload.php" class="navbar__link">Upload</a></li>
                     <li class="navbar__item"><a href="/ec_lightboard/web/schedule.php" class="navbar__link">Schedule</a></li>
                     <li class="navbar__item"><a href="/ec_lightboard/web/create.php" class="navbar__link">Create</a></li>
+                    <li class="navbar__item"><a href="/ec_lightboard/web/adminDashboard.php" class="navbar__link">Admin Dashboard</a></li>
                     <li class="navbar__item"><a href="/ec_lightboard/web/about.php" class="navbar__link">About</a></li>
                     <li class="navbar__item navbar__item--cta"><a href="/ec_lightboard/web/profile.php" class="navbar__link navbar__link--cta">Profile</a></li>
                 </ul>
