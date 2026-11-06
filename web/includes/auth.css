@@ -134,34 +134,3 @@
 .auth-error[hidden] {
     display: none;
 }
-
-
-/* ========================================
-   Profile
-   ======================================== */
-
-.auth-page--with-nav {
-    min-height: calc(100vh - var(--navbar-height));
-}
-
-.profile-list {
-    margin: 0 0 1.5rem;
-}
-
-.profile-row {
-    display: flex;
-    justify-content: space-between;
-    gap: 1rem;
-    padding: 0.7rem 0;
-    border-bottom: 1px solid #e7e7e7;
-}
-
-.profile-row dt {
-    font-weight: var(--font-weight-bold);
-}
-
-.profile-row dd {
-    margin: 0;
-    text-align: right;
-    word-break: break-word;
-}

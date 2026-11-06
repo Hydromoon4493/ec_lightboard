@@ -1,0 +1,211 @@
+/*
+ * schedule.css
+ * Loaded AFTER lightboard.css so these rules override the shared layout.
+ * Only affects elements inside .schedule-layout.
+ * Form styling mirrors auth.css (fields, button, error) so inputs
+ * look the same across the site.
+ */
+
+/* ========================================
+   Layout: two narrow image columns + wide form column
+   ======================================== */
+
+.schedule-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.6fr);
+    gap: 24px;
+    align-items: start;
+}
+
+/* ========================================
+   Image columns: 2 per row, smaller
+   ======================================== */
+
+.schedule-layout .schedule-gallery-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.schedule-layout .gallery-thumb {
+    max-width: 110px;
+    margin: 0 auto 6px;
+}
+
+.schedule-layout .gallery-item h3 {
+    margin: 4px 0 0;
+    font-size: 0.85rem;
+}
+
+/* ========================================
+   Form card (matches .lightboard-controls card)
+   ======================================== */
+
+.schedule-form-card {
+    padding: 2rem;
+}
+
+.schedule-form-card h2 {
+    margin: 0 0 1.25rem;
+}
+
+.schedule-form-card form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+}
+
+/* ========================================
+   Fields (same as .auth-field)
+   ======================================== */
+
+.schedule-form-card .form-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    margin: 0;
+}
+
+.schedule-form-card .form-row-pair {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.1rem;
+}
+
+.schedule-form-card .form-row-pair>div {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    min-width: 0;
+}
+
+.schedule-form-card label {
+    display: block;
+    margin: 0;
+    font-weight: var(--font-weight-bold);
+    font-size: 0.95rem;
+}
+
+.schedule-form-card .optional {
+    font-weight: 500;
+    opacity: 0.65;
+}
+
+.schedule-form-card select,
+.schedule-form-card input[type="datetime-local"],
+.schedule-form-card textarea {
+    width: 100%;
+    padding: 0.7rem 0.9rem;
+    font: inherit;
+    color: var(--color-text);
+    background-color: var(--color-background);
+    border: 2px solid #d9dee2;
+    border-radius: 10px;
+    transition: border-color var(--transition-speed) ease;
+}
+
+.schedule-form-card select {
+    appearance: none;
+    padding-right: 2.5rem;
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%232c3e50' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.9rem center;
+}
+
+.schedule-form-card textarea {
+    min-height: 6rem;
+    resize: vertical;
+}
+
+.schedule-form-card textarea::placeholder {
+    color: #8a96a0;
+}
+
+.schedule-form-card select:focus,
+.schedule-form-card input[type="datetime-local"]:focus,
+.schedule-form-card textarea:focus {
+    outline: none;
+    border-color: var(--color-secondary);
+    box-shadow: 0 0 0 3px rgba(65, 139, 88, 0.25);
+}
+
+/* ========================================
+   Submit button (same as .auth-button)
+   ======================================== */
+
+.schedule-form-card button[type="submit"] {
+    margin-top: 0.5rem;
+    padding: 0.8rem 1.5rem;
+    font: inherit;
+    font-weight: var(--font-weight-bold);
+    color: #fff;
+    background-color: var(--color-primary);
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: background-color var(--transition-speed) ease;
+}
+
+.schedule-form-card button[type="submit"]:hover,
+.schedule-form-card button[type="submit"]:focus-visible {
+    background-color: var(--color-primary-darker);
+}
+
+.schedule-form-card button[type="submit"]:focus-visible {
+    outline: 3px solid var(--color-secondary);
+    outline-offset: 2px;
+}
+
+.schedule-form-card button[type="submit"]:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* ========================================
+   Error message (same as .auth-error)
+   ======================================== */
+
+.schedule-error {
+    margin: 0;
+    padding: 0.7rem 0.9rem;
+    font-size: 0.95rem;
+    color: #8a1f1f;
+    background-color: #fbeaea;
+    border: 1px solid #e8b4b4;
+    border-radius: 10px;
+}
+
+.schedule-error:empty {
+    display: none;
+}
+
+/* ========================================
+   Responsive (breakpoints match lightboard.css)
+   ======================================== */
+
+@media (max-width: 1100px) {
+    .schedule-layout {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .schedule-form-column {
+        grid-column: 1 / -1;
+        order: -1;
+    }
+}
+
+@media (max-width: 800px) {
+    .schedule-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 700px) {
+    .schedule-form-card {
+        padding: 1.5rem 1.25rem;
+    }
+
+    .schedule-form-card .form-row-pair {
+        grid-template-columns: 1fr;
+    }
+}

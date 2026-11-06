@@ -4,55 +4,35 @@
 ?>
 
 <link rel="stylesheet" href="includes/style.css">
-<link rel="stylesheet" href="includes/auth.css">
- 
-<main class="auth-page auth-page--with-nav">
-    <section class="auth-card" aria-labelledby="profile-title">
-        <h1 id="profile-title" class="auth-card__title">Your profile</h1>
-        <p class="auth-card__subtitle" id="profile-status">Loading…</p>
- 
-        <dl class="profile-list" id="profile-list" hidden>
-            <div class="profile-row"><dt>First name</dt><dd id="p-first"></dd></div>
-            <div class="profile-row"><dt>Last name</dt><dd id="p-last"></dd></div>
-            <div class="profile-row"><dt>Email</dt><dd id="p-email"></dd></div>
-            <div class="profile-row"><dt>Role</dt><dd id="p-role"></dd></div>
-        </dl>
- 
-        <button type="button" class="auth-button" id="logout-button" hidden>Log out</button>
+<link rel="stylesheet" href="includes/profile.css">
+<script src="includes/profile.js" defer></script>
+
+<main class="bodyDefault profile-layout">
+    
+    <!-- Left Column: User Details -->
+    <aside class="profile-sidebar">
+        <section class="profile-card">
+            <h1>Your Profile</h1>
+            <p id="profile-status" class="status-message">Loading details…</p>
+
+            <dl class="profile-list" id="profile-list" hidden>
+                <div class="profile-row"><dt>First name</dt><dd id="p-first"></dd></div>
+                <div class="profile-row"><dt>Last name</dt><dd id="p-last"></dd></div>
+                <div class="profile-row"><dt>Email</dt><dd id="p-email"></dd></div>
+                <div class="profile-row"><dt>Role</dt><dd id="p-role"></dd></div>
+            </dl>
+
+            <button type="button" class="logout-btn" id="logout-button" hidden>Log out</button>
+        </section>
+    </aside>
+
+    <!-- Right Column: Requests List -->
+    <section class="profile-requests-column">
+        <h2>Your Signage Requests</h2>
+        <div id="requests-status" class="status-message">Loading requests…</div>
+        <div id="requests-list" class="requests-grid" hidden></div>
     </section>
+
 </main>
- 
+
 <?php include 'includes/footer.php'; ?>
- 
-<script>
-    const API = 'api/authentication/';
- 
-    async function loadProfile() {
-        const status = document.getElementById('profile-status');
-        try {
-            const res = await fetch(API + 'profile.php', { credentials: 'same-origin' });
-            if (res.status === 401) { window.location.href = 'login.php'; return; }
-            if (!res.ok) throw new Error();
-            const p = await res.json();
- 
-            document.getElementById('p-first').textContent = p.firstName;
-            document.getElementById('p-last').textContent = p.lastName;
-            document.getElementById('p-email').textContent = p.email;
-            document.getElementById('p-role').textContent = p.role;
- 
-            status.hidden = true;
-            document.getElementById('profile-list').hidden = false;
-            document.getElementById('logout-button').hidden = false;
-        } catch (e) {
-            status.textContent = 'Could not load your profile. Please refresh.';
-        }
-    }
- 
-    document.getElementById('logout-button').addEventListener('click', async function () {
-        try { await fetch(API + 'logout.php', { method: 'POST', credentials: 'same-origin' }); }
-        finally { window.location.href = 'login.php'; }
-    });
- 
-    loadProfile();
-</script>
- 

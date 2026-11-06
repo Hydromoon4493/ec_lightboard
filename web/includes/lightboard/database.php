@@ -19,7 +19,7 @@ declare(strict_types=1);
  * HTML rendering, or API requests.
  */
 
-$CFG = require __DIR__ . '/../config.php';
+
 
 
 /* ============================================================
@@ -60,56 +60,46 @@ const SOURCES = [
  *
  * Passing true to db(true) resets the existing connection.
  */
-function db(bool $reset = false): PDO
-{
-    global $CFG;
+if (!function_exists('db')) {
+    function db(bool $reset = false): PDO
+    {
+        static $pdo = null;
+        static $cfg = null;
 
-    static $pdo = null;
+        if ($reset) {
+            $pdo = null;
+        }
 
-    /*
-     * Reset the connection when requested.
-     *
-     * This is useful after MySQL reports that an existing
-     * connection has gone away.
-     */
-    if ($reset) {
-        $pdo = null;
-    }
+        if ($pdo instanceof PDO) {
+            return $pdo;
+        }
 
-    /*
-     * Reuse an existing connection.
-     */
-    if ($pdo instanceof PDO) {
+        if ($cfg === null) {
+            $cfg = require __DIR__ . '/../config.php';
+        }
+
+        if (!is_array($cfg)) {
+            throw new RuntimeException(
+                'config.php did not return an array. Is this host (' .
+                ($_SERVER['SERVER_NAME'] ?? 'unknown') . ') configured?'
+            );
+        }
+
+        $dsn = sprintf(
+            'mysql:host=%s;port=%d;dbname=%s;charset=utf8mb4',
+            $cfg['host'],
+            $cfg['port'] ?? 3306,
+            $cfg['name']
+        );
+
+        $pdo = new PDO($dsn, $cfg['user'], $cfg['pass'], [
+            PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+            PDO::ATTR_EMULATE_PREPARES   => false,
+        ]);
+
         return $pdo;
     }
-
-    $d = $CFG['db'];
-
-    /*
-     * Build the MySQL DSN from the configuration.
-     */
-    $dsn = sprintf(
-        'mysql:host=%s;port=%d;dbname=%s;charset=utf8mb4',
-        $d['host'],
-        $d['port'],
-        $d['name']
-    );
-
-    /*
-     * Create the PDO connection.
-     */
-    $pdo = new PDO(
-        $dsn,
-        $d['user'],
-        $d['pass'],
-        [
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-            PDO::ATTR_EMULATE_PREPARES => false,
-        ]
-    );
-
-    return $pdo;
 }
 
 
