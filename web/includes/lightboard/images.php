@@ -30,8 +30,14 @@ declare(strict_types=1);
  */
 
 require_once __DIR__ . '/database.php';
-// \/ Caused issues with the pi claiming job - the pi get kicked to index.php and fizzies out and can't do jobs
-// require_once __DIR__ . '/../require_login.php';
+
+/*
+ * Load the Lightboard configuration for image-processing
+ * functions that depend on the global CFG array.
+ */
+if (!isset($GLOBALS['CFG']) || !is_array($GLOBALS['CFG'])) {
+    $GLOBALS['CFG'] = require __DIR__ . '/../config.php';
+}
 
 /* ============================================================
  * LIST IMAGES

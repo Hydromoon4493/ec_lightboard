@@ -57,7 +57,7 @@ include __DIR__ . '/includes/navbar.php';
 ?>
 
 <link rel="stylesheet" href="includes/style.css?v=2">
-<link rel="stylesheet" href="includes/lightboard.css?v=2">
+<link rel="stylesheet" href="includes/lightboard.css?v=3">
 
 <main class="bodyDefult lightboard-page">
 
