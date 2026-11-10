@@ -1,0 +1,81 @@
+/*
+ * Filename: includes/footer.css
+ *
+ * Footer styles, loaded by includes/footer.php.
+ * Colors come from the --footer-* variables in includes/style.css.
+ */
+
+
+/* ========================================
+   Footer
+   ======================================== */
+
+.footer-centered {
+    background-color: var(--footer-bg);
+    color: var(--footer-text-color);
+    padding: 2.5rem 1.5rem;
+    border-top: 1px solid var(--footer-border-color);
+    text-align: center;
+}
+
+.footer-centered__container {
+    max-width: 800px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: auto auto;   /* logo | everything else */
+    align-items: center;
+    column-gap: 2rem;
+    row-gap: 0.75rem;
+    text-align: left;
+}
+
+.footer-centered__logo {
+    grid-row: span 2;                /* logo fills both rows on the left */
+    justify-self: right;
+}
+
+.footer-centered__logo img {
+    max-width: 100px;
+    height: auto;
+}
+
+.footer-centered__nav ul,
+.footer-centered__social ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1.5rem;
+}
+
+.footer-centered__nav a,
+.footer-centered__social a {
+    color: var(--footer-link-color);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease-in-out;
+}
+
+.footer-centered__nav a:hover,
+.footer-centered__social a:hover {
+    color: var(--footer-link-hover-color);
+}
+
+.footer-centered__social svg {
+    width: 22px;
+    height: 22px;
+    fill: var(--footer-text-color);
+    transition: fill 0.2s ease-in-out;
+}
+
+.footer-centered__social a:hover svg {
+    fill: var(--footer-link-hover-color);
+}
+
+.footer-centered__copyright {
+    font-size: 0.875rem;
+    margin: 0;
+    justify-self: center;
+}

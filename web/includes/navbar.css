@@ -1,0 +1,252 @@
+/*
+ * Filename: includes/navbar.css
+ *
+ * Navbar styles, loaded by includes/navbar.php.
+ * Colors and sizes come from the variables in includes/style.css.
+ */
+
+
+/* ========================================
+   Navbar
+   ======================================== */
+
+.navbar {
+    height: var(--navbar-height);
+    display: flex;
+    align-items: center;
+    background-color: var(--color-background);
+    border-bottom: 2px solid var(--color-highlight-bg);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.navbar__container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: var(--container-width);
+    margin: 0 auto;
+    padding: 0 var(--navbar-padding);
+}
+
+.navbar__brand {
+    font-size: 1.75rem;
+    font-weight: var(--font-weight-bold);
+    color: var(--color-primary);
+}
+
+.navbar__toggle {
+    display: block;
+    border: none;
+    padding: 0.5rem;
+    background: transparent;
+    cursor: pointer;
+    z-index: 1001;
+}
+
+.navbar__toggle .bar {
+    display: block;
+    width: 25px;
+    height: 3px;
+    margin: 5px auto;
+    background-color: var(--color-text);
+    border-radius: 3px;
+    transition: all var(--transition-speed) var(--transition-bounce);
+}
+
+.navbar__toggle.is-active .bar:nth-child(1) {
+    transform: translateY(8px) rotate(45deg);
+}
+
+.navbar__toggle.is-active .bar:nth-child(2) {
+    opacity: 0;
+}
+
+.navbar__toggle.is-active .bar:nth-child(3) {
+    transform: translateY(-8px) rotate(-45deg);
+}
+
+.navbar__menu {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    position: absolute;
+    top: var(--navbar-height);
+    left: 0;
+    background-color: var(--color-background);
+    border-bottom: 2px solid var(--color-highlight-bg);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.04);
+    z-index: 999;
+}
+
+.navbar__menu.is-active {
+    display: flex;
+}
+
+.navbar__item {
+    text-align: center;
+}
+
+.navbar__link {
+    display: block;
+    padding: 1.5rem;
+    font-weight: var(--font-weight-bold);
+    transition: background-color var(--transition-speed) ease;
+}
+
+.navbar__link:hover,
+.navbar__link:focus {
+    background-color: var(--color-highlight-bg);
+}
+
+:is(.navbar__toggle, .navbar__link):focus-visible {
+    outline: 3px solid var(--color-secondary);
+    outline-offset: 2px;
+}
+
+
+/* ========================================
+   Navbar Desktop
+   ======================================== */
+
+/* 1024px: below this every link lives in the hamburger menu.
+   At 1024px and up the main links show in the bar and the hamburger
+   opens a small dropdown (.navbar__more) with the rest. */
+@media (min-width: 1024px) {
+    .navbar__container {
+        position: relative;          /* dropdown is positioned against this */
+        height: 100%;
+    }
+
+    .navbar__toggle {
+        order: 3;                    /* brand | links | hamburger */
+        margin-left: 0.75rem;
+    }
+
+    .navbar__menu {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        order: 2;
+        margin-left: auto;
+        position: static;
+        width: auto;
+        background: none;
+        border: none;
+        box-shadow: none;
+    }
+
+    /* hamburger dropdown */
+    .navbar__more {
+        display: none;
+        position: absolute;
+        top: 100%;
+        right: var(--navbar-padding);
+        min-width: 220px;
+        padding: 0.5rem 0;
+        flex-direction: column;
+        background-color: var(--color-background);
+        border: 1px solid var(--footer-border-color);
+        border-radius: 12px;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    .navbar__menu.is-active .navbar__more {
+        display: flex;
+    }
+
+    .navbar__more .navbar__item {
+        text-align: left;
+    }
+
+    .navbar__more .navbar__link {
+        padding: 0.75rem 1.25rem;
+    }
+
+    /* extra .navbar__menu so these beat the underline rules further down */
+    .navbar__menu .navbar__more .navbar__link:hover,
+    .navbar__menu .navbar__more .navbar__link:focus {
+        background-color: var(--color-highlight-bg);
+    }
+
+    .navbar__menu .navbar__more .navbar__link::after {
+        display: none;               /* no underline animation in the dropdown */
+    }
+
+    .navbar__list {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .navbar__link {
+        padding: 0.5rem 1rem;
+        position: relative;
+    }
+
+    .navbar__link:not(.navbar__link--cta):hover,
+    .navbar__link:not(.navbar__link--cta):focus {
+        background-color: transparent;
+    }
+
+    .navbar__link:not(.navbar__link--cta)::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        width: 0;
+        height: 3px;
+        background-color: var(--color-secondary);
+        transition: all var(--transition-speed) ease;
+        transform: translateX(-50%);
+    }
+
+    .navbar__link:not(.navbar__link--cta):hover::after,
+    .navbar__link:not(.navbar__link--cta):focus::after {
+        width: 100%;
+    }
+
+    .navbar__item--cta {
+        margin-left: 1rem;
+    }
+
+    .navbar__link--cta {
+        background-color: var(--color-primary);
+        color: #fff;
+        padding: 0.75rem 1.5rem;
+        border-radius: 50px;
+        transition: transform var(--transition-speed) var(--transition-bounce), background-color var(--transition-speed) ease;
+    }
+
+    .navbar__link--cta:hover,
+    .navbar__link--cta:focus {
+        background-color: var(--color-primary);
+        transform: scale(1.1);
+    }
+}
+
+
+/* ========================================
+   Reduced Motion
+   ======================================== */
+
+@media (prefers-reduced-motion: reduce) {
+    .navbar__toggle .bar,
+    .navbar__link:not(.navbar__link--cta)::after,
+    .navbar__link--cta {
+        transition: none;
+    }
+
+    .navbar__link:not(.navbar__link--cta):hover::after,
+    .navbar__link:not(.navbar__link--cta):focus::after {
+        width: 100%;
+    }
+
+    .navbar__link--cta:hover,
+    .navbar__link--cta:focus {
+        transform: none;
+        background-color: var(--color-primary-darker);
+    }
+}

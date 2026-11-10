@@ -3,11 +3,19 @@
     include 'includes/navbar.php';
 ?>
 
-<link rel="stylesheet" href="includes/style.css">
-<link rel="stylesheet" href="includes/create.css">
+<link rel="stylesheet" href="includes/style.css?v=2">
+<link rel="stylesheet" href="includes/create.css?v=2">
 
 <main class="bodyDefult create-page">
+<main class="bodyDefult create-page">
     <h1>Create a Picture for the Lightboard!</h1>
+    <p>Pick a color, then click or drag across the board to paint.</p>
+
+    <div class="create-layout">
+
+        <!-- Board -->
+        <div class="create-card board-card">
+            <div class="board-grid" id="lights" aria-label="Lightboard canvas"></div>
     <p>Pick a color, then click or drag across the board to paint.</p>
 
     <div class="create-layout">
@@ -45,8 +53,18 @@
             <section>
                 <h2>Tools</h2>
                 <div class="tool-buttons">
-                    <button type="button" class="tool-button" id="eraserBtn">Eraser</button>
-                    <button type="button" class="tool-button" id="clearBtn">Clear Board</button>
+                    <div class="bg-status">
+                        Current background
+                        <span class="bg-status__value">
+                            <span class="bg-status__swatch" id="bgSwatch"></span>
+                            <span id="bgLabel">Off</span>
+                        </span>
+                    </div>
+                    <button type="button" class="tool-button" id="bgBtn">Set Background</button>
+                    <div class="tool-row">
+                        <button type="button" class="tool-button" id="eraserBtn">Eraser</button>
+                        <button type="button" class="tool-button" id="clearBtn">Clear Board</button>
+                    </div>
                 </div>
             </section>
 
@@ -67,6 +85,37 @@
 </main>
 
 <script>
+    const COLS = 48, ROWS = 48;
+    const lights   = document.getElementById('lights');
+    const palette  = document.getElementById('palette');
+    const picker   = document.getElementById('colorPicker');
+    const eraser   = document.getElementById('eraserBtn');
+
+    let currColor = null;       // hex string, or null when erasing
+    let selectedSwatch = null;
+    let painting = false;
+
+    // build the 48 x 48 board
+    lights.style.setProperty('--cols', COLS);
+    for (let i = 0; i < COLS * ROWS; i++) {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.tabIndex = -1;
+        lights.appendChild(btn);
+    }
+
+    function paint(cell) {
+        if (!cell || cell.parentElement !== lights) return;
+        cell.style.backgroundColor = currColor ?? '';
+        if (currColor) cell.dataset.color = currColor;   // keep the hex for saving later
+        else delete cell.dataset.color;
+    }
+
+    // click + drag painting (works for mouse and touch)
+    lights.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        painting = true;
+        paint(e.target.closest('button'));
     const COLS = 48, ROWS = 48;
     const lights   = document.getElementById('lights');
     const palette  = document.getElementById('palette');
@@ -139,12 +188,33 @@
         currColor = null;
     });
 
+    // background: fills every unpainted pixel; the eraser reveals it again
+    let bgColor = null;         // null = LEDs off (black when saved)
+
+    const bgSwatch = document.getElementById('bgSwatch');
+    const bgLabel  = document.getElementById('bgLabel');
+
+    function setBackground(color) {
+        bgColor = color;
+        if (color) lights.style.setProperty('--board-bg', color);
+        else lights.style.removeProperty('--board-bg');
+
+        // show the user what the background is
+        bgSwatch.style.backgroundColor = color ?? '';
+        bgLabel.textContent = color ? color.toUpperCase() : 'Off';
+    }
+
+    document.getElementById('bgBtn').addEventListener('click', () => {
+        setBackground(currColor);   // with the eraser selected this removes the background
+    });
+
     document.getElementById('clearBtn').addEventListener('click', () => {
         if (!confirm('Clear the whole board?')) return;
         for (const cell of lights.children) {
             cell.style.backgroundColor = '';
             delete cell.dataset.color;
         }
+        setBackground(null);
     });
 
     // save: draw the board onto a 48x48 PNG and send it to the same handler upload.php uses
@@ -163,7 +233,7 @@
         canvas.width = COLS;
         canvas.height = ROWS;
         const ctx = canvas.getContext('2d');
-        ctx.fillStyle = '#000000';               // unpainted pixels = LED off
+        ctx.fillStyle = bgColor ?? '#000000';    // unpainted pixels = background, or LED off
         ctx.fillRect(0, 0, COLS, ROWS);
 
         [...lights.children].forEach((cell, i) => {
@@ -211,9 +281,16 @@
             showMessage('Could not reach the server.', 'error');
         } finally {
             saveBtn.disabled = false;
-            saveBtn.textContent = 'Upload / Save';
+            saveBtn.textContent = 'Upload Image';
         }
     });
+
+    // size the board so its card is as tall (and as wide) as the tools card
+    const layout    = document.querySelector('.create-layout');
+    const toolsCard = document.querySelector('.tools-card');
+    new ResizeObserver(() => {
+        layout.style.setProperty('--board-col', toolsCard.offsetHeight + 'px');
+    }).observe(toolsCard);
 
     // start with the first color selected
     selectSwatch(palette.querySelector('.swatch'));

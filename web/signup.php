@@ -8,8 +8,8 @@ $pageTitle = 'Sign up';
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= isset($pageTitle) ? htmlspecialchars($pageTitle) . ' | ' : '' ?>EC Lightboard</title>
     <link rel="icon" type="image/png" href="/ec_lightboard/web/includes/images/BSN_Logo.png">
-    <link rel="stylesheet" href="includes/style.css">
-    <link rel="stylesheet" href="includes/auth.css">
+    <link rel="stylesheet" href="includes/style.css?v=2">
+    <link rel="stylesheet" href="includes/auth.css?v=2">
     <!-- defer = wait until the form exists before running -->
     <script src="includes/auth.js" defer></script>
 </head>

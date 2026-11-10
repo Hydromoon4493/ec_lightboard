@@ -3,7 +3,7 @@
     include '../includes/navbar.php';
 ?>
 
-<link rel="stylesheet" href="../includes/style.css">
+<link rel="stylesheet" href="../includes/style.css?v=2">
 
 <main class="bodyDefult">
     <img src="../images/BSN_Logo.png" alt="Isaac Widders" class="round-image">
