@@ -358,3 +358,47 @@
     margin: 0;
     font-size: 14px;
 }
+
+
+/* ================================
+   Gallery Management Buttons
+   ================================ */
+
+.gallery-management {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.gallery-management button {
+    flex: 1;
+    padding: 8px 10px;
+    margin-top: 0;
+    border: none;
+    border-radius: 6px;
+    font-size: .85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color .15s ease, color .15s ease;
+}
+
+/* Rename */
+.gallery-item .gallery-management button.rename-button {
+    background-color: #dbeafe !important;
+    color: #1d4ed8 !important;
+}
+
+.gallery-item .gallery-management button.rename-button:hover {
+    background-color: #bfdbfe !important;
+}
+
+/* Delete */
+.gallery-item .gallery-management button.delete-button {
+    background-color: #fee2e2 !important;
+    color: #b91c1c !important;
+}
+
+.gallery-item .gallery-management button.delete-button:hover {
+    background-color: #fecaca !important;
+}
+
