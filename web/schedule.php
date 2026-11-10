@@ -1,6 +1,5 @@
 
 <?php
-<<<<<<< Updated upstream
 /*
  * Filename: schedule.php
  *
@@ -61,10 +60,6 @@ $minDateTime = (new DateTimeImmutable(
     new DateTimeZone('America/New_York')
 ))->format('Y-m-d\TH:i');
 
-=======
-    require __DIR__ . '/includes/require_login.php';
-    include 'includes/navbar.php';
->>>>>>> Stashed changes
 ?>
 
 <?php
