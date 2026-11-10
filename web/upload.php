@@ -24,7 +24,7 @@ declare(strict_types=1);
  * files and API layer.
  */
 
-require __DIR__ . '/includes/require_login.php';
+// require __DIR__ . '/includes/require_login.php';
 include 'includes/navbar.php';
 ?>
 
