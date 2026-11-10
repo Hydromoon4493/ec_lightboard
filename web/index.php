@@ -101,16 +101,16 @@ $pageTitle = 'Home';
 
 
         <div class="home-feature-card">
-            <div class="home-feature-icon">⚙</div>
+            <div class="home-feature-icon">👥</div>
 
-            <h2>Administration</h2>
+            <h2>About Us</h2>
 
             <p>
-                Manage preset displays and access administrative
-                tools for the Lightboard system.
+                Learn more about the ECLightboard project,
+                how it works, and the three-person team behind it.
             </p>
 
-            <a href="adminDashboard.php">Admin dashboard →</a>
+            <a href="about.php">Meet the team →</a>
         </div>
 
     </section>

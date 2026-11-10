@@ -1,20 +1,92 @@
+
 <?php
-    require __DIR__ . '/includes/require_login.php';
-    include 'includes/navbar.php';
+/*
+ * Author: ECLightboard Team 2026
+ * Filename: about.php
+ *
+ * Introduces the ECLightboard project and its development team.
+ */
+
+include 'includes/navbar.php';
 ?>
 
 <link rel="stylesheet" href="includes/style.css?v=2">
+<link rel="stylesheet" href="includes/about.css?v=1">
 
-<main class="bodyDefult">
-    <h1>Stuff Coming Soon!</h1>
+<main class="about-page">
 
-    <p>This page is still under construction.</p>
+    <section class="about-hero">
+        <p class="about-eyebrow">ABOUT THE PROJECT</p>
 
-    <a href="/ec_lightboard/web/index.php">
-        <button type="button">Back</button>
-    </a>
+        <h1>Meet the ECLightboard Team</h1>
+
+        <p>
+            ECLightboard is a collaborative project developed by a
+            three-person team. Our goal is to create an interactive
+            LED display system that makes designing, uploading, and
+            displaying custom images simple.
+        </p>
+    </section>
+
+
+    <section class="about-project">
+        <h2>What is ECLightboard?</h2>
+
+        <p>
+            ECLightboard combines a web-based interface with a physical
+            LED display. Users can browse preset designs, upload their
+            own images, create custom artwork, and send designs to the
+            Lightboard.
+        </p>
+    </section>
+
+
+    <section class="about-team">
+        <h2>Our Team</h2>
+
+        <p class="about-team-intro">
+            Three people working together to bring the project to life.
+        </p>
+
+        <div class="team-grid">
+
+            <article class="team-card">
+                <div class="team-avatar">1</div>
+                <h3>Scott Domboski</h3>
+                <p>Backend + users login + scheduling</p>
+            </article>
+
+            <article class="team-card">
+                <div class="team-avatar">2</div>
+                <h3>Isaac Widders</h3>
+                <p>Front-end + hardware + create tab</p>
+            </article>
+
+            <article class="team-card">
+                <div class="team-avatar">3</div>
+                <h3>Sam Vossen</h3>
+                <p>Pi Communication + display</p>
+            </article>
+
+        </div>
+    </section>
+
+
+    <section class="about-footer">
+        <h2>Built Together.</h2>
+
+        <p>
+            ECLightboard is the result of teamwork, experimentation,
+            and a shared interest in technology.
+        </p>
+
+        <a href="/ec_lightboard/web/index.php" class="about-button">
+            Back to Home
+        </a>
+    </section>
+
 </main>
 
 <?php
-    include 'includes/footer.php';
+include 'includes/footer.php';
 ?>
