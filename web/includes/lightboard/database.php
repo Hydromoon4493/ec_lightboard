@@ -1,5 +1,5 @@
+
 <?php
-declare(strict_types=1);
 
 /*
  * Author: Sam Vossen 2026.10.15
@@ -20,8 +20,6 @@ declare(strict_types=1);
  */
 
 
-
-
 /* ============================================================
  * IMAGE SOURCES
  * ============================================================
@@ -31,6 +29,7 @@ declare(strict_types=1);
  * p = preset displays
  * c = custom user uploads
  */
+
 const SOURCES = [
     'p' => [
         'table' => 'presetDisplay',
@@ -60,6 +59,7 @@ const SOURCES = [
  *
  * Passing true to db(true) resets the existing connection.
  */
+
 if (!function_exists('db')) {
     function db(bool $reset = false): PDO
     {
@@ -85,14 +85,53 @@ if (!function_exists('db')) {
             );
         }
 
+        /*
+         * Database credentials are nested inside the 'db'
+         * configuration array in config.php.
+         */
+
+        if (!isset($cfg['db']) || !is_array($cfg['db'])) {
+            throw new RuntimeException(
+                'Database configuration array [db] is missing from config.php.'
+            );
+        }
+
+        $dbCfg = $cfg['db'];
+
+        /*
+         * Validate required database settings before connecting.
+         */
+
+        $required = ['host', 'name', 'user', 'pass'];
+
+        foreach ($required as $key) {
+            if (!array_key_exists($key, $dbCfg)) {
+                throw new RuntimeException(
+                    "Missing database configuration setting: db.$key"
+                );
+            }
+        }
+
+        if (trim((string)$dbCfg['host']) === '' ||
+            trim((string)$dbCfg['name']) === '' ||
+            trim((string)$dbCfg['user']) === '') {
+            throw new RuntimeException(
+                'One or more required database configuration settings are empty.'
+            );
+        }
+
+        /*
+         * Build the PDO connection string.
+         */
+
         $dsn = sprintf(
             'mysql:host=%s;port=%d;dbname=%s;charset=utf8mb4',
-            $cfg['host'],
-            $cfg['port'] ?? 3306,
-            $cfg['name']
+            $dbCfg['host'],
+            (int)($dbCfg['port'] ?? 3306),
+            $dbCfg['name']
         );
 
-        $pdo = new PDO($dsn, $cfg['user'], $cfg['pass'], [
+        $pdo = new PDO($dsn, $dbCfg['user'], (string)$dbCfg['pass'], [
             PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
             PDO::ATTR_EMULATE_PREPARES   => false,
@@ -115,9 +154,7 @@ if (!function_exists('db')) {
  * 2006 = MySQL server has gone away
  * 2013 = Lost connection to MySQL server during query
  */
-// before -> CHANGE AFTER PHP UPDATE
-// function dbRetry(callable $fn): mixed
-// after
+
 function dbRetry(callable $fn)
 {
     try {
@@ -133,6 +170,7 @@ function dbRetry(callable $fn)
          * errors that this application is designed to recover
          * from.
          */
+
         if ($mysqlCode !== 2006 && $mysqlCode !== 2013) {
             throw $e;
         }
@@ -140,11 +178,13 @@ function dbRetry(callable $fn)
         /*
          * Reset the old PDO connection.
          */
+
         db(true);
 
         /*
          * Create a new connection and retry the operation once.
          */
+
         // return $operation(db()); -> CHANGE AFTER PHP UPDATE
         return $fn(db());
     }
@@ -163,6 +203,7 @@ function dbRetry(callable $fn)
  *
  * returns the configuration for preset displays.
  */
+
 function src(string $key): array
 {
     if (!isset(SOURCES[$key])) {
