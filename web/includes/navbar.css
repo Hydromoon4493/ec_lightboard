@@ -250,3 +250,19 @@
         background-color: var(--color-primary-darker);
     }
 }
+
+/* Login Button */
+.navbar__link--login {
+    background-color: transparent;
+    color: var(--color-primary);
+    border: 1px solid var(--color-primary);
+    border-radius: 6px;
+    padding: 8px 18px;
+    font-weight: 600;
+    transition: all .2s ease;
+}
+
+.navbar__link--login:hover {
+    background-color: var(--color-primary);
+    color: white;
+}
