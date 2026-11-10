@@ -1,159 +1,298 @@
 <?php
-declare(strict_types=1);
 
 /*
- * Author: Sam Vossen 2026.10.29
+ * Author: Sam Vossen 2026.11.10
  * Filename: upload.php
  *
- * This page is the user-facing Lightboard custom-display upload page.
+ * This page provides two Lightboard upload options:
+ * - Admin-only preset display uploads.
+ * - User custom display uploads.
  *
  * Responsibilities:
- * - Load the shared site navigation and styling.
- * - Provide the custom-display upload form.
- * - Display upload success and error messages.
- * - Send uploaded images to the Lightboard upload database handler.
+ * - Verify the user is logged in.
+ * - Determine the user's database role.
+ * - Display the appropriate upload forms.
+ * - Send uploads to their respective handlers.
  *
  * This file does NOT:
  * - Process image files.
  * - Generate pixel maps.
- * - Communicate directly with MySQL.
  * - Communicate directly with the ESP32.
- * - Compile or upload Arduino sketches.
- *
- * Those responsibilities are handled by the Lightboard include
- * files and API layer.
  */
 
 require __DIR__ . '/includes/require_login.php';
-include 'includes/navbar.php';
-?>
+require_once __DIR__ . '/includes/lightboard/database.php';
 
+include 'includes/navbar.php';
+
+/*
+ * Retrieve the user's role directly from the database.
+ * roleID 1 = admin
+ * roleID 2 = user
+ */
+
+$isAdmin = false;
+
+try {
+    $pdo = db();
+
+    $stmt = $pdo->prepare(
+        'SELECT roleID FROM users WHERE userID = ? LIMIT 1'
+    );
+
+    $stmt->execute([(int) $_SESSION['userID']]);
+
+    $roleID = $stmt->fetchColumn();
+
+    $isAdmin = ((int) $roleID === 1);
+
+} catch (Throwable $e) {
+    error_log('Lightboard role lookup error: ' . $e->getMessage());
+}
+
+?>
 <link rel="stylesheet" href="includes/style.css">
-<link rel="stylesheet" href="includes/upload.css">
+<link rel="stylesheet" href="includes/upload.css?v=4">
 
 <main class="bodyDefult upload-page">
 
-    <div class="upload-card">
+    <div class="upload-container">
 
-        <h1>Upload Custom Display</h1>
+        <div class="upload-heading">
+            <h1>Upload Displays</h1>
+            <p>
+                Upload preset displays or create your own custom display.
+            </p>
+        </div>
 
+        <div class="upload-columns">
 
-        <?php if (isset($_GET['upload'])): ?>
+            <?php if ($isAdmin): ?>
 
-            <?php if ($_GET['upload'] === 'success'): ?>
+                <!-- ADMIN PRESET UPLOAD -->
 
-                <div class="upload-message success">
+                <section class="upload-card">
 
-                    <strong>Image uploaded successfully.</strong>
+                    <div class="upload-card-heading">
+                        <h2>Admin Preset Upload</h2>
 
-                    <?php if (isset($_GET['name'])): ?>
-
-                        <span>
-                            Display Name:
-                            <?= htmlspecialchars(
-                                $_GET['name'],
-                                ENT_QUOTES,
-                                'UTF-8'
-                            ) ?>
+                        <span class="upload-tag admin-tag">
+                            Administrator
                         </span>
+                    </div>
+
+                    <p class="upload-description">
+                        Upload preset displays that will be available
+                        to all users.
+                    </p>
+
+                    <?php if (
+                        isset($_GET['preset_upload']) &&
+                        $_GET['preset_upload'] === 'success'
+                    ): ?>
+
+                        <div class="upload-message success">
+                            Preset display uploaded successfully.
+                        </div>
+
+                    <?php elseif (
+                        isset($_GET['preset_upload']) &&
+                        $_GET['preset_upload'] === 'error'
+                    ): ?>
+
+                        <div class="upload-message error">
+                            There was a problem uploading the preset.
+                        </div>
 
                     <?php endif; ?>
 
-                </div>
+                    <form
+                        class="upload-form"
+                        action="includes/lightboard/preset_upload_db.php"
+                        method="post"
+                        enctype="multipart/form-data"
+                    >
 
+                        <div class="upload-field">
 
-            <?php elseif ($_GET['upload'] === 'error'): ?>
+                            <label for="preset-name">
+                                Display Name
+                            </label>
 
-                <div class="upload-message error">
-                    There was a problem uploading the image.
-                </div>
+                            <input
+                                type="text"
+                                id="preset-name"
+                                name="name"
+                                maxlength="45"
+                                placeholder="Enter a preset name"
+                                required
+                            >
 
+                        </div>
 
-            <?php elseif ($_GET['upload'] === 'too_large'): ?>
+                        <div class="upload-field">
 
-                <div class="upload-message error">
-                    The image is too large.
-                </div>
+                            <label for="preset-image">
+                                Select an image
+                            </label>
 
+                            <input
+                                type="file"
+                                id="preset-image"
+                                name="image"
+                                accept="image/png,image/jpeg,image/gif,image/webp"
+                                required
+                            >
 
-            <?php elseif ($_GET['upload'] === 'invalid'): ?>
+                            <small>
+                                Supports PNG, JPG, JPEG, and GIF
+                            </small>
 
-                <div class="upload-message error">
-                    The uploaded file is not a valid image.
-                </div>
+                        </div>
+
+                        <button
+                            type="submit"
+                            class="upload-button"
+                        >
+                            Upload Preset Display
+                        </button>
+
+                    </form>
+
+                </section>
 
             <?php endif; ?>
 
-        <?php endif; ?>
 
+            <!-- USER CUSTOM DISPLAY UPLOAD -->
 
-        <?php if (
-            !isset($_GET['upload']) ||
-            $_GET['upload'] !== 'success'
-        ): ?>
+            <section class="upload-card">
 
-            <form
-                class="upload-form"
-                action="includes/lightboard/upload_db.php"
-                method="post"
-                enctype="multipart/form-data"
-            >
+                <div class="upload-card-heading">
+                    <h2>Custom Display Upload</h2>
 
-                <div class="upload-field">
-
-                    <label for="name">
-                        Display Name
-                    </label>
-
-                    <input
-                        type="text"
-                        id="name"
-                        name="name"
-                        maxlength="45"
-                        placeholder="Enter a display name"
-                        required
-                    >
-
+                    <span class="upload-tag user-tag">
+                        All Users
+                    </span>
                 </div>
 
+                <p class="upload-description">
+                    Upload your own image to create a custom Lightboard
+                    display.
+                </p>
 
-                <div class="upload-field">
+                <?php if (isset($_GET['upload'])): ?>
 
-                    <label for="image">
-                        Select an image
-                    </label>
+                    <?php if ($_GET['upload'] === 'success'): ?>
 
-                    <input
-                        type="file"
-                        id="image"
-                        name="image"
-                        accept="image/png,image/jpeg,image/gif,image/webp"
-                        required
-                    >
+                        <div class="upload-message success">
 
-                    <small>
-                        Supports PNG, JPG, JPEG, and GIFs
-                    </small>
+                            <strong>Image uploaded successfully.</strong>
 
-                </div>
+                            <?php if (isset($_GET['name'])): ?>
+
+                                <span>
+                                    Display Name:
+                                    <?= htmlspecialchars(
+                                        $_GET['name'],
+                                        ENT_QUOTES,
+                                        'UTF-8'
+                                    ) ?>
+                                </span>
+
+                            <?php endif; ?>
+
+                        </div>
+
+                    <?php elseif (
+                        in_array(
+                            $_GET['upload'],
+                            ['error', 'too_large', 'invalid'],
+                            true
+                        )
+                    ): ?>
+
+                        <div class="upload-message error">
+
+                            <?php
+                            $messages = [
+                                'error' => 'There was a problem uploading the image.',
+                                'too_large' => 'The image is too large.',
+                                'invalid' => 'The uploaded file is not a valid image.'
+                            ];
+
+                            echo htmlspecialchars(
+                                $messages[$_GET['upload']],
+                                ENT_QUOTES,
+                                'UTF-8'
+                            );
+                            ?>
+
+                        </div>
+
+                    <?php endif; ?>
+
+                <?php endif; ?>
 
 
-                <button
-                    type="submit"
-                    class="upload-button"
+                <form
+                    class="upload-form"
+                    action="includes/lightboard/upload_db.php"
+                    method="post"
+                    enctype="multipart/form-data"
                 >
-                    Upload Display
-                </button>
 
-            </form>
+                    <div class="upload-field">
 
-        <?php endif; ?>
+                        <label for="name">
+                            Display Name
+                        </label>
 
+                        <input
+                            type="text"
+                            id="name"
+                            name="name"
+                            maxlength="45"
+                            placeholder="Enter a display name"
+                            required
+                        >
 
-        <a
-            href="display.php"
-            class="back-button"
-        >
+                    </div>
+
+                    <div class="upload-field">
+
+                        <label for="image">
+                            Select an image
+                        </label>
+
+                        <input
+                            type="file"
+                            id="image"
+                            name="image"
+                            accept="image/png,image/jpeg,image/gif,image/webp"
+                            required
+                        >
+
+                        <small>
+                            Supports PNG, JPG, JPEG, and GIF
+                        </small>
+
+                    </div>
+
+                    <button
+                        type="submit"
+                        class="upload-button"
+                    >
+                        Upload Custom Display
+                    </button>
+
+                </form>
+
+            </section>
+
+        </div>
+
+        <a href="display.php" class="back-button">
             Back to Display
         </a>
 
@@ -161,6 +300,4 @@ include 'includes/navbar.php';
 
 </main>
 
-<?php
-include 'includes/footer.php';
-?>
+<?php include 'includes/footer.php'; ?>

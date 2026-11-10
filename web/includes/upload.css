@@ -1,9 +1,14 @@
+
 /*
- * Author: Sam Vossen 2026.10.29
+ * Author: Sam Vossen 2026.11.10
  * Filename: includes/upload.css
  *
- * Styling specific to the Lightboard custom-display
- * upload page.
+ * Styling specific to the Lightboard display upload page.
+ *
+ * Supports:
+ * - Admin preset display uploads.
+ * - User custom display uploads.
+ * - Responsive two-column layout.
  */
 
 
@@ -16,24 +21,74 @@
 
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
 
-    padding: 40px 20px;
+    padding: 50px 20px;
     box-sizing: border-box;
 }
 
 
 /* ================================
-   Upload Card
+   Main Upload Container
+   ================================ */
+
+.upload-container {
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.upload-heading {
+    text-align: center;
+    margin-bottom: 35px;
+}
+
+.upload-heading h1 {
+    margin: 0 0 10px;
+    font-size: 2rem;
+}
+
+.upload-heading p {
+    margin: 0;
+    color: #666;
+    font-size: 0.95rem;
+}
+
+
+/* ================================
+   Two-Column Layout
+   ================================ */
+
+.upload-columns {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 25px;
+    align-items: stretch;
+    width: 100%;
+}
+
+.upload-columns > .upload-card {
+    width: 100%;
+    min-width: 0;
+}
+
+
+/* ================================
+   Upload Cards
    ================================ */
 
 .upload-card {
     width: 100%;
-    max-width: 520px;
-    padding: 32px;
+    min-width: 0;
+
+    padding: 30px;
     box-sizing: border-box;
 
+    display: flex;
+    flex-direction: column;
+
     background: #ffffff;
+
     border: 1px solid #dcdcdc;
     border-radius: 14px;
 
@@ -41,8 +96,71 @@
 }
 
 .upload-card h1 {
-    margin: 0 0 28px 0;
+    margin: 0 0 28px;
     text-align: center;
+}
+
+.upload-card h2 {
+    margin: 0;
+    font-size: 1.3rem;
+}
+
+
+/* ================================
+   Card Heading
+   ================================ */
+
+.upload-card-heading {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    flex-wrap: wrap;
+
+    gap: 10px;
+
+    margin-bottom: 15px;
+}
+
+.upload-description {
+    margin: 0 0 25px;
+
+    color: #666;
+
+    font-size: 0.92rem;
+    line-height: 1.6;
+}
+
+
+/* ================================
+   Upload Tags
+   ================================ */
+
+.upload-tag {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 5px 11px;
+
+    border-radius: 20px;
+
+    font-size: 0.75rem;
+    font-weight: 700;
+
+    white-space: nowrap;
+}
+
+.admin-tag {
+    background: #e8e5ff;
+    color: #5141a5;
+}
+
+.user-tag {
+    background: #e2f5e8;
+    color: #247541;
 }
 
 
@@ -53,19 +171,30 @@
 .upload-form {
     display: flex;
     flex-direction: column;
-    gap: 24px;
+
+    gap: 22px;
+
+    width: 100%;
 }
 
 .upload-field {
     display: flex;
     flex-direction: column;
+
     gap: 8px;
+
+    width: 100%;
 }
 
 .upload-field label {
     font-weight: 600;
     font-size: 0.95rem;
 }
+
+
+/* ================================
+   Text Inputs
+   ================================ */
 
 .upload-field input[type="text"] {
     width: 100%;
@@ -77,6 +206,7 @@
     border-radius: 8px;
 
     font-size: 1rem;
+
     background: #fafafa;
 
     transition:
@@ -86,20 +216,22 @@
 
 .upload-field input[type="text"]:focus {
     outline: none;
+
     border-color: #555;
+
     box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.08);
 }
 
 
 /* ================================
-   File Input
+   File Inputs
    ================================ */
 
 .upload-field input[type="file"] {
     width: 100%;
     box-sizing: border-box;
 
-    padding: 10px;
+    padding: 12px;
 
     border: 1px dashed #bdbdbd;
     border-radius: 8px;
@@ -107,10 +239,15 @@
     background: #fafafa;
 
     cursor: pointer;
+
+    transition:
+        background-color 0.15s ease,
+        border-color 0.15s ease;
 }
 
 .upload-field input[type="file"]:hover {
     background: #f3f3f3;
+    border-color: #888;
 }
 
 .upload-field small {
@@ -120,17 +257,19 @@
 
 
 /* ================================
-   Buttons
+   Upload Buttons
    ================================ */
 
 .upload-button,
 .back-button {
     display: inline-flex;
+
     align-items: center;
     justify-content: center;
 
-    min-height: 44px;
-    padding: 10px 20px;
+    min-height: 46px;
+
+    padding: 11px 20px;
 
     border-radius: 8px;
 
@@ -148,10 +287,12 @@
 }
 
 
-/* Upload button */
+/* Upload Button */
 
 .upload-button {
     width: 100%;
+
+    margin-top: auto;
 
     border: none;
 
@@ -163,6 +304,7 @@
 
 .upload-button:hover {
     background: #000;
+
     box-shadow: 0 3px 8px rgba(0, 0, 0, 0.18);
 }
 
@@ -176,11 +318,14 @@
 }
 
 
-/* Back button */
+/* ================================
+   Back Button
+   ================================ */
 
 .back-button {
     width: 100%;
-    margin-top: 24px;
+
+    margin-top: 25px;
 
     border: 1px solid #cfcfcf;
 
@@ -206,45 +351,73 @@
 .upload-message {
     display: flex;
     flex-direction: column;
+
     gap: 6px;
 
-    margin-bottom: 24px;
+    margin-bottom: 22px;
     padding: 14px 16px;
 
     border-radius: 8px;
 
-    font-size: 0.95rem;
+    font-size: 0.92rem;
+    line-height: 1.5;
 }
 
 .upload-message.success {
     background: #f0f7f0;
+
     border: 1px solid #b9d6b9;
+
     color: #285428;
 }
 
 .upload-message.error {
     background: #faf0f0;
+
     border: 1px solid #dfbaba;
+
     color: #6b2525;
 }
 
 
 /* ================================
-   Mobile
+   Mobile Layout
    ================================ */
 
-@media (max-width: 600px) {
+@media (max-width: 750px) {
 
     .upload-page {
-        padding: 20px 12px;
+        padding: 35px 16px;
+    }
+
+    .upload-container {
+        width: 100%;
+    }
+
+    .upload-columns {
+        grid-template-columns: 1fr;
+        gap: 20px;
     }
 
     .upload-card {
-        padding: 24px 20px;
-        border-radius: 10px;
+        padding: 25px;
     }
 
-    .upload-card h1 {
-        font-size: 1.5rem;
+}
+
+
+/* ================================
+   Small Mobile Screens
+   ================================ */
+
+@media (max-width: 750px) {
+
+    .upload-page {
+        padding: 35px 16px;
     }
+
+    .upload-columns {
+        grid-template-columns: 1fr !important;
+    }
+
 }
