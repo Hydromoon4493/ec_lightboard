@@ -132,7 +132,7 @@ include 'includes/navbar.php';
                     >
 
                     <small>
-                        Supports PNG, JPG, JPEG, and GIF. Animated GIFs are treated as a single static frame.
+                        Supports PNG, JPG, JPEG, and GIFs
                     </small>
 
                 </div>
