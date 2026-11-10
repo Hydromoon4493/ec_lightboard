@@ -127,6 +127,14 @@ include __DIR__ . '/includes/navbar.php';
 
                 <h2>Display Settings</h2>
 
+                <div class="brightness-notice">
+                    <strong>Brightness Notice</strong>
+                    <p>
+                        With lower brightness, some pixels may appear to be off.
+                        If this happens, turn the brightness up.
+                    </p>
+                </div>
+
                 <label for="b">
                     Brightness:
                     <span id="brightnessValue">35</span>

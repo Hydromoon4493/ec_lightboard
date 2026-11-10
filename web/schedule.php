@@ -1,3 +1,4 @@
+
 <?php
 /*
  * Filename: schedule.php
@@ -10,21 +11,32 @@
  * - Provide a request form: display, start, end, notes.
  *
  * This file does NOT:
- * - Process or save the request (handled by api/schedule_request.php).
+ * - Process or save the request (handled by api/schedule/schedule.php).
  * - Communicate directly with MySQL or the ESP32.
  */
 
-declare(strict_types=1);
 require __DIR__ . '/includes/require_login.php';
+
 ini_set('display_errors', '1');
 error_reporting(E_ALL);
 
 require_once __DIR__ . '/includes/lightboard/images.php';
 
-$presetImages = listImages('p');
-$customImages = listImages('c');
+/*
+ * Load available displays.
+ *
+ * Presets are available to everyone.
+ * Custom displays are restricted to the logged-in user.
+ */
 
-/* One entry per image column. Key = image source ('p' or 'c'). */
+$presetImages = listImages('p');
+$customImages = listImages('c', (int)$_SESSION['userID']);
+
+/*
+ * One entry per image column.
+ * Key = image source ('p' or 'c').
+ */
+
 $galleries = [
     'p' => [
         'title'  => 'Preset Displays',
@@ -38,16 +50,27 @@ $galleries = [
     ],
 ];
 
-/* Earliest selectable start: 24 hours from now, Eastern time, formatted for datetime-local. */
-$minDateTime = (new DateTimeImmutable('+24 hours', new DateTimeZone('America/New_York')))
-    ->format('Y-m-d\TH:i');
+/*
+ * Earliest selectable start: 24 hours from now,
+ * Eastern time, formatted for datetime-local.
+ */
+
+$minDateTime = (new DateTimeImmutable(
+    '+24 hours',
+    new DateTimeZone('America/New_York')
+))->format('Y-m-d\TH:i');
+
 ?>
 
 <?php
+/*
+ * Shared navigation.
+ * Include only once, after page initialization.
+ */
 include __DIR__ . '/includes/navbar.php';
 ?>
 
-<link rel="stylesheet" href="includes/style.css">
+<link rel="stylesheet" href="includes/style.css?v=2">
 <link rel="stylesheet" href="includes/lightboard.css">
 <link rel="stylesheet" href="includes/schedule.css">
 
@@ -64,15 +87,20 @@ include __DIR__ . '/includes/navbar.php';
     <div class="lightboard-layout schedule-layout">
 
         <!-- Columns 1 and 2: Preset and Custom galleries (reference only) -->
+
         <?php foreach ($galleries as $key => $g): ?>
 
             <section class="lightboard-gallery">
 
-                <h2><?= htmlspecialchars($g['title'], ENT_QUOTES, 'UTF-8') ?></h2>
+                <h2>
+                    <?= htmlspecialchars($g['title'], ENT_QUOTES, 'UTF-8') ?>
+                </h2>
 
                 <?php if (empty($g['images'])): ?>
 
-                    <p><?= htmlspecialchars($g['empty'], ENT_QUOTES, 'UTF-8') ?></p>
+                    <p>
+                        <?= htmlspecialchars($g['empty'], ENT_QUOTES, 'UTF-8') ?>
+                    </p>
 
                 <?php else: ?>
 
@@ -84,7 +112,7 @@ include __DIR__ . '/includes/navbar.php';
 
                                 <img
                                     class="gallery-thumb"
-                                    src="api/thumbnail.php?src=<?= $key ?>&id=<?= (int) $image['id'] ?>"
+                                    src="api/thumbnail.php?src=<?= $key ?>&id=<?= (int)$image['id'] ?>"
                                     alt="<?= htmlspecialchars($image['name'], ENT_QUOTES, 'UTF-8') ?>"
                                     loading="lazy"
                                 >
@@ -107,37 +135,64 @@ include __DIR__ . '/includes/navbar.php';
 
 
         <!-- Column 3: Job request form -->
+
         <aside class="lightboard-sidebar schedule-form-column">
 
             <section class="lightboard-controls schedule-form-card">
 
                 <h2>Request a Job</h2>
 
-                <form id="scheduleForm" method="post" action="api/schedule/schedule.php">
+                <form
+                    id="scheduleForm"
+                    method="post"
+                    action="api/schedule/schedule.php"
+                >
+
+                    <!-- Display selection -->
 
                     <div class="form-row">
+
                         <label for="display">Display</label>
+
                         <select id="display" name="display" required>
-                            <option value="" disabled selected>Select a display…</option>
+
+                            <option value="" disabled selected>
+                                Select a display…
+                            </option>
 
                             <?php foreach ($galleries as $key => $g): ?>
+
                                 <?php if (!empty($g['images'])): ?>
+
                                     <optgroup label="<?= htmlspecialchars($g['title'], ENT_QUOTES, 'UTF-8') ?>">
+
                                         <?php foreach ($g['images'] as $image): ?>
-                                            <option value="<?= $key . ':' . (int) $image['id'] ?>">
+
+                                            <option value="<?= $key . ':' . (int)$image['id'] ?>">
                                                 <?= htmlspecialchars($image['name'], ENT_QUOTES, 'UTF-8') ?>
                                             </option>
+
                                         <?php endforeach; ?>
+
                                     </optgroup>
+
                                 <?php endif; ?>
+
                             <?php endforeach; ?>
 
                         </select>
+
                     </div>
 
+
+                    <!-- Start and end times -->
+
                     <div class="form-row form-row-pair">
+
                         <div>
+
                             <label for="start">Start date &amp; time</label>
+
                             <input
                                 type="datetime-local"
                                 id="start"
@@ -145,10 +200,13 @@ include __DIR__ . '/includes/navbar.php';
                                 min="<?= $minDateTime ?>"
                                 required
                             >
+
                         </div>
 
                         <div>
+
                             <label for="end">End date &amp; time</label>
+
                             <input
                                 type="datetime-local"
                                 id="end"
@@ -156,13 +214,20 @@ include __DIR__ . '/includes/navbar.php';
                                 min="<?= $minDateTime ?>"
                                 required
                             >
+
                         </div>
+
                     </div>
 
+
+                    <!-- Optional notes -->
+
                     <div class="form-row">
+
                         <label for="notes">
                             Notes <span class="optional">(optional)</span>
                         </label>
+
                         <textarea
                             id="notes"
                             name="notes"
@@ -170,15 +235,29 @@ include __DIR__ . '/includes/navbar.php';
                             maxlength="250"
                             placeholder="Anything we should know?"
                         ></textarea>
+
                     </div>
 
+
+                    <!-- Scheduling restrictions -->
+
                     <p class="schedule-hint">
-                        Requests must be made at least 24 hours in advance and can last up to 72 hours.
+                        Requests must be made at least 24 hours in advance
+                        and can last up to 72 hours.
                     </p>
 
-                    <button type="submit">Submit Request</button>
 
-                    <p id="scheduleError" class="schedule-error" role="alert"></p>
+                    <!-- Submit request -->
+
+                    <button type="submit">
+                        Submit Request
+                    </button>
+
+                    <p
+                        id="scheduleError"
+                        class="schedule-error"
+                        role="alert"
+                    ></p>
 
                 </form>
 
@@ -189,3 +268,12 @@ include __DIR__ . '/includes/navbar.php';
     </div>
 
 </main>
+
+
+<?php
+/*
+ * Shared footer.
+ * Must appear after the page content.
+ */
+include __DIR__ . '/includes/footer.php';
+?>

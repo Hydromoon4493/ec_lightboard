@@ -24,12 +24,12 @@ declare(strict_types=1);
  * files and API layer.
  */
 
-// require __DIR__ . '/includes/require_login.php';
+require __DIR__ . '/includes/require_login.php';
 include 'includes/navbar.php';
 ?>
 
-<link rel="stylesheet" href="includes/style.css?v=2">
-<link rel="stylesheet" href="includes/upload.css?v=2">
+<link rel="stylesheet" href="includes/style.css">
+<link rel="stylesheet" href="includes/upload.css">
 
 <main class="bodyDefult upload-page">
 

@@ -1,5 +1,5 @@
 <?php
-    // require __DIR__ . '/includes/require_login.php';
+    require __DIR__ . '/includes/require_login.php';
     include 'includes/navbar.php';
 ?>
 
