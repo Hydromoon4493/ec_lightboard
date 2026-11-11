@@ -7,15 +7,7 @@
 <link rel="stylesheet" href="includes/create.css?v=2">
 
 <main class="bodyDefult create-page">
-<main class="bodyDefult create-page">
     <h1>Create a Picture for the Lightboard!</h1>
-    <p>Pick a color, then click or drag across the board to paint.</p>
-
-    <div class="create-layout">
-
-        <!-- Board -->
-        <div class="create-card board-card">
-            <div class="board-grid" id="lights" aria-label="Lightboard canvas"></div>
     <p>Pick a color, then click or drag across the board to paint.</p>
 
     <div class="create-layout">
@@ -85,37 +77,6 @@
 </main>
 
 <script>
-    const COLS = 48, ROWS = 48;
-    const lights   = document.getElementById('lights');
-    const palette  = document.getElementById('palette');
-    const picker   = document.getElementById('colorPicker');
-    const eraser   = document.getElementById('eraserBtn');
-
-    let currColor = null;       // hex string, or null when erasing
-    let selectedSwatch = null;
-    let painting = false;
-
-    // build the 48 x 48 board
-    lights.style.setProperty('--cols', COLS);
-    for (let i = 0; i < COLS * ROWS; i++) {
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.tabIndex = -1;
-        lights.appendChild(btn);
-    }
-
-    function paint(cell) {
-        if (!cell || cell.parentElement !== lights) return;
-        cell.style.backgroundColor = currColor ?? '';
-        if (currColor) cell.dataset.color = currColor;   // keep the hex for saving later
-        else delete cell.dataset.color;
-    }
-
-    // click + drag painting (works for mouse and touch)
-    lights.addEventListener('pointerdown', (e) => {
-        e.preventDefault();
-        painting = true;
-        paint(e.target.closest('button'));
     const COLS = 48, ROWS = 48;
     const lights   = document.getElementById('lights');
     const palette  = document.getElementById('palette');
