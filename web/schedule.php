@@ -70,9 +70,9 @@ $minDateTime = (new DateTimeImmutable(
 include __DIR__ . '/includes/navbar.php';
 ?>
 
-<link rel="stylesheet" href="includes/style.css?v=2">
-<link rel="stylesheet" href="includes/lightboard.css">
-<link rel="stylesheet" href="includes/schedule.css">
+<link rel="stylesheet" href="includes/css/style.css?v=2">
+<link rel="stylesheet" href="includes/css/lightboard.css">
+<link rel="stylesheet" href="includes/css/schedule.css">
 
 <script src="includes/schedule.js" defer></script>
 

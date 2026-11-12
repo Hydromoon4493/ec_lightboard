@@ -51,8 +51,8 @@ try {
 }
 
 ?>
-<link rel="stylesheet" href="includes/style.css">
-<link rel="stylesheet" href="includes/upload.css?v=5">
+<link rel="stylesheet" href="includes/css/style.css">
+<link rel="stylesheet" href="includes/css/upload.css?v=5">
 
 <main class="bodyDefult upload-page">
 

@@ -3,8 +3,8 @@
     include 'includes/navbar.php';
 ?>
 
-<link rel="stylesheet" href="includes/style.css?v=2">
-<link rel="stylesheet" href="includes/create.css?v=2">
+<link rel="stylesheet" href="includes/css/style.css?v=2">
+<link rel="stylesheet" href="includes/css/create.css?v=2">
 
 <main class="bodyDefult create-page">
     <h1>Create a Picture for the Lightboard!</h1>

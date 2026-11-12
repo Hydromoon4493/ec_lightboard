@@ -88,8 +88,8 @@ $galleries = [
 include __DIR__ . '/includes/navbar.php';
 ?>
 
-<link rel="stylesheet" href="includes/style.css?v=2">
-<link rel="stylesheet" href="includes/lightboard.css?v=7">
+<link rel="stylesheet" href="includes/css/style.css?v=2">
+<link rel="stylesheet" href="includes/css/lightboard.css?v=7">
 
 <main class="bodyDefult lightboard-page">
 

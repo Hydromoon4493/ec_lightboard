@@ -3,8 +3,8 @@
     include 'includes/navbar.php';
 ?>
 
-<link rel="stylesheet" href="includes/style.css">
-<link rel="stylesheet" href="includes/profile.css">
+<link rel="stylesheet" href="includes/css/style.css">
+<link rel="stylesheet" href="includes/css/profile.css">
 <script src="includes/profile.js" defer></script>
 
 <main class="bodyDefault profile-layout">

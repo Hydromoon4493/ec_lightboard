@@ -3,8 +3,8 @@
 ?>
 
 <!-- Shared includes: match however your other pages (e.g. index.php) pull these in -->
-<link rel="stylesheet" href="/ec_lightboard/web/includes/style.css?v=2">
-<link rel="stylesheet" href="/ec_lightboard/web/includes/auth.css?v=2">
+<link rel="stylesheet" href="includes/css/style.css?v=2">
+<link rel="stylesheet" href="includes/css/auth.css?v=2">
 <title><?= isset($pageTitle) ? htmlspecialchars($pageTitle) . ' | ' : '' ?>EC Lightboard</title>
 <link rel="icon" type="image/png" href="/ec_lightboard/web/includes/images/BSN_Logo.png">
 <script src="includes/auth.js" defer></script>

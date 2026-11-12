@@ -65,8 +65,8 @@ $pageTitle = 'Gallery';
 include __DIR__ . '/includes/navbar.php';
 ?>
 
-<link rel="stylesheet" href="includes/lightboard.css?v=7">
-<link rel="stylesheet" href="includes/gallery.css?v=1">
+<link rel="stylesheet" href="includes/css/lightboard.css?v=7">
+<link rel="stylesheet" href="includes/css/gallery.css?v=1">
 
 <main class="bodyDefult lightboard-page">
 

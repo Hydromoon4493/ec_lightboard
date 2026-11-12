@@ -42,7 +42,7 @@ if (!$user || (int)$user['roleID'] !== 1) {
 
     <title>Admin Dashboard | Lightboard</title>
 
-    <link rel="stylesheet" href="includes/style.css?v=2">
+    <link rel="stylesheet" href="includes/css/style.css?v=2">
 
     <style>
         .admin-page {

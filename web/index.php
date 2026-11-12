@@ -25,8 +25,8 @@ $pageTitle = 'Home';
 
     <title><?= htmlspecialchars($pageTitle) ?> | EC Lightboard</title>
 
-    <link rel="stylesheet" href="/ec_lightboard/web/includes/style.css?v=2">
-    <link rel="stylesheet" href="/ec_lightboard/web/includes/home.css?v=1">
+    <link rel="stylesheet" href="includes/css/style.css?v=2">
+    <link rel="stylesheet" href="includes/css/home.css?v=1">
 
     <link rel="icon" type="image/png"
           href="/ec_lightboard/web/includes/images/BSN_Logo.png">

@@ -4,7 +4,7 @@
       ==================================================================
     -->
 
-    <link rel="stylesheet" href="/ec_lightboard/web/includes/footer.css?v=2">
+    <link rel="stylesheet" href="/ec_lightboard/web/includes/css/footer.css?v=2">
 
     <footer class="footer-centered" role="contentinfo">
         <div class="footer-centered__container">

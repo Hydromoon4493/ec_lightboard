@@ -10,8 +10,8 @@
 include 'includes/navbar.php';
 ?>
 
-<link rel="stylesheet" href="includes/style.css?v=2">
-<link rel="stylesheet" href="includes/about.css?v=1">
+<link rel="stylesheet" href="includes/css/style.css?v=2">
+<link rel="stylesheet" href="includes/css/about.css?v=1">
 
 <main class="about-page">
 
