@@ -3,10 +3,10 @@ declare(strict_types=1);
 
 /*
  * Author: Sam Vossen 2026.10.20
- * Filename: api/thumbnail.php
+ * Filename: api/display/thumbnail.php
  * Serves a 48x48 board-ready image, enlarged with nearest-neighbor
  * scaling so individual LED pixels stay sharp.
- * Usage: api/thumbnail.php?src=p&id=3
+ * Usage: api/display/thumbnail.php?src=p&id=3
  */
 
 require_once __DIR__ . '/../../includes/lightboard/images.php';

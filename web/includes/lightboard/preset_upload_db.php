@@ -3,7 +3,7 @@
 
 /*
  * Author: Sam Vossen 2026.11.10
- * Filename: includes/lightboard/preset_upload_db.php
+ * Filename: includes/lightboard/preset_custom_upload_db.php
  *
  * Handles uploads of administrator preset Lightboard displays.
  *
@@ -28,7 +28,7 @@
  * - Minimum frame delay: 20ms.
  * - Maximum frame delay: 2000ms.
  *
- * Custom display uploads remain handled by upload_db.php.
+ * Custom display uploads remain handled by custom_upload_db.php.
  */
 
 

@@ -228,8 +228,8 @@
             form.append('name', name);
             form.append('image', await boardToPng(), 'creation.png');
 
-            const res = await fetch('includes/lightboard/upload_db.php', { method: 'POST', body: form });
-            // upload_db.php redirects to upload.php?upload=<status>
+            const res = await fetch('includes/lightboard/custom_upload_db.php', { method: 'POST', body: form });
+            // custom_upload_db.php redirects to upload.php?upload=<status>
             const status = new URL(res.url).searchParams.get('upload');
 
             if (status === 'success') {

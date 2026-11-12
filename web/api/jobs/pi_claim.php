@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 /*
  * Author: Sam Vossen 2026.10.22
- * Filename: api/pi_claim.php
+ * Filename: api/jobs/pi_claim.php
  * Called by the Raspberry Pi. Returns the oldest pending job (once)
  * or {"job": null}. Requires the X-Pi-Token header.
  */
@@ -19,7 +19,7 @@ header('Cache-Control: no-store');
 try {
     echo json_encode(['job' => claimNextJob()]);
 } catch (Throwable $e) {
-    error_log('api/pi_claim.php: ' . $e->getMessage());
+    error_log('api/jobs/pi_claim.php: ' . $e->getMessage());
     http_response_code(500);
     echo json_encode(['error' => 'Server error.']);
 }

@@ -1,7 +1,7 @@
 <?php
 /*
  * Author: Sam Vossen 2026.11.10
- * Filename: api/manage_display.php
+ * Filename: api/displays/manage_display.php
  *
  * Handles renaming and deleting Lightboard displays.
  *

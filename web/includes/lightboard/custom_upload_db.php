@@ -7,7 +7,7 @@ require_once __DIR__ . '/images.php';
 
 /*
  * Author: Sam Vossen 2026.11.05
- * Filename: includes/lightboard/upload_db.php
+ * Filename: includes/lightboard/custom_upload_db.php
  *
  * Handles uploads of custom Lightboard displays.
  *
@@ -83,7 +83,7 @@ function uploadRedirect(string $status): void
         http_response_code(500);
 
         echo '<h2>Lightboard Upload Diagnostic</h2>';
-        echo '<p>Failure location: upload_db.php line '
+        echo '<p>Failure location: custom_upload_db.php line '
             . $line . '</p>';
 
         echo '<pre>';

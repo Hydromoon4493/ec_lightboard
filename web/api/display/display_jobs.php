@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 /*
  * Author: Sam Vossen 2026.10.22
- * Filename: api/display_jobs.php
+ * Filename: api/display/display_jobs.php
  *
  * Public endpoint called by the browser. Builds the sketch, queues a
  * display job and returns immediately with the job id.
@@ -45,6 +45,6 @@ try {
 } catch (RuntimeException $e) {
     fail(404, $e->getMessage());
 } catch (Throwable $e) {
-    error_log('api/display_jobs.php: ' . $e->getMessage());
+    error_log('api/display/display_jobs.php: ' . $e->getMessage());
     fail(500, 'Could not queue the display.');
 }

@@ -4,7 +4,7 @@
  *
  * Browser side of the Lightboard page.
  *
- * Flow: POST api/display_jobs.php -> get job_id -> poll api/job_status.php
+ * Flow: POST api/display/display_jobs.php -> get job_id -> poll api/display/job_status.php
  * every 2 seconds until the job is done, failed or cancelled.
  */
 

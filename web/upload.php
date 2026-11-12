@@ -108,7 +108,7 @@ try {
 
                     <form
                         class="upload-form"
-                        action="includes/lightboard/preset_upload_db.php"
+                        action="includes/lightboard/preset_custom_upload_db.php"
                         method="post"
                         enctype="multipart/form-data"
                     >
@@ -237,7 +237,7 @@ try {
 
                 <form
                     class="upload-form"
-                    action="includes/lightboard/upload_db.php"
+                    action="includes/lightboard/custom_upload_db.php"
                     method="post"
                     enctype="multipart/form-data"
                 >

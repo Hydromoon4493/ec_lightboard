@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 /*
  * Author: Sam Vossen 2026.10.22
- * Filename: api/job_status.php
- * Public endpoint the browser polls. Usage: api/job_status.php?id=12
+ * Filename: api/display/job_status.php
+ * Public endpoint the browser polls. Usage: api/display/job_status.php?id=12
  */
 
 require_once __DIR__ . '/../../includes/lightboard/jobs.php';
@@ -31,7 +31,7 @@ try {
 
     echo json_encode($job);
 } catch (Throwable $e) {
-    error_log('api/job_status.php: ' . $e->getMessage());
+    error_log('api/display/job_status.php: ' . $e->getMessage());
     http_response_code(500);
     echo json_encode(['error' => 'Could not read job status.']);
 }

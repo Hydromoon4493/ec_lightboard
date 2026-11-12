@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 /*
  * Author: Sam Vossen 2026.10.22
- * Filename: api/pi_complete.php
+ * Filename: api/jobs/pi_complete.php
  * Called by the Raspberry Pi to report a job result.
  * POST JSON: {"id":12,"ok":true,"log":"..."}
  */
@@ -34,7 +34,7 @@ try {
     completeJob($id, !empty($in['ok']), (string)($in['log'] ?? ''));
     echo json_encode(['ok' => true]);
 } catch (Throwable $e) {
-    error_log('api/pi_complete.php: ' . $e->getMessage());
+    error_log('api/jobs/pi_complete.php: ' . $e->getMessage());
     http_response_code(500);
     echo json_encode(['error' => 'Server error.']);
 }
