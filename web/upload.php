@@ -108,7 +108,7 @@ try {
 
                     <form
                         class="upload-form"
-                        action="includes/lightboard/preset_custom_upload_db.php"
+                        action="includes/lightboard/displays/preset_upload_db.php"
                         method="post"
                         enctype="multipart/form-data"
                     >
@@ -292,8 +292,8 @@ try {
 
         </div>
 
-        <a href="display.php" class="back-button">
-            Back to Display
+        <a href="<?= $isAdmin ? 'display.php' : 'gallery.php' ?>" class="back-button">
+            <?= $isAdmin ? 'Back to Display' : 'Back to Gallery' ?>
         </a>
 
     </div>

@@ -1,5 +1,4 @@
 <?php
-declare(strict_types=1);
 
 /*
  * Author: Sam Vossen 2026.11.05
@@ -18,8 +17,9 @@ declare(strict_types=1);
  *
  * Static and animated display handling:
  * - Static images use getOrCreatePixelMap() and buildSketch().
- * - Animated custom displays load their frames from customDisplayFrames
- *   and use buildAnimatedSketch().
+ * - Animated custom displays load frames from customDisplayFrames.
+ * - Animated preset displays load frames from presetDisplayFrames.
+ * - Both use buildAnimatedSketch().
  *
  * This file does NOT communicate directly with the ESP32 or run
  * arduino-cli. Those tasks are handled by the Raspberry Pi worker.
@@ -50,6 +50,7 @@ const JOB_CLAIM_TTL_MINUTES = 5;
  * $key:
  *   Source identifier used by the existing image system.
  *   'c' identifies a custom display.
+ *   'p' identifies a preset display.
  *
  * $id:
  *   ID of the image/custom display.
@@ -59,7 +60,7 @@ const JOB_CLAIM_TTL_MINUTES = 5;
  *
  * Process:
  * 1. Validate the source and load the display record.
- * 2. Determine whether a custom display is animated.
+ * 2. Determine whether the selected display is animated.
  * 3. Generate either a static or animated Arduino sketch.
  * 4. Cancel older pending jobs.
  * 5. Insert the new job into display_jobs.
@@ -82,16 +83,21 @@ function queueDisplay(string $key, int $id, int $brightness): int
         throw new RuntimeException('Image not found.');
     }
 
+    /* GENERATE THE ARDUINO SKETCH */
+
     /*
-     * Only custom displays can be animated.
+     * Determine whether the selected display is animated.
      *
-     * The isAnimated flag is stored in customDisplay.
-     * Built-in displays and ordinary static custom displays
-     * continue through the original static-image path.
+     * Custom displays use customDisplay.isAnimated.
+     * Preset displays use presetDisplay.isAnimated.
+     *
+     * Each display type retains its own frame table.
      */
+
     $isAnimated = false;
 
     if ($key === 'c') {
+
         $check = db()->prepare(
             'SELECT isAnimated
              FROM customDisplay
@@ -101,23 +107,56 @@ function queueDisplay(string $key, int $id, int $brightness): int
         $check->execute([$id]);
 
         $isAnimated = (bool)$check->fetchColumn();
+
+    } elseif ($key === 'p') {
+
+        $check = db()->prepare(
+            'SELECT isAnimated
+             FROM presetDisplay
+             WHERE pDisplayID = ?'
+        );
+
+        $check->execute([$id]);
+
+        $isAnimated = (bool)$check->fetchColumn();
     }
 
-    /* GENERATE THE ARDUINO SKETCH */
-
     if ($isAnimated) {
+
         /*
-         * ANIMATED CUSTOM DISPLAY
+         * ANIMATED DISPLAY
          *
-         * Retrieve every stored frame in its original order.
-         * Each row contains a pixel map and its display duration.
+         * Retrieve frames from the correct frame table.
+         * Both tables use the same pixel_map and delayMs
+         * structure, so buildAnimatedSketch() handles both.
          */
-        $frameStmt = db()->prepare(
-            'SELECT frameNumber, pixel_map, delayMs
-             FROM customDisplayFrames
-             WHERE displayID = ?
-             ORDER BY frameNumber ASC'
-        );
+
+        if ($key === 'c') {
+
+            // Existing custom animation retrieval.
+            $frameStmt = db()->prepare(
+                'SELECT frameNumber, pixel_map, delayMs
+                 FROM customDisplayFrames
+                 WHERE displayID = ?
+                 ORDER BY frameNumber ASC'
+            );
+
+        } elseif ($key === 'p') {
+
+            // Preset animation retrieval.
+            $frameStmt = db()->prepare(
+                'SELECT frameNumber, pixel_map, delayMs
+                 FROM presetDisplayFrames
+                 WHERE pDisplayID = ?
+                 ORDER BY frameNumber ASC'
+            );
+
+        } else {
+
+            throw new RuntimeException(
+                'Unsupported animated display source.'
+            );
+        }
 
         $frameStmt->execute([$id]);
 
@@ -129,19 +168,18 @@ function queueDisplay(string $key, int $id, int $brightness): int
             );
         }
 
-        // Build the sketch using the separate animated template.
+        // Both display types use the same animation builder.
         $sketch = buildAnimatedSketch(
             $frames,
             $brightness
         );
 
     } else {
+
         /*
          * STATIC IMAGE
          *
-         * This is the original static-image workflow.
-         * It continues to use the cached/generated pixel map
-         * and the original webImage.ino.tpl template.
+         * Original static-image workflow remains unchanged.
          */
         $pixelData = getOrCreatePixelMap(
             $key,
@@ -162,6 +200,7 @@ function queueDisplay(string $key, int $id, int $brightness): int
     $pdo->beginTransaction();
 
     try {
+
         /*
          * Cancel older pending jobs.
          *
@@ -201,6 +240,7 @@ function queueDisplay(string $key, int $id, int $brightness): int
         return $jobId;
 
     } catch (Throwable $e) {
+
         /*
          * Roll back the transaction if inserting the new job
          * or cancelling older jobs fails.
@@ -311,6 +351,7 @@ function claimNextJob(): ?array
     $pdo->beginTransaction();
 
     try {
+
         /*
          * FOR UPDATE prevents another worker from claiming
          * the same pending job at the same time.
@@ -344,6 +385,7 @@ function claimNextJob(): ?array
         return $job;
 
     } catch (Throwable $e) {
+
         /*
          * Release the row lock and undo changes if claiming
          * the job fails.

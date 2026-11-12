@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 session_start();
 
-require_once __DIR__ . '/images.php';
+require_once __DIR__ . '/../core/images.php';
 
 /*
  * Author: Sam Vossen 2026.11.05
@@ -107,7 +107,7 @@ function uploadRedirect(string $status): void
     }
 
     header(
-        'Location: ../../upload.php?upload=' . urlencode($status)
+        'Location: ../../../upload.php?upload=' . urlencode($status)
     );
 
     exit;

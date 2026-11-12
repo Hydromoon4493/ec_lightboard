@@ -182,7 +182,7 @@ function buildAnimatedSketch(array $frames, int $brightness): string
 
     /* LOAD ANIMATED ARDUINO TEMPLATE */
 
-    $templatePath = __DIR__ . '/../../templates/animatedImage.ino.tpl';
+    $templatePath = __DIR__ . '/../../../templates/animatedImage.ino.tpl';
     $tpl = file_get_contents($templatePath);
 
     if ($tpl === false) {

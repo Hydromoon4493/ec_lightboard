@@ -2,8 +2,8 @@
 <?php
 
 /*
- * Author: Sam Vossen 2026.11.10
- * Filename: includes/lightboard/preset_custom_upload_db.php
+ * Author: Sam Vossen 2026.11.12
+ * Filename: includes/lightboard/displays/preset_upload_db.php
  *
  * Handles uploads of administrator preset Lightboard displays.
  *
@@ -37,8 +37,8 @@
  * ============================================================
  */
 
-require_once __DIR__ . '/../require_login.php';
-require_once __DIR__ . '/images.php';
+require_once __DIR__ . '/../../auth/require_login.php';
+require_once __DIR__ . '/../core/images.php';
 
 
 /* ============================================================
@@ -60,7 +60,7 @@ define('PRESET_GIF_MAX_DELAY_MS', 2000);
 function presetUploadRedirect(string $status): void
 {
     header(
-        'Location: ../../upload.php?preset_upload='
+        'Location: ../../../upload.php?preset_upload='
         . urlencode($status)
     );
 
@@ -415,52 +415,78 @@ try {
                 }
 
                 $totalDuration = 0;
-                $frameNumber = 0;
 
-                foreach ($coalesced as $frame) {
+                /*
+                 * Explicitly select every coalesced frame
+                 * by index instead of using foreach.
+                 *
+                 * This ensures each animation frame is
+                 * independently retrieved and processed.
+                 */
 
-                    /*
-                     * Convert the current coalesced frame
-                     * to PNG data for the existing GD pipeline.
-                     */
+                for (
+                    $frameNumber = 0;
+                    $frameNumber < $frameCount;
+                    $frameNumber++
+                ) {
 
-                    $frameCopy = clone $frame;
-
-                    try {
-
-                        $frameCopy->setImageFormat('png');
-
-                        $frameData = $frameCopy->getImageBlob();
-
-                    } finally {
-
-                        $frameCopy->clear();
-                        $frameCopy->destroy();
-
-                    }
-
-                    if (
-                        $frameData === false
-                        || $frameData === ''
-                    ) {
+                    if (!$coalesced->setIteratorIndex($frameNumber)) {
                         throw new RuntimeException(
-                            'Could not extract GIF frame.'
+                            'Could not select GIF frame '
+                            . $frameNumber . '.'
                         );
                     }
 
+                    $frame = $coalesced->getImage();
+
+                    if (!$frame) {
+                        throw new RuntimeException(
+                            'Could not retrieve GIF frame '
+                            . $frameNumber . '.'
+                        );
+                    }
+
+                    try {
+
+                        /*
+                         * Read the delay from the selected frame.
+                         */
+
+                        $rawDelay = (int) $frame->getImageDelay();
+
+                        $delayMs = normalizePresetGifDelay($rawDelay);
+
+                        /*
+                         * Convert the current frame to PNG
+                         * for the existing GD image pipeline.
+                         */
+
+                        $frame->setImageFormat('png');
+
+                        $frameData = $frame->getImageBlob();
+
+                        if (
+                            $frameData === false
+                            || $frameData === ''
+                        ) {
+                            throw new RuntimeException(
+                                'Could not extract GIF frame '
+                                . $frameNumber . '.'
+                            );
+                        }
+
+                    } finally {
+
+                        $frame->clear();
+                        $frame->destroy();
+
+                    }
+
                     /*
-                     * Process frame into a Lightboard pixel map.
+                     * Generate the Lightboard pixel map.
                      */
 
                     $processed = processPresetFrame($frameData);
-
-                    /*
-                     * Normalize the frame delay.
-                     */
-
-                    $rawDelay = (int) $frame->getImageDelay();
-
-                    $delayMs = normalizePresetGifDelay($rawDelay);
 
                     $totalDuration += $delayMs;
 
@@ -479,8 +505,6 @@ try {
                         'display' => $processed['display'],
                         'delayMs' => $delayMs
                     ];
-
-                    $frameNumber++;
                 }
 
             } finally {
