@@ -11,10 +11,11 @@
  * - Load available preset Lightboard images.
  * - Load available custom Lightboard images.
  * - Display images in separate gallery columns.
+ * - Allow users to rename and delete their own custom displays.
+ * - Allow administrators to rename and delete preset displays.
  *
  * This file does NOT:
  * - Display images on the Lightboard.
- * - Allow users to manage or delete displays.
  * - Process image files.
  * - Generate pixel maps.
  * - Communicate directly with the ESP32.
@@ -27,6 +28,34 @@ ini_set('display_errors', '1');
 error_reporting(E_ALL);
 
 require_once __DIR__ . '/includes/lightboard/core/images.php';
+
+/* ============================================================
+ * LOAD USER PERMISSIONS
+ * ============================================================
+ */
+
+$pdo = db();
+
+$roleStmt = $pdo->prepare(
+    'SELECT roleID FROM users WHERE userID = ? LIMIT 1'
+);
+
+$roleStmt->execute([
+    (int) $_SESSION['userID']
+]);
+
+$isAdmin = ((int) $roleStmt->fetchColumn() === 1);
+
+/* ============================================================
+ * CSRF TOKEN
+ * ============================================================
+ */
+
+if (empty($_SESSION['lightboard_csrf'])) {
+    $_SESSION['lightboard_csrf'] = bin2hex(random_bytes(32));
+}
+
+$csrfToken = $_SESSION['lightboard_csrf'];
 
 /* ============================================================
  * LOAD GALLERY IMAGES
@@ -66,7 +95,7 @@ include __DIR__ . '/includes/layout/navbar.php';
 ?>
 
 <link rel="stylesheet" href="includes/css/lightboard.css?v=7">
-<link rel="stylesheet" href="includes/css/gallery.css?v=1">
+<link rel="stylesheet" href="includes/css/gallery.css?v=2">
 
 <main class="bodyDefult lightboard-page">
 
@@ -111,6 +140,53 @@ include __DIR__ . '/includes/layout/navbar.php';
                                     <?= htmlspecialchars($image['name'], ENT_QUOTES, 'UTF-8') ?>
                                 </h3>
 
+                                <?php
+                                /*
+                                 * Custom displays:
+                                 * Users can manage their own uploads.
+                                 *
+                                 * Preset displays:
+                                 * Only administrators can manage them.
+                                 */
+                                ?>
+
+                                <?php if ($key === 'c' || ($key === 'p' && $isAdmin)): ?>
+
+                                    <div class="gallery-management">
+
+                                        <button
+                                            type="button"
+                                            class="rename-button"
+                                            onclick="manageDisplay(
+                                                'rename',
+                                                '<?= $key ?>',
+                                                <?= (int) $image['id'] ?>,
+                                                <?= htmlspecialchars(
+                                                    json_encode($image['name']),
+                                                    ENT_QUOTES,
+                                                    'UTF-8'
+                                                ) ?>
+                                            )"
+                                        >
+                                            Rename
+                                        </button>
+
+                                        <button
+                                            type="button"
+                                            class="delete-button"
+                                            onclick="manageDisplay(
+                                                'delete',
+                                                '<?= $key ?>',
+                                                <?= (int) $image['id'] ?>
+                                            )"
+                                        >
+                                            Delete
+                                        </button>
+
+                                    </div>
+
+                                <?php endif; ?>
+
                             </div>
 
                         <?php endforeach; ?>
@@ -126,6 +202,91 @@ include __DIR__ . '/includes/layout/navbar.php';
     </div>
 
 </main>
+
+<script>
+/*
+ * Rename or delete a Lightboard display.
+ *
+ * The backend independently verifies permissions
+ * and ownership before performing the operation.
+ */
+
+async function manageDisplay(action, source, id, currentName = '') {
+
+    let newName = '';
+
+    if (action === 'rename') {
+
+        newName = prompt(
+            'Enter the new display name:',
+            currentName
+        );
+
+        if (newName === null) {
+            return;
+        }
+
+        newName = newName.trim();
+
+        if (newName === '') {
+            alert('Display name cannot be empty.');
+            return;
+        }
+
+        if (newName.length > 45) {
+            alert('Display name cannot exceed 45 characters.');
+            return;
+        }
+
+    } else if (action === 'delete') {
+
+        if (!confirm('Are you sure you want to permanently delete this display?')) {
+            return;
+        }
+
+    } else {
+        return;
+    }
+
+    const formData = new URLSearchParams();
+
+    formData.append('action', action);
+    formData.append('source', source);
+    formData.append('id', id);
+    formData.append('name', newName);
+    formData.append('csrf_token', <?= json_encode($csrfToken) ?>);
+
+    try {
+
+        const response = await fetch('api/displays/manage_display.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: formData.toString(),
+            credentials: 'same-origin'
+        });
+
+        const result = await response.json();
+
+        if (!response.ok || !result.success) {
+            alert(result.message || 'Could not update display.');
+            return;
+        }
+
+        alert(result.message);
+
+        window.location.reload();
+
+    } catch (error) {
+
+        console.error('Gallery management error:', error);
+
+        alert('A connection error occurred. Please try again.');
+
+    }
+}
+</script>
 
 <?php
 include __DIR__ . '/includes/layout/footer.php';

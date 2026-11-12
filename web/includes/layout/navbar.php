@@ -22,8 +22,8 @@ if ($isLoggedIn) {
 
 <title><?= isset($pageTitle) ? htmlspecialchars($pageTitle) . ' | ' : '' ?>EC Lightboard</title>
 <link rel="icon" type="image/png" href="/ec_lightboard/web/includes/images/BSN_Logo.png">
-<link rel="stylesheet" href="/ec_lightboard/web/includes/css/navbar.css?v=2">
-<link rel="stylesheet" href="/ec_lightboard/web/includes/css/style.css?v=2">
+<link rel="stylesheet" href="/ec_lightboard/web/includes/css/navbar.css?v=9">
+<link rel="stylesheet" href="/ec_lightboard/web/includes/css/style.css?v=5">
 
 <header class="navbar">
     <div class="navbar__container">
@@ -75,17 +75,18 @@ if ($isLoggedIn) {
                     </li>
 
                     <li class="navbar__item">
-                        <a href="/ec_lightboard/web/gallery.php" class="navbar__link">
-                            Gallery
+                        <a href="/ec_lightboard/web/profile.php" class="navbar__link">
+                            Profile
                         </a>
                     </li>
 
+                    <!-- Shared green CTA -->
                     <li class="navbar__item navbar__item--cta">
                         <a
-                            href="/ec_lightboard/web/display.php"
+                            href="/ec_lightboard/web/gallery.php"
                             class="navbar__link navbar__link--cta"
                         >
-                            Display
+                            Gallery
                         </a>
                     </li>
 
@@ -99,23 +100,25 @@ if ($isLoggedIn) {
                 <?php if ($isLoggedIn): ?>
 
                     <li class="navbar__item">
-                        <a href="/ec_lightboard/web/profile.php" class="navbar__link">
-                            Profile
-                        </a>
-                    </li>
-
-                    <li class="navbar__item">
                         <a href="/ec_lightboard/web/about.php" class="navbar__link">
                             About
                         </a>
                     </li>
 
                     <?php if ($isAdmin): ?>
+
+                        <li class="navbar__item">
+                            <a href="/ec_lightboard/web/display.php" class="navbar__link">
+                                Display
+                            </a>
+                        </li>
+
                         <li class="navbar__item">
                             <a href="/ec_lightboard/web/adminDashboard.php" class="navbar__link">
                                 Admin Dashboard
                             </a>
                         </li>
+
                     <?php endif; ?>
 
                     <li class="navbar__item">
@@ -158,7 +161,6 @@ if ($isLoggedIn) {
                 setOpen(!navbarMenu.classList.contains('is-active'));
             });
 
-            // Close menu when clicking outside or pressing Escape.
             document.addEventListener('click', function (e) {
                 if (
                     !navbarMenu.contains(e.target) &&

@@ -25,9 +25,9 @@ declare(strict_types=1);
  * arduino-cli. Those tasks are handled by the Raspberry Pi worker.
  */
 
-require_once __DIR__ . '/database.php';
-require_once __DIR__ . '/images.php';
-require_once __DIR__ . '/board.php';
+require_once __DIR__ . '/../core/database.php';
+require_once __DIR__ . '/../core/images.php';
+require_once __DIR__ . '/../hardware/board.php';
 
 
 /* ============================================================

@@ -36,7 +36,7 @@ declare(strict_types=1);
  */
 function buildSketch(string $imageC, int $brightness): string
 {
-    $templatePath = __DIR__ . '/../../templates/webImage.ino.tpl';
+    $templatePath = __DIR__ . '/../../../templates/webImage.ino.tpl';
     $tpl = file_get_contents($templatePath);
 
     if ($tpl === false) {

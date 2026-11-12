@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 function requirePiToken(): void
 {
-    $cfg      = require __DIR__ . '/../config.php';
+    $cfg = require __DIR__ . '/../../config.php';
     $expected = (string)($cfg['pi_token'] ?? '');
     $sent     = (string)($_SERVER['HTTP_X_PI_TOKEN'] ?? '');
 
