@@ -57,7 +57,7 @@ $pageTitle = 'Home';
         </p>
 
         <div class="home-actions">
-            <a href="display.php" class="home-button home-button-primary">
+            <a href="gallery.php" class="home-button home-button-primary">
                 Explore Displays
             </a>
 

@@ -22,7 +22,7 @@ if ($isLoggedIn) {
 
 <title><?= isset($pageTitle) ? htmlspecialchars($pageTitle) . ' | ' : '' ?>EC Lightboard</title>
 <link rel="icon" type="image/png" href="/ec_lightboard/web/includes/images/BSN_Logo.png">
-<link rel="stylesheet" href="/ec_lightboard/web/includes/css/navbar.css?v=9">
+<link rel="stylesheet" href="/ec_lightboard/web/includes/css/navbar.css?v=10">
 <link rel="stylesheet" href="/ec_lightboard/web/includes/css/style.css?v=5">
 
 <header class="navbar">
