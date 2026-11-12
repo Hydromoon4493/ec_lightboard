@@ -52,7 +52,7 @@ try {
 
 ?>
 <link rel="stylesheet" href="includes/style.css">
-<link rel="stylesheet" href="includes/upload.css?v=4">
+<link rel="stylesheet" href="includes/upload.css?v=5">
 
 <main class="bodyDefult upload-page">
 
@@ -65,7 +65,7 @@ try {
             </p>
         </div>
 
-        <div class="upload-columns">
+        <div class="upload-columns <?= $isAdmin ? 'admin-layout' : 'user-layout' ?>">
 
             <?php if ($isAdmin): ?>
 

@@ -22,7 +22,6 @@
                 <div class="profile-row"><dt>Role</dt><dd id="p-role"></dd></div>
             </dl>
 
-            <button type="button" class="logout-btn" id="logout-button" hidden>Log out</button>
         </section>
     </aside>
 
