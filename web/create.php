@@ -4,7 +4,7 @@
 ?>
 
 <link rel="stylesheet" href="includes/css/style.css?v=2">
-<link rel="stylesheet" href="includes/css/create.css?v=2">
+<link rel="stylesheet" href="includes/css/create.css?v=3">
 
 <main class="bodyDefult create-page">
     <h1>Create a Picture for the Lightboard!</h1>
@@ -19,8 +19,10 @@
 
         <!-- Tools -->
         <aside class="create-card tools-card">
+
             <section>
                 <h2>Colors</h2>
+
                 <div class="palette" id="palette">
                     <?php
                         $colors = [
@@ -29,10 +31,16 @@
                             '#8000ff', '#bf00ff', '#ff00ff', '#ff0080', '#ff80c0',
                             '#804000', '#808080', '#c0c0c0', '#ffe0c0', '#ffffff',
                         ];
+
                         foreach ($colors as $c):
                     ?>
-                        <button type="button" class="swatch" data-color="<?= $c ?>"
-                                style="background-color: <?= $c ?>" aria-label="Color <?= $c ?>"></button>
+                        <button
+                            type="button"
+                            class="swatch"
+                            data-color="<?= htmlspecialchars($c, ENT_QUOTES, 'UTF-8') ?>"
+                            style="background-color: <?= htmlspecialchars($c, ENT_QUOTES, 'UTF-8') ?>"
+                            aria-label="Color <?= htmlspecialchars($c, ENT_QUOTES, 'UTF-8') ?>">
+                        </button>
                     <?php endforeach; ?>
                 </div>
 
@@ -44,6 +52,7 @@
 
             <section>
                 <h2>Tools</h2>
+
                 <div class="tool-buttons">
                     <div class="bg-status">
                         Current background
@@ -52,43 +61,71 @@
                             <span id="bgLabel">Off</span>
                         </span>
                     </div>
-                    <button type="button" class="tool-button" id="bgBtn">Set Background</button>
+
+                    <button type="button" class="tool-button" id="bgBtn">
+                        Set Background
+                    </button>
+
                     <div class="tool-row">
-                        <button type="button" class="tool-button" id="eraserBtn">Eraser</button>
-                        <button type="button" class="tool-button" id="clearBtn">Clear Board</button>
+                        <button type="button" class="tool-button" id="eraserBtn">
+                            Eraser
+                        </button>
+
+                        <button type="button" class="tool-button" id="clearBtn">
+                            Clear Board
+                        </button>
                     </div>
                 </div>
             </section>
 
             <section class="save-section">
                 <h2>Save</h2>
+
                 <div class="tool-buttons">
                     <label class="name-field">
                         Display Name
-                        <input type="text" id="displayName" maxlength="45" placeholder="Enter a display name">
+                        <input
+                            type="text"
+                            id="displayName"
+                            maxlength="45"
+                            placeholder="Enter a display name">
                     </label>
-                    <button type="button" class="tool-button tool-button--primary" id="saveBtn">Upload Image</button>
+
+                    <button
+                        type="button"
+                        class="tool-button tool-button--primary"
+                        id="saveBtn">
+                        Upload Image
+                    </button>
+
                     <div class="save-message" id="saveMessage" hidden></div>
                 </div>
             </section>
-        </aside>
 
+        </aside>
     </div>
 </main>
 
 <script>
-    const COLS = 48, ROWS = 48;
-    const lights   = document.getElementById('lights');
-    const palette  = document.getElementById('palette');
-    const picker   = document.getElementById('colorPicker');
-    const eraser   = document.getElementById('eraserBtn');
+    const COLS = 48;
+    const ROWS = 48;
 
-    let currColor = null;       // hex string, or null when erasing
+    const lights  = document.getElementById('lights');
+    const palette = document.getElementById('palette');
+    const picker  = document.getElementById('colorPicker');
+    const eraser  = document.getElementById('eraserBtn');
+
+    let currColor = null;
     let selectedSwatch = null;
     let painting = false;
+    let bgColor = null;
 
-    // build the 48 x 48 board
+    const bgSwatch = document.getElementById('bgSwatch');
+    const bgLabel  = document.getElementById('bgLabel');
+
+    // Build the 48 x 48 board.
     lights.style.setProperty('--cols', COLS);
+
     for (let i = 0; i < COLS * ROWS; i++) {
         const btn = document.createElement('button');
         btn.type = 'button';
@@ -96,124 +133,170 @@
         lights.appendChild(btn);
     }
 
+    // Paint a board cell using the currently selected color.
     function paint(cell) {
         if (!cell || cell.parentElement !== lights) return;
+
         cell.style.backgroundColor = currColor ?? '';
-        if (currColor) cell.dataset.color = currColor;   // keep the hex for saving later
-        else delete cell.dataset.color;
+
+        if (currColor) {
+            cell.dataset.color = currColor;
+        } else {
+            delete cell.dataset.color;
+        }
     }
 
-    // click + drag painting (works for mouse and touch)
+    // Click and drag painting.
     lights.addEventListener('pointerdown', (e) => {
         e.preventDefault();
+
         painting = true;
         paint(e.target.closest('button'));
     });
 
     lights.addEventListener('pointermove', (e) => {
         if (!painting) return;
-        paint(document.elementFromPoint(e.clientX, e.clientY)?.closest('button'));
+
+        paint(
+            document.elementFromPoint(e.clientX, e.clientY)?.closest('button')
+        );
     });
 
-    document.addEventListener('pointerup', () => painting = false);
-    lights.addEventListener('dragstart', (e) => e.preventDefault());
+    document.addEventListener('pointerup', () => {
+        painting = false;
+    });
 
-    // selecting a color
+    document.addEventListener('pointercancel', () => {
+        painting = false;
+    });
+
+    lights.addEventListener('dragstart', (e) => {
+        e.preventDefault();
+    });
+
+    // Select a palette color.
     function selectSwatch(swatch) {
+        if (!swatch) return;
+
         selectedSwatch?.classList.remove('is-selected');
         eraser.classList.remove('is-selected');
+
         selectedSwatch = swatch;
         swatch.classList.add('is-selected');
+
         currColor = swatch.dataset.color;
         picker.value = currColor;
     }
 
     palette.addEventListener('click', (e) => {
         const swatch = e.target.closest('.swatch');
-        if (swatch) selectSwatch(swatch);
+
+        if (swatch) {
+            selectSwatch(swatch);
+        }
     });
 
-    // the picker edits whichever swatch is selected
+    // Custom color picker edits the selected swatch.
     picker.addEventListener('input', () => {
-        if (!selectedSwatch) selectSwatch(palette.querySelector('.swatch'));
+        if (!selectedSwatch) {
+            selectSwatch(palette.querySelector('.swatch'));
+        }
+
         selectedSwatch.dataset.color = picker.value;
         selectedSwatch.style.backgroundColor = picker.value;
         currColor = picker.value;
     });
 
-    // tools
+    // Eraser tool.
     eraser.addEventListener('click', () => {
         selectedSwatch?.classList.remove('is-selected');
+
         selectedSwatch = null;
         eraser.classList.add('is-selected');
         currColor = null;
     });
 
-    // background: fills every unpainted pixel; the eraser reveals it again
-    let bgColor = null;         // null = LEDs off (black when saved)
-
-    const bgSwatch = document.getElementById('bgSwatch');
-    const bgLabel  = document.getElementById('bgLabel');
-
+    // Set the board background.
     function setBackground(color) {
         bgColor = color;
-        if (color) lights.style.setProperty('--board-bg', color);
-        else lights.style.removeProperty('--board-bg');
 
-        // show the user what the background is
+        if (color) {
+            lights.style.setProperty('--board-bg', color);
+        } else {
+            lights.style.removeProperty('--board-bg');
+        }
+
         bgSwatch.style.backgroundColor = color ?? '';
         bgLabel.textContent = color ? color.toUpperCase() : 'Off';
     }
 
     document.getElementById('bgBtn').addEventListener('click', () => {
-        setBackground(currColor);   // with the eraser selected this removes the background
+        setBackground(currColor);
     });
 
+    // Clear the board.
     document.getElementById('clearBtn').addEventListener('click', () => {
         if (!confirm('Clear the whole board?')) return;
+
         for (const cell of lights.children) {
             cell.style.backgroundColor = '';
             delete cell.dataset.color;
         }
+
         setBackground(null);
     });
 
-    // save: draw the board onto a 48x48 PNG and send it to the same handler upload.php uses
+    // Save elements.
     const saveBtn   = document.getElementById('saveBtn');
     const nameInput = document.getElementById('displayName');
     const saveMsg   = document.getElementById('saveMessage');
 
-    function showMessage(text, type) {
-        saveMsg.textContent = text;
+    function showMessage(message, type) {
+        saveMsg.textContent = message;
         saveMsg.className = 'save-message ' + type;
         saveMsg.hidden = false;
     }
 
+    // Convert the board into a 48 x 48 PNG.
     function boardToPng() {
         const canvas = document.createElement('canvas');
+
         canvas.width = COLS;
         canvas.height = ROWS;
+
         const ctx = canvas.getContext('2d');
-        ctx.fillStyle = bgColor ?? '#000000';    // unpainted pixels = background, or LED off
+
+        ctx.fillStyle = bgColor ?? '#000000';
         ctx.fillRect(0, 0, COLS, ROWS);
 
         [...lights.children].forEach((cell, i) => {
             if (!cell.dataset.color) return;
+
             ctx.fillStyle = cell.dataset.color;
-            ctx.fillRect(i % COLS, Math.floor(i / COLS), 1, 1);
+
+            ctx.fillRect(
+                i % COLS,
+                Math.floor(i / COLS),
+                1,
+                1
+            );
         });
 
-        return new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+        return new Promise(resolve => {
+            canvas.toBlob(resolve, 'image/png');
+        });
     }
 
     const saveErrors = {
-        error:     'There was a problem saving the display.',
+        error: 'There was a problem saving the display.',
         too_large: 'The image is too large.',
-        invalid:   'The image could not be read.',
+        invalid: 'The image could not be read.'
     };
 
+    // Upload the PNG to the custom display handler.
     saveBtn.addEventListener('click', async () => {
         const name = nameInput.value.trim();
+
         if (!name) {
             showMessage('Please enter a display name.', 'error');
             nameInput.focus();
@@ -224,36 +307,65 @@
         saveBtn.textContent = 'Saving...';
 
         try {
-            const form = new FormData();
-            form.append('name', name);
-            form.append('image', await boardToPng(), 'creation.png');
+            const png = await boardToPng();
 
-            const res = await fetch('includes/lightboard/displays/custom_upload_db.php', { method: 'POST', body: form });
-            // custom_upload_db.php redirects to upload.php?upload=<status>
+            if (!png) {
+                throw new Error('Could not create PNG.');
+            }
+
+            const form = new FormData();
+
+            form.append('name', name);
+            form.append('image', png, 'creation.png');
+
+            const res = await fetch(
+                'includes/lightboard/displays/custom_upload_db.php',
+                {
+                    method: 'POST',
+                    body: form
+                }
+            );
+
             const status = new URL(res.url).searchParams.get('upload');
 
             if (status === 'success') {
-                showMessage(`"${name}" saved! You can find it under Custom Displays.`, 'success');
+                showMessage(
+                    `"${name}" saved! You can find it under Custom Displays.`,
+                    'success'
+                );
+
                 nameInput.value = '';
             } else {
-                showMessage(saveErrors[status] ?? 'Could not save. Are you logged in?', 'error');
+                showMessage(
+                    saveErrors[status] ?? 'Could not save. Are you logged in?',
+                    'error'
+                );
             }
+
         } catch (err) {
+            console.error('Lightboard save error:', err);
             showMessage('Could not reach the server.', 'error');
+
         } finally {
             saveBtn.disabled = false;
             saveBtn.textContent = 'Upload Image';
         }
     });
 
-    // size the board so its card is as tall (and as wide) as the tools card
-    const layout    = document.querySelector('.create-layout');
+    // Keep the board column sized to the tools card.
+    const layout = document.querySelector('.create-layout');
     const toolsCard = document.querySelector('.tools-card');
-    new ResizeObserver(() => {
-        layout.style.setProperty('--board-col', toolsCard.offsetHeight + 'px');
-    }).observe(toolsCard);
 
-    // start with the first color selected
+    const resizeObserver = new ResizeObserver(() => {
+        layout.style.setProperty(
+            '--board-col',
+            toolsCard.offsetHeight + 'px'
+        );
+    });
+
+    resizeObserver.observe(toolsCard);
+
+    // Start with the first color selected.
     selectSwatch(palette.querySelector('.swatch'));
 </script>
 
