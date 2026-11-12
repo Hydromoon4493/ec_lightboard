@@ -8,8 +8,8 @@ declare(strict_types=1);
  * POST JSON: {"id":12,"ok":true,"log":"..."}
  */
 
-require_once __DIR__ . '/../includes/lightboard/jobs.php';
-require_once __DIR__ . '/../includes/lightboard/pi_auth.php';
+require_once __DIR__ . '/../../includes/lightboard/jobs.php';
+require_once __DIR__ . '/../../includes/lightboard/pi_auth.php';
 
 requirePiToken();
 

@@ -15,8 +15,8 @@
  */
 
 
-require_once __DIR__ . '/../includes/require_login.php';
-require_once __DIR__ . '/../includes/lightboard/images.php';
+require_once __DIR__ . '/../../includes/require_login.php';
+require_once __DIR__ . '/../../includes/lightboard/images.php';
 
 header('Content-Type: application/json; charset=utf-8');
 

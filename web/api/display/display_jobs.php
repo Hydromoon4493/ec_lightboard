@@ -12,7 +12,7 @@ declare(strict_types=1);
  * Response:  {"job_id":12}
  */
 
-require_once __DIR__ . '/../includes/lightboard/jobs.php';
+require_once __DIR__ . '/../../includes/lightboard/jobs.php';
 
 header('Content-Type: application/json');
 

@@ -127,7 +127,7 @@ include __DIR__ . '/includes/navbar.php';
 
                                 <img
                                     class="gallery-thumb"
-                                    src="api/thumbnail.php?src=<?= $key ?>&id=<?= (int) $image['id'] ?>"
+                                    src="api/display/thumbnail.php?src=<?= $key ?>&id=<?= (int) $image['id'] ?>"
                                     alt="<?= htmlspecialchars($image['name'], ENT_QUOTES, 'UTF-8') ?>"
                                     loading="lazy"
                                 >
@@ -318,7 +318,7 @@ async function manageDisplay(action, source, id, currentName = '') {
 
     try {
 
-        const response = await fetch('api/manage_display.php', {
+        const response = await fetch('api/displays/manage_display.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'

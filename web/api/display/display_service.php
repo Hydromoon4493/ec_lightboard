@@ -29,9 +29,9 @@ declare(strict_types=1);
  * ESP32 upload functionality is provided by board.php.
  */
 
-require_once __DIR__ . '/../includes/lightboard/database.php';
-require_once __DIR__ . '/../includes/lightboard/images.php';
-require_once __DIR__ . '/../includes/lightboard/board.php';
+require_once __DIR__ . '/../../includes/lightboard/database.php';
+require_once __DIR__ . '/../../includes/lightboard/images.php';
+require_once __DIR__ . '/../../includes/lightboard/board.php';
 
 /* ============================================================
  * DISPLAY IMAGE

@@ -7,7 +7,7 @@ declare(strict_types=1);
  * Public endpoint the browser polls. Usage: api/job_status.php?id=12
  */
 
-require_once __DIR__ . '/../includes/lightboard/jobs.php';
+require_once __DIR__ . '/../../includes/lightboard/jobs.php';
 
 header('Content-Type: application/json');
 header('Cache-Control: no-store');

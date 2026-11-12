@@ -36,7 +36,7 @@ function addStatus(message, type = 'active') {
 
 function showPreview(key, id) {
     document.getElementById('previewImage').src =
-        'api/thumbnail.php?src=' +
+        'api/display/thumbnail.php?src=' +
         encodeURIComponent(key) +
         '&id=' +
         encodeURIComponent(id);
@@ -64,7 +64,7 @@ async function pollJob(jobId) {
 
     while (Date.now() - started < POLL_TIMEOUT_MS) {
         const res = await fetch(
-            'api/job_status.php?id=' + encodeURIComponent(jobId),
+            'api/display/job_status.php?id=' + encodeURIComponent(jobId),
             { cache: 'no-store' }
         );
 
@@ -141,7 +141,7 @@ async function displayImage(key, id) {
     addStatus('Sending request...');
 
     try {
-        const res = await fetch('api/display_jobs.php', {
+        const res = await fetch('api/display/display_jobs.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
