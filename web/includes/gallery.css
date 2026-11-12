@@ -1,0 +1,35 @@
+
+/*
+ * Filename: gallery.css
+ *
+ * Gallery-specific styling.
+ * Preserves the existing Lightboard gallery appearance while
+ * giving Custom Displays twice the width of Preset Displays.
+ */
+
+/* Two-column gallery layout */
+.gallery-page-layout {
+    display: grid !important;
+    grid-template-columns: 1fr 2fr !important;
+    gap: 25px;
+    align-items: start;
+    width: 100%;
+}
+
+/* Keep gallery sections filling their allocated columns */
+.gallery-page-layout > .lightboard-gallery {
+    width: 100%;
+    min-width: 0;
+}
+
+/* Preserve the existing thumbnail grid styling */
+.gallery-page-layout .gallery-grid {
+    width: 100%;
+}
+
+/* Responsive layout */
+@media (max-width: 750px) {
+    .gallery-page-layout {
+        grid-template-columns: 1fr !important;
+    }
+}

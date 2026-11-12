@@ -74,6 +74,12 @@ if ($isLoggedIn) {
                         </a>
                     </li>
 
+                    <li class="navbar__item">
+                        <a href="/ec_lightboard/web/gallery.php" class="navbar__link">
+                            Gallery
+                        </a>
+                    </li>
+
                     <li class="navbar__item navbar__item--cta">
                         <a
                             href="/ec_lightboard/web/display.php"
