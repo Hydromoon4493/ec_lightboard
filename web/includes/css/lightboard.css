@@ -402,3 +402,31 @@
     background-color: #fecaca !important;
 }
 
+.gallery-item .animation-tag {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: fit-content !important;
+    margin: 8px auto 0 !important;
+    padding: 5px 12px !important;
+    border-radius: 20px !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.7px !important;
+    line-height: 1.4 !important;
+    text-transform: uppercase !important;
+    border: 1px solid transparent !important;
+    box-shadow: none !important;
+}
+
+.gallery-item .animation-tag.gif {
+    color: #7c3aed !important;
+    background: #f3e8ff !important;
+    border-color: #d8b4fe !important;
+}
+
+.gallery-item .animation-tag.static {
+    color: #0369a1 !important;
+    background: #e0f2fe !important;
+    border-color: #7dd3fc !important;
+}

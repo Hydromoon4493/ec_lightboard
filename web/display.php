@@ -89,7 +89,7 @@ include __DIR__ . '/includes/layout/navbar.php';
 ?>
 
 <link rel="stylesheet" href="includes/css/style.css?v=2">
-<link rel="stylesheet" href="includes/css/lightboard.css?v=7">
+<link rel="stylesheet" href="includes/css/lightboard.css?v=8">
 
 <main class="bodyDefult lightboard-page">
 
@@ -132,9 +132,11 @@ include __DIR__ . '/includes/layout/navbar.php';
                                     loading="lazy"
                                 >
 
-                                <h3>
-                                    <?= htmlspecialchars($image['name'], ENT_QUOTES, 'UTF-8') ?>
-                                </h3>
+                                    <h3><?= htmlspecialchars($image['name']) ?></h3>
+
+                                <span class="animation-tag <?= !empty($image['isAnimated']) ? 'gif' : 'static' ?>">
+                                    <?= !empty($image['isAnimated']) ? 'ANIMATED GIF' : 'STATIC IMAGE' ?>
+                                </span>
 
                                 <button
                                     type="button"

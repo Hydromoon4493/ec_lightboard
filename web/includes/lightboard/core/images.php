@@ -39,7 +39,8 @@ if (!isset($GLOBALS['CFG']) || !is_array($GLOBALS['CFG'])) {
     $GLOBALS['CFG'] = require __DIR__ . '/../../config.php';
 }
 
-/* ============================================================
+/*
+ * ============================================================
  * LIST IMAGES
  * ============================================================
  *
@@ -66,7 +67,8 @@ function listImages(string $key, ?int $userID = null): array
                 "SELECT
                     {$s['id']} AS id,
                     name,
-                    mimeType
+                    mimeType,
+                    isAnimated
                  FROM {$s['table']}
                  WHERE userID = ?
                  ORDER BY name ASC"
@@ -81,7 +83,8 @@ function listImages(string $key, ?int $userID = null): array
             "SELECT
                 %s AS id,
                 name,
-                mimeType
+                mimeType,
+                isAnimated
              FROM %s
              ORDER BY name ASC",
             $s['id'],
