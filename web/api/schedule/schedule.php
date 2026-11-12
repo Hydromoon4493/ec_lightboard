@@ -137,6 +137,12 @@ function list_requests(PDO $pdo, int $userID): void
         $where[]  = 's.status = ?';
         $params[] = $_GET['status'];
     }
+    // Upcoming = not finished yet. Times are stored in Eastern, which is
+    // this file's default timezone, so date() matches the stored values.
+    if (($_GET['upcoming'] ?? '') === '1') {
+        $where[]  = 's.endEvent > ?';
+        $params[] = date('Y-m-d H:i:s');
+    }
 
     // Only metadata is selected: the image BLOBs are never loaded here.
     $sql = "SELECT s.eventID, s.userID, s.pDisplayID, s.cDisplayID,
@@ -151,7 +157,7 @@ function list_requests(PDO $pdo, int $userID): void
             LEFT JOIN customDisplay c ON c.cDisplayID = s.cDisplayID
             LEFT JOIN users u         ON u.userID     = s.userID"
          . ($where ? ' WHERE ' . implode(' AND ', $where) : '')
-         . ' ORDER BY s.createdAt DESC';
+         . ' ORDER BY ' . (($_GET['sort'] ?? '') === 'start' ? 's.startEvent ASC' : 's.createdAt DESC');
 
     $stmt = $pdo->prepare($sql);
     $stmt->execute($params);
@@ -283,6 +289,10 @@ function review_request(PDO $pdo, int $userID): void
         $row = fetch_request($pdo, $id);
         if ($row['status'] !== 'pending') {
             respond(409, ['error' => 'Only pending requests can be approved or denied.']);
+        }
+        if ($status === 'approved'
+            && new DateTimeImmutable($row['startEvent']) <= new DateTimeImmutable('now')) {
+            respond(409, ['error' => 'This request\'s start time has already passed.']);
         }
         if ($status === 'approved'
             && overlap_exists($pdo, $row['startEvent'], $row['endEvent'], ['approved'], $id)) {
