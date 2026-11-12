@@ -11,7 +11,7 @@ $pageTitle = 'Sign up';
     <link rel="stylesheet" href="includes/css/style.css?v=2">
     <link rel="stylesheet" href="includes/css/auth.css?v=2">
     <!-- defer = wait until the form exists before running -->
-    <script src="includes/auth.js" defer></script>
+    <script src="includes/js/auth.js" defer></script>
 </head>
 <body>
 <main class="auth-page">

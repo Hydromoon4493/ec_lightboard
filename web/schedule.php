@@ -74,7 +74,7 @@ include __DIR__ . '/includes/navbar.php';
 <link rel="stylesheet" href="includes/css/lightboard.css">
 <link rel="stylesheet" href="includes/css/schedule.css">
 
-<script src="includes/schedule.js" defer></script>
+<script src="includes/js/schedule.js" defer></script>
 
 <main class="bodyDefult lightboard-page">
 

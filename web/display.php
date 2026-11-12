@@ -350,7 +350,7 @@ async function manageDisplay(action, source, id, currentName = '') {
 </script>
 
 
-<script src="includes/lightboard/lightboard.js?v=20261029"></script>
+<script src="includes/js/lightboard.js?v=20261029"></script>
 
 <?php
 include __DIR__ . '/includes/footer.php';

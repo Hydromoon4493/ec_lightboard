@@ -1,6 +1,6 @@
 /*
  * Author: Sam Vossen 2026.10.15
- * Filename: includes/lightboard/lightboard.js
+ * Filename: includes/js/lightboard.js
  *
  * Browser side of the Lightboard page.
  *

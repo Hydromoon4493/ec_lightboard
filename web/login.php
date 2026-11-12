@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="includes/css/auth.css?v=2">
 <title><?= isset($pageTitle) ? htmlspecialchars($pageTitle) . ' | ' : '' ?>EC Lightboard</title>
 <link rel="icon" type="image/png" href="/ec_lightboard/web/includes/images/BSN_Logo.png">
-<script src="includes/auth.js" defer></script>
+<script src="includes/js/auth.js" defer></script>
 
 <main class="auth-page">
     <section class="auth-card" aria-labelledby="auth-title">
