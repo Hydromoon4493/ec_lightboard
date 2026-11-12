@@ -7,7 +7,7 @@
  * Introduces the ECLightboard project and its development team.
  */
 
-include 'includes/navbar.php';
+include 'includes/layout/navbar.php';
 ?>
 
 <link rel="stylesheet" href="includes/css/style.css?v=2">
@@ -88,5 +88,5 @@ include 'includes/navbar.php';
 </main>
 
 <?php
-include 'includes/footer.php';
+include 'includes/layout/footer.php';
 ?>

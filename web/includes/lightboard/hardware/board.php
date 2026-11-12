@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 /*
  * Author: Sam Vossen 2026.11.05
- * Filename: includes/lightboard/board.php
+ * Filename: includes/lightboard/hardware/board.php
  *
  * Functions for preparing static and animated Arduino sketches and
  * (optionally) uploading a static sketch to the Lightboard ESP32.

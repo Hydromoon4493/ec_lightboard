@@ -8,7 +8,7 @@ $isLoggedIn = !empty($_SESSION['userID']);
 $isAdmin = false;
 
 if ($isLoggedIn) {
-    require_once __DIR__ . '/lightboard/database.php';
+    require_once __DIR__ . '/../lightboard/core/database.php';
 
     $stmt = db()->prepare(
         "SELECT roleID FROM users WHERE userID = ? LIMIT 1"

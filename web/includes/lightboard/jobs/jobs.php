@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 /*
  * Author: Sam Vossen 2026.11.05
- * Filename: includes/lightboard/jobs.php
+ * Filename: includes/lightboard/jobs/jobs.php
  *
  * Functions for creating and managing Lightboard display jobs.
  *

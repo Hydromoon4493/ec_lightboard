@@ -11,7 +11,7 @@
 //
 // start / end use the datetime-local format "YYYY-MM-DDTHH:MM" and are Eastern time.
 require __DIR__ . '/../authentication/bootstrap.php';
-require_once __DIR__ . '/../../includes/lightboard/database.php'; // SOURCES
+require_once __DIR__ . '/../../includes/lightboard/core/database.php'; // SOURCES
 
 date_default_timezone_set('America/New_York');
 

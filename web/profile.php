@@ -1,6 +1,6 @@
 <?php
-    require __DIR__ . '/includes/require_login.php';
-    include 'includes/navbar.php';
+    require __DIR__ . '/includes/auth/require_login.php';
+    include 'includes/layout/navbar.php';
 ?>
 
 <link rel="stylesheet" href="includes/css/style.css">
@@ -34,4 +34,4 @@
 
 </main>
 
-<?php include 'includes/footer.php'; ?>
+<?php include 'includes/layout/footer.php'; ?>

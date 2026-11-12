@@ -2,7 +2,7 @@
 
 /*
  * Author: Sam Vossen 2026.10.15
- * Filename: includes/lightboard/database.php
+ * Filename: includes/lightboard/core/database.php
  *
  * This file contains the Lightboard database connection and
  * database-related helper functions.
@@ -74,7 +74,7 @@ if (!function_exists('db')) {
         }
 
         if ($cfg === null) {
-            $cfg = require __DIR__ . '/../config.php';
+            $cfg = require __DIR__ . '/../../config.php';
         }
 
         if (!is_array($cfg)) {

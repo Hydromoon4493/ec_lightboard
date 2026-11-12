@@ -12,8 +12,8 @@
  * - Serve as the starting point for future admin functionality.
  */
 
-require_once 'includes/require_login.php';
-require_once 'includes/lightboard/database.php';
+require_once 'includes/auth/require_login.php';
+require_once 'includes/lightboard/core/database.php';
 
 $pdo = db();
 
@@ -122,7 +122,7 @@ if (!$user || (int)$user['roleID'] !== 1) {
 
 <body>
 
-<?php include 'includes/navbar.php'; ?>
+<?php include 'includes/layout/navbar.php'; ?>
 
 <main class="admin-page">
 

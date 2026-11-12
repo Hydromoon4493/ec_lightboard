@@ -7,7 +7,7 @@ require_once __DIR__ . '/images.php';
 
 /*
  * Author: Sam Vossen 2026.11.05
- * Filename: includes/lightboard/custom_upload_db.php
+ * Filename: includes/lightboard/displays/custom_upload_db.php
  *
  * Handles uploads of custom Lightboard displays.
  *

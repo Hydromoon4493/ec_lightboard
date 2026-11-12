@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 /*
  * Author: Sam Vossen 2026.10.22
- * Filename: includes/lightboard/pi_auth.php
+ * Filename: includes/lightboard/hardware/pi_auth.php
  *
  * Shared-secret check for the Raspberry Pi endpoints.
  * The Pi sends the token in an X-Pi-Token header (some shared hosts

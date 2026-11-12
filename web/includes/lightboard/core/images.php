@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 /*
  * Author: Sam Vossen 2026.10.15
- * Filename: includes/lightboard/images.php 
+ * Filename: includes/lightboard/core/images.php 
  *
  * This file contains the Lightboard image-processing and
  * image-retrieval functions.
@@ -36,7 +36,7 @@ require_once __DIR__ . '/database.php';
  * functions that depend on the global CFG array.
  */
 if (!isset($GLOBALS['CFG']) || !is_array($GLOBALS['CFG'])) {
-    $GLOBALS['CFG'] = require __DIR__ . '/../config.php';
+    $GLOBALS['CFG'] = require __DIR__ . '/../../config.php';
 }
 
 /* ============================================================

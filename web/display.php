@@ -23,12 +23,12 @@
  */
 
 
-require __DIR__ . '/includes/require_login.php';
+require __DIR__ . '/includes/auth/require_login.php';
 
 ini_set('display_errors', '1');
 error_reporting(E_ALL);
 
-require_once __DIR__ . '/includes/lightboard/images.php';
+require_once __DIR__ . '/includes/lightboard/core/images.php';
 
 /* ============================================================
  * LOAD USER PERMISSIONS
@@ -85,7 +85,7 @@ $galleries = [
     ],
 ];
 
-include __DIR__ . '/includes/navbar.php';
+include __DIR__ . '/includes/layout/navbar.php';
 ?>
 
 <link rel="stylesheet" href="includes/css/style.css?v=2">
@@ -353,5 +353,5 @@ async function manageDisplay(action, source, id, currentName = '') {
 <script src="includes/js/lightboard.js?v=20261029"></script>
 
 <?php
-include __DIR__ . '/includes/footer.php';
+include __DIR__ . '/includes/layout/footer.php';
 ?>

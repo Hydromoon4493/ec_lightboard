@@ -8,8 +8,8 @@ declare(strict_types=1);
  * or {"job": null}. Requires the X-Pi-Token header.
  */
 
-require_once __DIR__ . '/../../includes/lightboard/jobs.php';
-require_once __DIR__ . '/../../includes/lightboard/pi_auth.php';
+require_once __DIR__ . '/../../includes/lightboard/jobs/jobs.php';
+require_once __DIR__ . '/../../includes/lightboard/hardware/pi_auth.php';
 
 requirePiToken();
 

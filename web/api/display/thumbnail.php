@@ -9,7 +9,7 @@ declare(strict_types=1);
  * Usage: api/display/thumbnail.php?src=p&id=3
  */
 
-require_once __DIR__ . '/../../includes/lightboard/images.php';
+require_once __DIR__ . '/../../includes/lightboard/core/images.php';
 
 $key = (string)($_GET['src'] ?? '');
 $id  = (int)($_GET['id'] ?? 0);

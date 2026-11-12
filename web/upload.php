@@ -20,10 +20,10 @@
  * - Communicate directly with the ESP32.
  */
 
-require __DIR__ . '/includes/require_login.php';
-require_once __DIR__ . '/includes/lightboard/database.php';
+require __DIR__ . '/includes/auth/require_login.php';
+require_once __DIR__ . '/includes/lightboard/core/database.php';
 
-include 'includes/navbar.php';
+include 'includes/layout/navbar.php';
 
 /*
  * Retrieve the user's role directly from the database.
@@ -237,7 +237,7 @@ try {
 
                 <form
                     class="upload-form"
-                    action="includes/lightboard/custom_upload_db.php"
+                    action="includes/lightboard/displays/custom_upload_db.php"
                     method="post"
                     enctype="multipart/form-data"
                 >
@@ -300,4 +300,4 @@ try {
 
 </main>
 
-<?php include 'includes/footer.php'; ?>
+<?php include 'includes/layout/footer.php'; ?>

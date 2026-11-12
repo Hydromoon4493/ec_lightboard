@@ -1,6 +1,6 @@
 <?php
-    //require __DIR__ . '/includes/require_login.php';
-    include 'includes/navbar.php';
+    //require __DIR__ . '/includes/auth/require_login.php';
+    include 'includes/layout/navbar.php';
 ?>
 
 <link rel="stylesheet" href="includes/css/style.css?v=2">
@@ -228,7 +228,7 @@
             form.append('name', name);
             form.append('image', await boardToPng(), 'creation.png');
 
-            const res = await fetch('includes/lightboard/custom_upload_db.php', { method: 'POST', body: form });
+            const res = await fetch('includes/lightboard/displays/custom_upload_db.php', { method: 'POST', body: form });
             // custom_upload_db.php redirects to upload.php?upload=<status>
             const status = new URL(res.url).searchParams.get('upload');
 
@@ -258,5 +258,5 @@
 </script>
 
 <?php
-    include 'includes/footer.php';
+    include 'includes/layout/footer.php';
 ?>
