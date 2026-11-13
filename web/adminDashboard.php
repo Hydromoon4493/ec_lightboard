@@ -12,11 +12,11 @@ require_once 'includes/auth/require_login.php';
 require_once 'includes/lightboard/core/database.php';
 
 $pageTitle = 'Admin Dashboard';
-include 'includes/navbar.php';
+include 'includes/layout/navbar.php';
 ?>
 
-<link rel="stylesheet" href="/ec_lightboard/web/includes/style.css?v=2">
-<link rel="stylesheet" href="/ec_lightboard/web/includes/adminDashboard.css?v=1">
+<link rel="stylesheet" href="/ec_lightboard/web/includes/css/style.css?v=2">
+<link rel="stylesheet" href="/ec_lightboard/web/includes/css/adminDashboard.css?v=1">
 <script src="/ec_lightboard/web/includes/admin/admin.js?v=1" defer></script>
 <script src="/ec_lightboard/web/includes/admin/users.js?v=1" defer></script>
 <script src="/ec_lightboard/web/includes/admin/requests.js?v=1" defer></script>
@@ -97,4 +97,4 @@ include 'includes/navbar.php';
 
 </main>
 
-<?php include 'includes/footer.php'; ?>
+<?php include 'includes/layout/footer.php'; ?>

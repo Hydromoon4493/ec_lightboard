@@ -7,7 +7,7 @@
  * takes effect on the user's next request.
  */
 
-require_once __DIR__ . '/lightboard/database.php';
+require_once __DIR__ . '/lightboard/core/database.php';
 
 const ADMIN_ROLE = 'admin';
 
