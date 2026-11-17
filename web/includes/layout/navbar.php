@@ -119,6 +119,12 @@ if ($isLoggedIn) {
                             </a>
                         </li>
 
+                        <li class="navbar__item">
+                            <a href="/ec_lightboard/web/schedule_queue.php" class="navbar__link">
+                                Schedule Queue
+                            </a>
+                        </li>
+
                     <?php endif; ?>
 
                     <li class="navbar__item">

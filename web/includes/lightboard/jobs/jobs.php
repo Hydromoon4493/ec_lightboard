@@ -1,3 +1,4 @@
+
 <?php
 
 /*
@@ -33,6 +34,28 @@ const JOB_PENDING_TTL_MINUTES = 10;
 const JOB_CLAIM_TTL_MINUTES = 5;
 
 const LIGHTBOARD_LOCK_NAME = 'lightboard_jobs';
+
+
+/* ============================================================
+ * SCHEDULE TIME HELPER
+ * ============================================================ */
+
+/*
+ * Get the current Eastern time for schedule comparisons.
+ *
+ * The schedule table stores Eastern local datetime values.
+ * MySQL NOW() uses the hosting server's timezone, which is UTC.
+ *
+ * Using PHP's America/New_York timezone ensures schedule
+ * comparisons remain correct during daylight saving changes.
+ */
+function lightboardScheduleNow(): string
+{
+    $timezone = new DateTimeZone('America/New_York');
+
+    return (new DateTimeImmutable('now', $timezone))
+        ->format('Y-m-d H:i:s');
+}
 
 
 /* ============================================================
@@ -348,20 +371,31 @@ function getJobStatus(int $id): ?array
 
     /*
      * Explain why a normal request may remain pending.
+     *
+     * Use Eastern time rather than MySQL NOW().
      */
     if (
         $row['status'] === 'pending'
         && in_array($row['job_type'], ['normal', 'restore'], true)
     ) {
 
-        $active = db()->query(
+        $scheduleNow = lightboardScheduleNow();
+
+        $activeStmt = db()->prepare(
             "SELECT 1
              FROM schedule
              WHERE status = 'approved'
-               AND startEvent <= NOW()
-               AND endEvent > NOW()
+               AND startEvent <= ?
+               AND endEvent > ?
              LIMIT 1"
-        )->fetchColumn();
+        );
+
+        $activeStmt->execute([
+            $scheduleNow,
+            $scheduleNow
+        ]);
+
+        $active = $activeStmt->fetchColumn();
 
         if ($active) {
             $message =
@@ -399,23 +433,26 @@ function reconcileScheduleQueueLocked(PDO $pdo): void
     /*
      * Read the currently active approved schedule.
      *
-     * The schedule table stores Eastern local datetime values.
-     * NOW() uses the MySQL server's local time, so make sure
-     * the MySQL/PHP server timezone is configured consistently
-     * with the schedule API's America/New_York timezone.
-     *
-     * Brightness is read from the schedule row so the scheduled
-     * display uses the value selected when it was requested.
+     * Schedule timestamps are stored as Eastern local datetime
+     * values. Do not compare them against MySQL NOW(), because
+     * the hosting server's MySQL timezone is UTC.
      */
-    $activeStmt = $pdo->query(
+    $scheduleNow = lightboardScheduleNow();
+
+    $activeStmt = $pdo->prepare(
         "SELECT eventID, pDisplayID, cDisplayID, brightness
          FROM schedule
          WHERE status = 'approved'
-           AND startEvent <= NOW()
-           AND endEvent > NOW()
+           AND startEvent <= ?
+           AND endEvent > ?
          ORDER BY startEvent DESC
          LIMIT 1"
     );
+
+    $activeStmt->execute([
+        $scheduleNow,
+        $scheduleNow
+    ]);
 
     $active = $activeStmt->fetch();
 
@@ -510,7 +547,7 @@ function reconcileScheduleQueueLocked(PDO $pdo): void
          * The fallback protects older rows or installations
          * where the value is unexpectedly NULL/out of range.
          */
-        $brightness = (int)($active['brightness'] ?? 35);
+        $brightness = (int)($active['brightness'] ?? DEFAULT_BRIGHTNESS);
         $brightness = max(1, min(100, $brightness));
 
         /*
@@ -710,15 +747,27 @@ function claimNextJob(): ?array
 
             /*
              * Check whether a schedule is currently active.
+             *
+             * Use the same Eastern clock as reconciliation so
+             * both decisions agree about the active schedule.
              */
-            $active = $pdo->query(
+            $scheduleNow = lightboardScheduleNow();
+
+            $activeStmt = $pdo->prepare(
                 "SELECT eventID
                  FROM schedule
                  WHERE status = 'approved'
-                   AND startEvent <= NOW()
-                   AND endEvent > NOW()
+                   AND startEvent <= ?
+                   AND endEvent > ?
                  LIMIT 1"
-            )->fetch();
+            );
+
+            $activeStmt->execute([
+                $scheduleNow,
+                $scheduleNow
+            ]);
+
+            $active = $activeStmt->fetch();
 
             /*
              * If a scheduled job is already claimed, do not
