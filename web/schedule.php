@@ -1,4 +1,3 @@
-
 <?php
 /*
  * Filename: schedule.php
@@ -7,8 +6,8 @@
  *
  * Responsibilities:
  * - Load the shared site navigation and styling.
- * - Show preset and custom Lightboard images for reference (no display buttons).
- * - Provide a request form: display, start, end, notes.
+ * - Show preset and custom Lightboard images for reference.
+ * - Provide a request form: display, brightness, start, end, notes.
  *
  * This file does NOT:
  * - Process or save the request (handled by api/schedule/schedule.php).
@@ -22,20 +21,8 @@ error_reporting(E_ALL);
 
 require_once __DIR__ . '/includes/lightboard/core/images.php';
 
-/*
- * Load available displays.
- *
- * Presets are available to everyone.
- * Custom displays are restricted to the logged-in user.
- */
-
 $presetImages = listImages('p');
 $customImages = listImages('c', (int)$_SESSION['userID']);
-
-/*
- * One entry per image column.
- * Key = image source ('p' or 'c').
- */
 
 $galleries = [
     'p' => [
@@ -50,23 +37,11 @@ $galleries = [
     ],
 ];
 
-/*
- * Earliest selectable start: 24 hours from now,
- * Eastern time, formatted for datetime-local.
- */
-
 $minDateTime = (new DateTimeImmutable(
     '+24 hours',
     new DateTimeZone('America/New_York')
 ))->format('Y-m-d\TH:i');
 
-?>
-
-<?php
-/*
- * Shared navigation.
- * Include only once, after page initialization.
- */
 include __DIR__ . '/includes/layout/navbar.php';
 ?>
 
@@ -86,7 +61,7 @@ include __DIR__ . '/includes/layout/navbar.php';
 
     <div class="lightboard-layout schedule-layout">
 
-        <!-- Columns 1 and 2: Preset and Custom galleries (reference only) -->
+        <!-- Preset and Custom galleries (reference only) -->
 
         <?php foreach ($galleries as $key => $g): ?>
 
@@ -136,7 +111,7 @@ include __DIR__ . '/includes/layout/navbar.php';
         <?php endforeach; ?>
 
 
-        <!-- Column 3: Job request form -->
+        <!-- Job request form -->
 
         <aside class="lightboard-sidebar schedule-form-column">
 
@@ -183,6 +158,28 @@ include __DIR__ . '/includes/layout/navbar.php';
                             <?php endforeach; ?>
 
                         </select>
+
+                    </div>
+
+
+                    <!-- Brightness -->
+
+                    <div class="form-row">
+
+                        <label for="brightness">
+                            Brightness:
+                            <output id="brightnessValue" for="brightness">35</output>%
+                        </label>
+
+                        <input
+                            type="range"
+                            id="brightness"
+                            name="brightness"
+                            min="1"
+                            max="100"
+                            step="1"
+                            value="35"
+                        >
 
                     </div>
 
@@ -271,11 +268,7 @@ include __DIR__ . '/includes/layout/navbar.php';
 
 </main>
 
-
 <?php
-/*
- * Shared footer.
- * Must appear after the page content.
- */
+
 include __DIR__ . '/includes/layout/footer.php';
 ?>
