@@ -168,7 +168,7 @@ include __DIR__ . '/includes/layout/navbar.php';
 
                         <label for="brightness">
                             Brightness:
-                            <output id="brightnessValue" for="brightness">35</output>%
+                            <output id="brightnessValue" for="brightness">35</output>
                         </label>
 
                         <input
