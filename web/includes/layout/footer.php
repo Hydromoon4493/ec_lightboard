@@ -18,8 +18,8 @@
                 <ul>
                     <li><strong>Creators:</strong></li>
                     <li><a href="/ec_lightboard/web/creatorPages/scottD.php">Scott D.</a></li>
-                    <li><a href="/ec_lightboard/web/creatorPages/samV.php">Sam V.</a></li>
                     <li><a href="/ec_lightboard/web/creatorPages/isaacW.php">Isaac W.</a></li>
+                    <li><a href="/ec_lightboard/web/creatorPages/samV.php">Sam V.</a></li>
                 </ul>
             </nav>
 

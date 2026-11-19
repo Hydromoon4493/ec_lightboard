@@ -8,8 +8,9 @@
  *
  * Responsibilities:
  * - Load the shared site navigation and styling.
- * - Load available preset Lightboard images.
- * - Load available custom Lightboard images.
+ * - Allow public access to preset Lightboard images.
+ * - Load available custom Lightboard images for logged-in users.
+ * - Prompt logged-out visitors to log in to upload custom displays.
  * - Display images in separate gallery columns.
  * - Allow users to rename and delete their own custom displays.
  * - Allow administrators to rename and delete preset displays.
@@ -22,10 +23,22 @@
  * - Create or schedule Lightboard jobs.
  */
 
-require __DIR__ . '/includes/auth/require_login.php';
+/* ============================================================
+ * SESSION
+ * ============================================================
+ */
 
-ini_set('display_errors', '1');
-error_reporting(E_ALL);
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+$isLoggedIn = !empty($_SESSION['userID']);
+$userID = $isLoggedIn ? (int) $_SESSION['userID'] : 0;
+
+/* ============================================================
+ * LOAD LIGHTBOARD FUNCTIONS
+ * ============================================================
+ */
 
 require_once __DIR__ . '/includes/lightboard/core/images.php';
 
@@ -34,28 +47,36 @@ require_once __DIR__ . '/includes/lightboard/core/images.php';
  * ============================================================
  */
 
-$pdo = db();
+$isAdmin = false;
 
-$roleStmt = $pdo->prepare(
-    'SELECT roleID FROM users WHERE userID = ? LIMIT 1'
-);
+if ($isLoggedIn) {
 
-$roleStmt->execute([
-    (int) $_SESSION['userID']
-]);
+    $pdo = db();
 
-$isAdmin = ((int) $roleStmt->fetchColumn() === 1);
+    $roleStmt = $pdo->prepare(
+        'SELECT roleID FROM users WHERE userID = ? LIMIT 1'
+    );
+
+    $roleStmt->execute([$userID]);
+
+    $isAdmin = ((int) $roleStmt->fetchColumn() === 1);
+}
 
 /* ============================================================
  * CSRF TOKEN
  * ============================================================
  */
 
-if (empty($_SESSION['lightboard_csrf'])) {
-    $_SESSION['lightboard_csrf'] = bin2hex(random_bytes(32));
-}
+$csrfToken = '';
 
-$csrfToken = $_SESSION['lightboard_csrf'];
+if ($isLoggedIn) {
+
+    if (empty($_SESSION['lightboard_csrf'])) {
+        $_SESSION['lightboard_csrf'] = bin2hex(random_bytes(32));
+    }
+
+    $csrfToken = $_SESSION['lightboard_csrf'];
+}
 
 /* ============================================================
  * LOAD GALLERY IMAGES
@@ -63,7 +84,12 @@ $csrfToken = $_SESSION['lightboard_csrf'];
  */
 
 $presetImages = listImages('p');
-$customImages = listImages('c', (int) $_SESSION['userID']);
+
+$customImages = [];
+
+if ($isLoggedIn) {
+    $customImages = listImages('c', $userID);
+}
 
 /*
  * Gallery definitions.
@@ -95,7 +121,7 @@ include __DIR__ . '/includes/layout/navbar.php';
 ?>
 
 <link rel="stylesheet" href="includes/css/lightboard.css?v=8">
-<link rel="stylesheet" href="includes/css/gallery.css?v=2">
+<link rel="stylesheet" href="includes/css/gallery.css?v=3">
 
 <main class="bodyDefult lightboard-page">
 
@@ -115,7 +141,24 @@ include __DIR__ . '/includes/layout/navbar.php';
                     <?= htmlspecialchars($g['title'], ENT_QUOTES, 'UTF-8') ?>
                 </h2>
 
-                <?php if (empty($g['images'])): ?>
+                <?php if ($key === 'c' && !$isLoggedIn): ?>
+
+                    <div class="gallery-login-prompt">
+
+                        <h3>Want to upload your own display?</h3>
+
+                        <p>
+                            Log in to your account to upload and manage
+                            your own custom Lightboard displays.
+                        </p>
+
+                        <a href="login.php" class="gallery-login-button">
+                            Log In to Upload Custom Displays
+                        </a>
+
+                    </div>
+
+                <?php elseif (empty($g['images'])): ?>
 
                     <p>
                         <?= htmlspecialchars($g['empty'], ENT_QUOTES, 'UTF-8') ?>
@@ -136,7 +179,9 @@ include __DIR__ . '/includes/layout/navbar.php';
                                     loading="lazy"
                                 >
 
-                                <h3><?= htmlspecialchars($image['name']) ?></h3>
+                                <h3>
+                                    <?= htmlspecialchars($image['name'], ENT_QUOTES, 'UTF-8') ?>
+                                </h3>
 
                                 <span class="animation-tag <?= !empty($image['isAnimated']) ? 'gif' : 'static' ?>">
                                     <?= !empty($image['isAnimated']) ? 'ANIMATED GIF' : 'STATIC IMAGE' ?>
@@ -145,7 +190,7 @@ include __DIR__ . '/includes/layout/navbar.php';
                                 <?php
                                 /*
                                  * Custom displays:
-                                 * Users can manage their own uploads.
+                                 * Logged-in users can manage their own uploads.
                                  *
                                  * Preset displays:
                                  * Only administrators can manage them.
@@ -204,6 +249,8 @@ include __DIR__ . '/includes/layout/navbar.php';
     </div>
 
 </main>
+
+<?php if ($isLoggedIn): ?>
 
 <script>
 /*
@@ -289,6 +336,8 @@ async function manageDisplay(action, source, id, currentName = '') {
     }
 }
 </script>
+
+<?php endif; ?>
 
 <?php
 include __DIR__ . '/includes/layout/footer.php';

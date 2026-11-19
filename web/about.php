@@ -44,10 +44,6 @@ include 'includes/layout/navbar.php';
     <section class="about-team">
         <h2>Our Team</h2>
 
-        <p class="about-team-intro">
-            Three people working together to bring the project to life.
-        </p>
-
         <div class="team-grid">
 
             <article class="team-card">

@@ -1,3 +1,4 @@
+
 <?php
 /*
  * Author: Sam Vossen 2026.11.10
@@ -8,9 +9,7 @@
  * Responsibilities:
  * - Introduce the ECLightboard project.
  * - Provide navigation to the main Lightboard pages.
- * - Provide an admin dashboard link.
- *
- * This page is public and does not require login.
+ * - Display login or logout depending on session status.
  */
 
 // Start the session so we can check the user's login status.
@@ -28,10 +27,10 @@ $isLoggedIn = !empty($_SESSION['userID']);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title><?= htmlspecialchars($pageTitle) ?> | EC Lightboard</title>
+    <title><?= htmlspecialchars($pageTitle, ENT_QUOTES, 'UTF-8') ?> | EC Lightboard</title>
 
     <link rel="stylesheet" href="includes/css/style.css?v=2">
-    <link rel="stylesheet" href="includes/css/home.css?v=1">
+    <link rel="stylesheet" href="includes/css/home.css?v=3">
 
     <link rel="icon" type="image/png"
           href="/ec_lightboard/web/includes/images/BSN_Logo.png">
@@ -41,97 +40,172 @@ $isLoggedIn = !empty($_SESSION['userID']);
 
 <main class="home-page">
 
-    <!-- Hero -->
-    <section class="home-hero">
+    <!-- Header -->
+    <header class="home-header">
 
-        <div class="home-logo">
+        <a href="index.php" class="home-brand">
             <img
                 src="/ec_lightboard/web/includes/images/BSN_Logo.png"
                 alt="ECLightboard logo"
             >
-        </div>
 
-        <p class="home-eyebrow">ECLIGHTBOARD PROJECT</p>
+            <span>EC Lightboard</span>
+        </a>
 
-        <h1>Bring your ideas to light.</h1>
-
-        <p class="home-description">
-            ECLightboard is a customizable LED display system that lets
-            you upload images, explore presets, and send designs directly
-            to the Lightboard.
-        </p>
-
-        <div class="home-actions">
-
-            <a href="gallery.php" class="home-button home-button-primary">
-                Explore Displays
-            </a>
+        <nav class="home-account">
 
             <?php if ($isLoggedIn): ?>
+
+                <a href="profile.php" class="home-profile-link">
+                    My Profile
+                </a>
 
                 <button
                     type="button"
                     id="home-logout-button"
-                    class="home-button home-button-secondary"
+                    class="home-account-button"
                 >
                     Log Out
                 </button>
 
             <?php else: ?>
 
-                <a href="login.php" class="home-button home-button-secondary">
+                <a href="login.php" class="home-account-button">
                     Log In
                 </a>
 
             <?php endif; ?>
 
+        </nav>
+
+    </header>
+
+
+    <!-- Hero -->
+    <section class="home-hero">
+
+        <p class="home-eyebrow">
+            THE ECLIGHTBOARD PROJECT
+        </p>
+
+        <h1>
+            Bring your ideas <span>to light.</span>
+        </h1>
+
+        <p class="home-description">
+            Explore creative displays, upload your own images, or design
+            something completely original. Turn your ideas into
+            something you can see on the Lightboard.
+        </p>
+
+        <div class="home-hero-decoration">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
         </div>
 
     </section>
 
 
-    <!-- Features -->
+    <!-- Main Features -->
     <section class="home-features">
 
-        <div class="home-feature-card">
-            <div class="home-feature-icon">▦</div>
-
-            <h2>Display Gallery</h2>
-
-            <p>
-                Browse available preset designs and custom images
-                created by users.
-            </p>
-
-            <a href="display.php">Browse displays →</a>
+        <div class="home-section-heading">
+            <p class="home-eyebrow">GET STARTED</p>
+            <h2>What would you like to do?</h2>
+            <p>Choose a starting point and bring something to life.</p>
         </div>
 
 
-        <div class="home-feature-card">
-            <div class="home-feature-icon">＋</div>
+        <div class="home-feature-grid">
 
-            <h2>Custom Uploads</h2>
+            <!-- Gallery -->
+            <a href="gallery.php" class="home-feature-card">
 
-            <p>
-                Upload your own images and turn them into designs
-                for the Lightboard.
-            </p>
+                <div class="home-feature-icon">▦</div>
 
-            <a href="upload.php">Upload an image →</a>
-        </div>
+                <div class="home-feature-content">
+                    <h3>Display Gallery</h3>
+
+                    <p>
+                        Browse the available preset displays and explore
+                        custom designs uploaded by you.
+                    </p>
+                </div>
+
+                <span class="home-feature-link">
+                    Explore Gallery <span>→</span>
+                </span>
+
+            </a>
 
 
-        <div class="home-feature-card">
-            <div class="home-feature-icon">👥</div>
+            <!-- Upload -->
+            <a href="upload.php" class="home-feature-card">
 
-            <h2>About Us</h2>
+                <div class="home-feature-icon">↑</div>
 
-            <p>
-                Learn more about the ECLightboard project,
-                how it works, and the three-person team behind it.
-            </p>
+                <div class="home-feature-content">
+                    <h3>Custom Uploads</h3>
 
-            <a href="about.php">Meet the team →</a>
+                    <p>
+                        Upload your own images and turn them into
+                        something made for the Lightboard.
+                    </p>
+                </div>
+
+                <span class="home-feature-link">
+                    Upload an Image <span>→</span>
+                </span>
+
+            </a>
+
+
+            <!-- Create -->
+            <a href="create.php" class="home-feature-card">
+
+                <div class="home-feature-icon">✎</div>
+
+                <div class="home-feature-content">
+                    <h3>Create a Display</h3>
+
+                    <p>
+                        Build a custom design from scratch using
+                        the Lightboard creation tools.
+                    </p>
+                </div>
+
+                <span class="home-feature-link">
+                    Start Creating <span>→</span>
+                </span>
+
+            </a>
+
+
+            <!-- About -->
+            <a href="about.php" class="home-feature-card">
+
+                <div class="home-feature-icon">👥</div>
+
+                <div class="home-feature-content">
+                    <h3>About Us</h3>
+
+                    <p>
+                        Learn about the ECLightboard project,
+                        how it works, and the people behind it.
+                    </p>
+                </div>
+
+                <span class="home-feature-link">
+                    Meet the Team <span>→</span>
+                </span>
+
+            </a>
+
         </div>
 
     </section>
@@ -139,20 +213,24 @@ $isLoggedIn = !empty($_SESSION['userID']);
 
     <!-- Footer -->
     <footer class="home-footer">
-        <p>EC Lightboard · Custom displays, brought to life.</p>
+        <p>EC Lightboard <span>·</span> Custom displays, brought to life.</p>
     </footer>
 
 </main>
 
+
 <?php if ($isLoggedIn): ?>
+
 <script>
 document.getElementById('home-logout-button').addEventListener('click', async function () {
+
     const button = this;
 
     button.disabled = true;
     button.textContent = 'Logging Out…';
 
     try {
+
         const response = await fetch('api/authentication/logout.php', {
             method: 'POST',
             credentials: 'same-origin'
@@ -165,15 +243,19 @@ document.getElementById('home-logout-button').addEventListener('click', async fu
         window.location.href = 'index.php';
 
     } catch (error) {
+
         console.error('Logout error:', error);
 
         button.disabled = false;
         button.textContent = 'Log Out';
 
         alert('Could not log out. Please try again.');
+
     }
+
 });
 </script>
+
 <?php endif; ?>
 
 </body>

@@ -33,3 +33,52 @@
         grid-template-columns: 1fr !important;
     }
 }
+
+
+/* ============================================================
+   Logged-Out Custom Gallery Prompt
+   ============================================================ */
+
+.gallery-login-prompt {
+    padding: 2.5rem;
+    margin-top: 1rem;
+
+    text-align: center;
+
+    border: 1px dashed rgba(128, 128, 128, 0.4);
+    border-radius: 12px;
+
+    background: rgba(128, 128, 128, 0.05);
+}
+
+.gallery-login-prompt h3 {
+    margin: 0 0 0.75rem;
+}
+
+.gallery-login-prompt p {
+    margin: 0 auto 1.5rem;
+    max-width: 500px;
+    line-height: 1.6;
+    opacity: 0.75;
+}
+
+.gallery-login-button {
+    display: inline-block;
+
+    padding: 0.85rem 1.5rem;
+
+    border-radius: 8px;
+
+    background: var(--color-secondary);
+    color: white;
+
+    font-weight: 600;
+    text-decoration: none;
+
+    transition: opacity 0.2s, transform 0.2s;
+}
+
+.gallery-login-button:hover {
+    opacity: 0.85;
+    transform: translateY(-1px);
+}
