@@ -1,4 +1,3 @@
-
 <?php
 /*
  * Author: Sam Vossen 2026.11.10
@@ -14,7 +13,13 @@
  * This page is public and does not require login.
  */
 
+// Start the session so we can check the user's login status.
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 $pageTitle = 'Home';
+$isLoggedIn = !empty($_SESSION['userID']);
 ?>
 
 <!DOCTYPE html>
@@ -57,13 +62,29 @@ $pageTitle = 'Home';
         </p>
 
         <div class="home-actions">
+
             <a href="gallery.php" class="home-button home-button-primary">
                 Explore Displays
             </a>
 
-            <a href="login.php" class="home-button home-button-secondary">
-                Log In
-            </a>
+            <?php if ($isLoggedIn): ?>
+
+                <button
+                    type="button"
+                    id="home-logout-button"
+                    class="home-button home-button-secondary"
+                >
+                    Log Out
+                </button>
+
+            <?php else: ?>
+
+                <a href="login.php" class="home-button home-button-secondary">
+                    Log In
+                </a>
+
+            <?php endif; ?>
+
         </div>
 
     </section>
@@ -122,6 +143,38 @@ $pageTitle = 'Home';
     </footer>
 
 </main>
+
+<?php if ($isLoggedIn): ?>
+<script>
+document.getElementById('home-logout-button').addEventListener('click', async function () {
+    const button = this;
+
+    button.disabled = true;
+    button.textContent = 'Logging Out…';
+
+    try {
+        const response = await fetch('api/authentication/logout.php', {
+            method: 'POST',
+            credentials: 'same-origin'
+        });
+
+        if (!response.ok) {
+            throw new Error('Logout failed.');
+        }
+
+        window.location.href = 'index.php';
+
+    } catch (error) {
+        console.error('Logout error:', error);
+
+        button.disabled = false;
+        button.textContent = 'Log Out';
+
+        alert('Could not log out. Please try again.');
+    }
+});
+</script>
+<?php endif; ?>
 
 </body>
 </html>

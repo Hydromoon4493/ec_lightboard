@@ -93,7 +93,7 @@ include __DIR__ . '/includes/layout/navbar.php';
 
 <main class="bodyDefult lightboard-page">
 
-    <h1>Displays Displays</h1>
+    <h1>Manual Displays</h1>
 
     <p>
         Select an image below to display it on the Lightboard.

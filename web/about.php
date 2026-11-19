@@ -80,8 +80,8 @@ include 'includes/layout/navbar.php';
             and a shared interest in technology.
         </p>
 
-        <a href="/ec_lightboard/web/index.php" class="about-button">
-            Back to Home
+        <a href="/ec_lightboard/web/gallery.php" class="about-button">
+            Back to Gallery
         </a>
     </section>
 

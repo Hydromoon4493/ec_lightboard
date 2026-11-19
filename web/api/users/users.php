@@ -4,7 +4,7 @@
 //   GET   ?page=1&limit=20&search=&role=admin|user   Paginated user list
 //   PATCH ?id=5  body: role ("admin" or "user")      Promote / demote
 require __DIR__ . '/../authentication/bootstrap.php';
-require_once __DIR__ . '/../../includes/require_admin.php';
+require_once __DIR__ . '/../../includes/auth/require_admin.php';
 
 const PAGE_SIZES = [10, 20, 50, 100];
 const ROLE_NAMES = ['admin', 'user'];
@@ -33,7 +33,12 @@ function list_users(PDO $pdo, int $me): void
     $where  = [];
     $params = [];
 
-    $search = mb_substr(trim((string) ($_GET['search'] ?? '')), 0, 100);
+    $searchInput = trim((string) ($_GET['search'] ?? ''));
+
+    $search = function_exists('mb_substr')
+        ? mb_substr($searchInput, 0, 100, 'UTF-8')
+        : substr($searchInput, 0, 100);
+
     if ($search !== '') {
         $like = '%' . addcslashes($search, '%_\\') . '%';
         $where[] = "(u.Fname LIKE ? OR u.Lname LIKE ? OR u.email LIKE ?
