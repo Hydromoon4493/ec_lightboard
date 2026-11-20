@@ -1,0 +1,222 @@
+/*
+ * Filename: includes/css/creator.css
+ *
+ * Shared styles for the creator pages (scottD.php, samV.php, isaacW.php).
+ * Uses the variables from includes/style.css so it matches the rest of the site.
+ */
+
+.creator-page {
+    width: 100%;
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 3rem 1.5rem 4rem;
+}
+
+/* ---------- Intro ---------- */
+
+.creator-intro {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 2.5rem;
+    align-items: center;
+    margin-bottom: 3.5rem;
+}
+
+.creator-photo {
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+    object-position: 50% 5%;
+    border-radius: 50%;
+}
+
+.creator-intro__text h1 {
+    margin: 0 0 0.25rem;
+    font-size: clamp(2rem, 5vw, 2.8rem);
+    line-height: 1.1;
+    color: var(--color-primary);
+}
+
+.creator-role {
+    margin: 0 0 1rem;
+    font-size: 1.1rem;
+    font-weight: var(--font-weight-bold);
+}
+
+.creator-intro__text p {
+    max-width: 62ch;
+    color: #555;
+}
+
+/* ---------- Buttons ---------- */
+
+.creator-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1.25rem;
+}
+
+.creator-btn {
+    display: inline-block;
+    padding: 0.6rem 1.25rem;
+    border: 1px solid #cfcfcf;
+    border-radius: 50px;
+    background: #fff;
+    color: var(--color-text);
+    font-weight: var(--font-weight-bold);
+    transition: background-color var(--transition-speed) ease;
+}
+
+.creator-btn:hover {
+    background: var(--color-highlight-bg);
+}
+
+.creator-btn--primary {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    color: #fff;
+}
+
+.creator-btn--primary:hover {
+    background: var(--color-primary-darker);
+}
+
+.creator-btn:focus-visible,
+.creator-team a:focus-visible {
+    outline: 3px solid var(--color-secondary);
+    outline-offset: 2px;
+}
+
+/* ---------- Sections ---------- */
+
+.creator-section {
+    margin-bottom: 3rem;
+}
+
+.creator-section h2 {
+    margin: 0 0 1.25rem;
+    font-size: 1.5rem;
+    color: var(--color-primary);
+}
+
+/* ---------- Cards ---------- */
+
+.creator-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.25rem;
+}
+
+.creator-card {
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem;
+    background: #fff;
+    border: 1px solid #e7e7e7;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+.creator-card h3 {
+    margin: 0 0 0.6rem;
+    font-size: 1.1rem;
+}
+
+.creator-card p {
+    margin: 0 0 1rem;
+    font-size: 0.95rem;
+    color: #555;
+}
+
+.creator-card code {
+    padding: 0.1rem 0.35rem;
+    border-radius: 4px;
+    background: var(--color-highlight-bg);
+    font-size: 0.85em;
+}
+
+.creator-tags {
+    margin: auto 0 0 !important;
+    /* pin tags to the bottom of the card */
+    font-size: 0.82rem !important;
+    font-weight: var(--font-weight-bold);
+    color: var(--color-primary) !important;
+}
+
+/* ---------- Lists ---------- */
+
+.creator-list {
+    padding: 0;
+    max-width: 70ch;
+}
+
+.creator-list li {
+    padding: 0.55rem 0 0.55rem 1.5rem;
+    border-bottom: 1px solid #e7e7e7;
+    position: relative;
+}
+
+.creator-list li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 1.05rem;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--color-secondary);
+}
+
+.creator-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+}
+
+.creator-chips li {
+    padding: 0.4rem 0.9rem;
+    border: 1px solid #d9dee2;
+    border-radius: 50px;
+    background: #fff;
+    font-size: 0.9rem;
+    font-weight: var(--font-weight-bold);
+}
+
+.creator-team {
+    padding-top: 1.5rem;
+    border-top: 1px solid #e7e7e7;
+    color: #666;
+}
+
+.creator-team a {
+    color: var(--color-primary);
+    font-weight: var(--font-weight-bold);
+    text-decoration: underline;
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 900px) {
+    .creator-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 700px) {
+    .creator-intro {
+        grid-template-columns: 1fr;
+        justify-items: center;
+        text-align: center;
+        gap: 1.5rem;
+    }
+
+    .creator-intro__text p {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .creator-links {
+        justify-content: center;
+    }
+}
